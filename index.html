@@ -22,77 +22,69 @@
   --sans: 'Noto Sans TC', sans-serif;
   --serif: 'Playfair Display', serif;
   --mono: 'DM Mono', monospace;
+  --header-h: 0px; /* JS will set this */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+html, body { height: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); overflow-y: scroll; }
 
-/* ── Hero / Logo Banner ── */
+/* ════════════════════════════════════════
+   FIXED HEADER WRAPPER
+   包含 Hero + 搜尋列 + 分類列，全部固定在頂部
+   ════════════════════════════════════════ */
+#fixed-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--bg);
+  box-shadow: 0 2px 12px rgba(232,96,138,0.08);
+}
+
+/* ── Hero / Logo ── */
 .hero {
   background: #fce8ef;
-  position: relative;
-  overflow: hidden;
   border-bottom: 2px solid #f9b8cb;
+  width: 100%;
+  overflow: hidden;
 }
 .hero-logo-img {
-  width: 100%;
-  height: auto;
-  max-height: 280px;
   display: block;
-  object-fit: cover;
+  width: 100%;
+  /* 關鍵：用 aspect-ratio 讓圖片等比例縮放，不裁切 */
+  height: auto;
+  max-height: 260px;
+  object-fit: contain;
   object-position: center center;
+  background: #fce8ef;
 }
-@media (max-width: 768px) {
-  .hero-logo-img { max-height: 180px; }
-}
-@media (max-width: 480px) {
-  .hero-logo-img { max-height: 110px; }
-}
-/* hero-sub-bar removed */
+@media (max-width: 900px)  { .hero-logo-img { max-height: 180px; } }
+@media (max-width: 600px)  { .hero-logo-img { max-height: 120px; } }
+@media (max-width: 400px)  { .hero-logo-img { max-height: 90px;  } }
 
-/* ── Sticky Header ── */
+/* ── Search Bar ── */
 .sticky-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255,245,247,0.96);
+  background: rgba(255,245,247,0.97);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
 .sticky-inner {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
-  height: auto;
-  min-height: 54px;
+  padding: 8px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  gap: 10px;
+  flex-wrap: nowrap;
 }
-.shop-slogan {
-  font-size: 12px;
-  color: var(--accent);
-  font-style: italic;
-  white-space: nowrap;
-  flex-shrink: 0;
-  letter-spacing: 0.02em;
-  display: none; /* hidden on small screens */
-}
-@media (min-width: 700px) {
-  .shop-slogan { display: block; }
-}
-.search-wrap { flex: 1; max-width: 340px; position: relative; }
-.search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+.search-wrap { position: relative; flex: 1; max-width: 320px; min-width: 120px; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
 #searchInput {
   width: 100%;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 8px 12px 8px 34px;
+  padding: 8px 12px 8px 32px;
   font-family: var(--sans);
   font-size: 13px;
   color: var(--text);
@@ -101,7 +93,32 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 }
 #searchInput:focus { border-color: var(--accent); background: #fff; }
 #searchInput::placeholder { color: var(--text3); }
-.count-info { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text3); white-space: nowrap; }
+
+.shop-slogan {
+  font-size: 12px;
+  color: var(--accent);
+  font-style: italic;
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+@media (max-width: 600px) { .shop-slogan { display: none; } }
+
+.count-info {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  white-space: nowrap;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+@media (max-width: 480px) { .count-info { display: none; } }
 
 /* ── Category Tabs ── */
 .cat-scroll {
@@ -109,9 +126,9 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   border-bottom: 1px solid var(--border);
 }
 .cat-inner {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 16px;
   display: flex;
   gap: 0;
   overflow-x: auto;
@@ -120,7 +137,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .cat-inner::-webkit-scrollbar { display: none; }
 .cat-tab {
   flex-shrink: 0;
-  padding: 14px 18px;
+  padding: 11px 16px;
   font-family: var(--sans);
   font-size: 13px;
   color: var(--text2);
@@ -132,15 +149,26 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 .cat-tab:hover { color: var(--accent); }
 .cat-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
-.cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-/* ── Gallery ── */
-.gallery-wrap { max-width: 1400px; margin: 0 auto; padding: 20px 20px 60px; }
+/* ════════════════════════════════════════
+   商品區：用 padding-top 讓出固定 header 的空間
+   JS 會動態計算 header 實際高度並設定 padding-top
+   ════════════════════════════════════════ */
+#gallery-section {
+  padding-top: var(--header-h, 320px); /* fallback */
+}
+.gallery-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 16px 120px;
+}
 
+/* ── Gallery Grid ── */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--card-min,130px), 1fr));
@@ -166,19 +194,13 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   background: var(--surface2);
   border-radius: 9px 9px 0 0;
 }
-
-/* Fix: always visible, no opacity:0 trick */
 .img-wrap img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.4s cubic-bezier(0.34,1.2,0.64,1);
 }
-
-/* Hover: card lifts AND image zooms */
-.card:hover .img-wrap img {
-  transform: scale(1.15);
-}
+.card:hover .img-wrap img { transform: scale(1.15); }
 .card:hover {
   box-shadow: 0 12px 36px rgba(232,96,138,0.22), 0 0 0 2px var(--accent);
   border-color: var(--accent);
@@ -186,7 +208,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   transition: transform 0.3s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.3s, border-color 0.2s;
 }
 
-/* Skeleton shimmer */
 .skeleton {
   position: absolute; inset: 0;
   background: linear-gradient(90deg, var(--surface2) 25%, #ffe0ea 50%, var(--surface2) 75%);
@@ -197,7 +218,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .img-loaded .skeleton { display: none; }
 @keyframes shimmer { 0%{background-position:200%} 100%{background-position:-200%} }
 
-/* Hover overlay with zoom icon */
 .overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to top, rgba(200,50,100,0.55) 0%, transparent 60%);
@@ -221,18 +241,10 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .card-info { padding: 6px 8px 8px; }
 .card-id { font-family: var(--mono); font-size: 9px; color: var(--text3); }
 .card-name { font-size: 11px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 1px 0 4px; color: var(--text); }
-.card-cat-badge {
-  display: inline-flex; align-items: center; gap: 3px;
-  font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 500;
-}
+.card-cat-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 500; }
 
-/* ── Empty / Error State ── */
-.state-empty {
-  grid-column: 1/-1;
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--text3);
-}
+/* ── Empty State ── */
+.state-empty { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--text3); }
 .state-empty .icon { font-size: 3rem; margin-bottom: 12px; }
 .state-empty p { font-size: 14px; margin-bottom: 6px; }
 .state-empty small { font-size: 12px; }
@@ -253,7 +265,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   transition: all 0.2s;
 }
 #loadMoreBtn:hover { background: var(--accent); color: #fff; }
-#loadMoreBtn:disabled { opacity: 0.35; cursor: default; }
 
 /* ── Lightbox ── */
 #lightbox {
@@ -265,246 +276,94 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 }
 #lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-.lb-wrap {
-  position: relative;
-  max-width: min(88vw, 860px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-#lbImg {
-  max-width: 100%;
-  max-height: 72vh;
-  object-fit: contain;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.08);
-  animation: zoomIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes zoomIn { from{transform:scale(0.88);opacity:0} to{transform:scale(1);opacity:1} }
-
+.lb-counter { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.35); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 4px 14px; }
+.lb-wrap { position: relative; max-width: min(88vw,860px); display: flex; flex-direction: column; align-items: center; gap: 14px; }
+#lbImg { max-width: 100%; max-height: 72vh; object-fit: contain; border-radius: 12px; border: 1px solid rgba(255,255,255,.08); animation: zoomIn .28s cubic-bezier(.34,1.56,.64,1); }
+@keyframes zoomIn { from{transform:scale(.88);opacity:0} to{transform:scale(1);opacity:1} }
 .lb-info { text-align: center; }
-.lb-id { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 4px; }
+.lb-id { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,.3); margin-bottom: 4px; }
 .lb-name { font-family: var(--serif); font-size: 1.3rem; color: #f5f0ea; margin-bottom: 4px; }
-.lb-cat { font-size: 12px; color: var(--accent2); letter-spacing: 0.06em; }
-
-.lb-counter {
-  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-  font-family: var(--mono); font-size: 12px;
-  color: rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px; padding: 4px 14px;
-}
-
-.lb-nav {
-  position: fixed; top: 50%; transform: translateY(-50%);
-  width: 46px; height: 46px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff; font-size: 20px;
-  transition: all 0.18s;
-  backdrop-filter: blur(4px);
-}
+.lb-cat { font-size: 12px; color: var(--accent2); letter-spacing: .06em; }
+.lb-nav { position: fixed; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 20px; transition: all .18s; backdrop-filter: blur(4px); }
 .lb-nav:hover { background: var(--accent); border-color: var(--accent); }
 #lbPrev { left: 20px; }
 #lbNext { right: 20px; }
-
-.lb-close {
-  position: fixed; top: 18px; right: 20px;
-  width: 38px; height: 38px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff; font-size: 20px;
-  transition: background 0.15s;
-}
+.lb-close { position: fixed; top: 18px; right: 20px; width: 38px; height: 38px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 20px; transition: background .15s; }
 .lb-close:hover { background: #c04040; border-color: #c04040; }
 
-/* ── No Config Banner ── */
-.no-config {
-  max-width: 500px;
-  margin: 80px auto;
-  text-align: center;
-  padding: 48px 32px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-}
+/* ── No Config ── */
+.no-config { max-width: 500px; margin: 80px auto; text-align: center; padding: 48px 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
 .no-config .icon { font-size: 3rem; margin-bottom: 16px; }
 .no-config h2 { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 8px; }
 .no-config p { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.7; }
-.no-config a {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 11px 24px; background: var(--accent); color: #fff;
-  border-radius: 8px; font-size: 13px; font-weight: 500;
-  text-decoration: none; transition: background 0.15s;
-}
+.no-config a { display: inline-flex; align-items: center; gap: 6px; padding: 11px 24px; background: var(--accent); color: #fff; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; transition: background .15s; }
 .no-config a:hover { background: var(--accent-dark); }
-
-/* ── Admin link ── */
-.admin-link {
-  position: fixed; bottom: 20px; right: 20px;
-  background: var(--text); color: rgba(255,255,255,0.6);
-  font-size: 11px; font-family: var(--mono);
-  padding: 7px 12px; border-radius: 7px;
-  text-decoration: none;
-  transition: color 0.15s;
-  z-index: 50;
-}
-.admin-link:hover { color: #fff; }
 
 /* ── Scroll to top ── */
 #toTop {
-  position: fixed; bottom: 20px; right: 80px;
+  position: fixed; bottom: 90px; right: 20px;
   width: 40px; height: 40px;
   background: var(--accent); border: none; border-radius: 50%;
   color: #fff; font-size: 18px; cursor: pointer;
   opacity: 0; pointer-events: none;
   transition: opacity 0.25s;
   display: flex; align-items: center; justify-content: center;
-  z-index: 50;
+  z-index: 99;
+  box-shadow: 0 4px 14px rgba(232,96,138,0.4);
 }
 #toTop.show { opacity: 1; pointer-events: all; }
 
-/* ── Normal scroll layout (hero+search sticky, gallery flows naturally) ── */
-body { overflow-y: auto; }
-
-/* Gallery wrap: normal flow */
-.gallery-wrap {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px 20px 120px;
-}
-
-/* count-info in search bar */
-.count-info {
-  margin-left: 0;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text2);
-  white-space: nowrap;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 10px;
-  flex-shrink: 0;
-}
-
-#toTop { bottom: 100px; right: 20px; }
-
-@media (max-width: 600px) {
-  .sticky-inner, .cat-inner, .gallery-wrap { padding-left: 12px; padding-right: 12px; }
-  .gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  #lbPrev { left: 8px; }
-  #lbNext { right: 8px; }
-}
-
-/* ── LINE 浮動聯絡鈕 ── */
+/* ── LINE 浮動聯絡鈕（右側） ── */
 .line-float {
   position: fixed;
   bottom: 24px;
-  left: 20px;
+  right: 20px;        /* ← 改右側 */
   z-index: 200;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  gap: 4px;
 }
 .line-float-btn {
-  width: 52px;
-  height: 52px;
+  width: 52px; height: 52px;
   background: #06C755;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 16px rgba(6,199,85,0.45);
   transition: transform 0.2s, box-shadow 0.2s;
-  border: none;
-  cursor: pointer;
+  border: none; cursor: pointer;
 }
 .line-float-btn:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(6,199,85,0.55); }
 .line-float-btn svg { width: 28px; height: 28px; fill: #fff; }
-.line-float-label {
-  font-size: 10px;
-  color: #06C755;
-  font-weight: 700;
-  background: #fff;
-  border-radius: 8px;
-  padding: 2px 7px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  white-space: nowrap;
-  letter-spacing: 0.04em;
-}
+.line-float-label { font-size: 10px; color: #06C755; font-weight: 700; background: #fff; border-radius: 8px; padding: 2px 7px; box-shadow: 0 2px 8px rgba(0,0,0,.1); white-space: nowrap; }
 
 /* LINE QR Modal */
-.line-modal-bg {
-  display: none;
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(6px);
-  align-items: center; justify-content: center;
-}
+.line-modal-bg { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.5); backdrop-filter: blur(6px); align-items: center; justify-content: center; }
 .line-modal-bg.open { display: flex; animation: fadeIn 0.2s ease; }
-.line-modal {
-  background: #fff;
-  border-radius: 20px;
-  padding: 28px 24px;
-  text-align: center;
-  width: 300px;
-  max-width: 90vw;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
-  position: relative;
-}
+.line-modal { background: #fff; border-radius: 20px; padding: 28px 24px; text-align: center; width: 300px; max-width: 90vw; box-shadow: 0 24px 60px rgba(0,0,0,.25); position: relative; }
 .line-modal-icon { font-size: 2rem; margin-bottom: 4px; }
 .line-modal-title { font-size: 16px; font-weight: 700; color: #06C755; margin-bottom: 2px; }
 .line-modal-sub { font-size: 12px; color: #888; margin-bottom: 16px; }
-.line-modal-qr {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-  border-radius: 12px;
-  border: 3px solid #06C755;
-  margin-bottom: 14px;
-}
-.line-modal-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 12px;
-  background: #06C755;
-  color: #fff;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.15s;
-  cursor: pointer;
-  border: none;
-  font-family: var(--sans);
-}
+.line-modal-qr { width: 180px; height: 180px; object-fit: contain; border-radius: 12px; border: 3px solid #06C755; margin-bottom: 14px; display: block; margin-left: auto; margin-right: auto; }
+.line-modal-cta { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 12px; background: #06C755; color: #fff; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: var(--sans); transition: background .15s; }
 .line-modal-cta:hover { background: #05a648; }
-.line-modal-close {
-  position: absolute; top: 12px; right: 14px;
-  background: none; border: none; font-size: 20px;
-  color: #aaa; cursor: pointer;
-}
+.line-modal-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 22px; color: #aaa; cursor: pointer; line-height: 1; }
 .line-modal-hint { font-size: 11px; color: #aaa; margin-top: 10px; }
 
+@media (max-width: 480px) {
+  .gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  #lbPrev { left: 6px; } #lbNext { right: 6px; }
+  .lb-nav { width: 36px; height: 36px; font-size: 16px; }
+}
 </style>
 </head>
 <body>
 
-<div id="app">
-  <!-- Injected by JS -->
+<div id="fixed-header">
+  <!-- Hero + Search + Categories injected here by JS -->
+</div>
+<div id="gallery-section">
+  <!-- Gallery injected here by JS -->
 </div>
 
 <!-- Lightbox -->
@@ -554,20 +413,28 @@ body { overflow-y: auto; }
 
 <script>
 // ═══════════════════════════════════════════
-// 設定區：只需改這裡
-// ═══════════════════════════════════════════
-const CLOUD_NAME   = 'dkwviksvr';  // ← 你的 Cloudinary Cloud Name
-const SHOP_TAG     = 'shop';        // ← 你幫圖片加的 Tag 名稱
-const CONFIG_URL   = 'config.json'; // ← 分類設定檔（放在 GitHub 同資料夾）
+const CLOUD_NAME = 'dkwviksvr';
+const SHOP_TAG   = 'shop';
+const CONFIG_URL = 'config.json';
 // ═══════════════════════════════════════════
 
-let PAGE_SIZE  = 50;
-let CARD_MIN   = 130;
-let config     = { categories: [], products: [] };
-let filtered   = [];
+let PAGE_SIZE = 50;
+let CARD_MIN  = 130;
+let config    = { categories: [], products: [] };
+let filtered  = [];
 let currentPage = 0;
-let lbIndex    = 0;
+let lbIndex   = 0;
 let activeCategory = 'all';
+
+// ── 動態計算 fixed header 高度，讓商品區不被蓋住 ──
+function updateHeaderOffset() {
+  const h = document.getElementById('fixed-header');
+  const s = document.getElementById('gallery-section');
+  if (h && s) {
+    const height = h.getBoundingClientRect().height;
+    s.style.paddingTop = height + 'px';
+  }
+}
 
 // ── 從 Cloudinary Tag 抓圖片清單 ──
 async function fetchFromCloudinary() {
@@ -578,28 +445,25 @@ async function fetchFromCloudinary() {
   return data.resources || [];
 }
 
-// ── 從 GitHub 同資料夾讀分類設定 ──
+// ── 從 GitHub 讀分類設定 ──
 async function fetchConfig() {
-  // Try GitHub config.json first
   try {
     const resp = await fetch(CONFIG_URL + '?t=' + Date.now());
     if (resp.ok) {
       const cfg = await resp.json();
-      // Also merge localStorage as fallback for categories if config.json is empty
-      if ((!cfg.categories || cfg.categories.length === 0)) {
+      if (!cfg.categories || cfg.categories.length === 0) {
         const local = localStorage.getItem('doll_shop_frontend');
         if (local) {
           const lc = JSON.parse(local);
           if (lc.categories && lc.categories.length > 0) {
             cfg.categories = lc.categories;
-            cfg.productCategories = (lc.products||[]).filter(p=>p.category).map(p=>({id:p.id,category:p.category}));
+            cfg.productCategories = (lc.products || []).filter(p => p.category).map(p => ({ id: p.id, category: p.category }));
           }
         }
       }
       return cfg;
     }
   } catch(e) {}
-  // Fallback: localStorage (same-browser admin)
   try {
     const local = localStorage.getItem('doll_shop_frontend');
     if (local) {
@@ -608,7 +472,7 @@ async function fetchConfig() {
         categories: lc.categories || [],
         displayPageSize: lc.displayPageSize || 50,
         displayCardSize: lc.displayCardSize || 130,
-        productCategories: (lc.products||[]).filter(p=>p.category).map(p=>({id:p.id,category:p.category})),
+        productCategories: (lc.products || []).filter(p => p.category).map(p => ({ id: p.id, category: p.category })),
         productNames: {}
       };
     }
@@ -616,7 +480,7 @@ async function fetchConfig() {
   return { categories: [], displayPageSize: 50, displayCardSize: 130 };
 }
 
-// ── 從 public_id 萃取商品編號：A13中文_後綴 → A13 ──
+// ── 從 public_id 萃取商品編號 ──
 function extractId(publicId) {
   const filename = publicId.includes('/') ? publicId.split('/').pop() : publicId;
   let decoded = filename;
@@ -625,7 +489,7 @@ function extractId(publicId) {
   return m ? m[1].toUpperCase() : null;
 }
 
-// ── 建立縮圖網址（直接用 Cloudinary transformation） ──
+// ── 建立縮圖網址 ──
 function buildUrl(product) {
   if (!product.url) return '';
   const sz = CARD_MIN > 150 ? 600 : 400;
@@ -636,19 +500,39 @@ function buildFullUrl(product) {
   return product.url.replace('/image/upload/', '/image/upload/w_1400,h_1400,c_fill,q_auto,f_auto/');
 }
 
+// ── Loading 畫面 ──
+function showLoading() {
+  document.getElementById('fixed-header').innerHTML = '';
+  document.getElementById('gallery-section').innerHTML = `
+    <div style="text-align:center;padding:80px 20px;">
+      <div style="font-size:3.5rem;margin-bottom:16px;animation:spin 1.8s linear infinite;display:inline-block;">🧸</div>
+      <div style="font-size:15px;color:var(--text2);margin-top:8px;">商品載入中，請稍候…</div>
+    </div>
+    <style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>`;
+}
+
+// ── 錯誤畫面 ──
+function showError(msg) {
+  document.getElementById('gallery-section').innerHTML = `
+    <div style="max-width:480px;margin:60px auto;text-align:center;padding:40px 24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;">
+      <div style="font-size:3rem;margin-bottom:12px;">😢</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;">圖片載入失敗</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">${msg}</div>
+      <button onclick="init()" style="padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:var(--sans);">重試</button>
+    </div>`;
+  updateHeaderOffset();
+}
+
 // ── 主初始化 ──
 async function init() {
   showLoading();
   try {
-    // 同時抓圖片和設定
     const [resources, cfg] = await Promise.all([fetchFromCloudinary(), fetchConfig()]);
 
-    // 套用顯示設定
     PAGE_SIZE = cfg.displayPageSize || 50;
     CARD_MIN  = cfg.displayCardSize || 130;
     document.documentElement.style.setProperty('--card-min', CARD_MIN + 'px');
 
-    // 組合商品清單，對照分類
     const catAssign = {};
     (cfg.productCategories || []).forEach(pc => { catAssign[pc.id] = pc.category; });
 
@@ -656,69 +540,50 @@ async function init() {
     resources.forEach(r => {
       const id = extractId(r.public_id);
       if (!id) return;
-      if (!productMap[id] || r.created_at > productMap[id].created_at) {
+      if (!productMap[id] || (r.created_at || '') > (productMap[id].created_at || '')) {
         productMap[id] = {
           id,
-          name: cfg.productNames?.[id] || id,
+          name: (cfg.productNames || {})[id] || id,
           url: r.secure_url || `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${r.version}/${r.public_id}.${r.format}`,
           format: r.format || 'jpg',
           category: catAssign[id] || '',
-          visible: true
+          visible: true,
+          created_at: r.created_at || ''
         };
       }
     });
 
-    // 排序：A1 A2 … B1 B2 …
-    config.products = Object.values(productMap).sort((a, b) => {
+    const sortFn = (a, b) => {
       const am = a.id.match(/^([A-Z]+)(\d+)$/), bm = b.id.match(/^([A-Z]+)(\d+)$/);
       if (!am || !bm) return a.id.localeCompare(b.id);
       if (am[1] !== bm[1]) return am[1].localeCompare(bm[1]);
       return parseInt(am[2]) - parseInt(bm[2]);
-    });
+    };
+
+    config.products   = Object.values(productMap).sort(sortFn);
     config.categories = cfg.categories || [];
 
     renderApp();
   } catch(err) {
+    document.getElementById('fixed-header').innerHTML = '';
     showError(err.message);
   }
 }
 
-// ── Loading 畫面 ──
-function showLoading() {
-  document.getElementById('app').innerHTML = `
-    <div style="text-align:center;padding:80px 20px;">
-      <div style="font-size:3rem;margin-bottom:16px;animation:spin 1.5s linear infinite;display:inline-block;">🧸</div>
-      <div style="font-size:15px;color:var(--text2);">商品載入中，請稍候…</div>
-    </div>
-    <style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>`;
-}
-
-// ── 錯誤畫面 ──
-function showError(msg) {
-  document.getElementById('app').innerHTML = `
-    <div style="max-width:500px;margin:60px auto;text-align:center;padding:40px 24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;">
-      <div style="font-size:3rem;margin-bottom:12px;">😢</div>
-      <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;">圖片載入失敗</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">${msg}</div>
-      <button onclick="init()" style="padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">重試</button>
-    </div>`;
-}
-
 // ── 渲染整個 App ──
 function renderApp() {
-  const cats = config.categories;
+  const cats  = config.categories;
   const total = config.products.length;
 
-  document.getElementById('app').innerHTML = `
+  // ── Fixed header（Hero + Search + Categories）──
+  document.getElementById('fixed-header').innerHTML = `
     <div class="hero">
       <img class="hero-logo-img" src="LOGO.jpg" alt="三麗鷗中毒日記"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div style="display:none;padding:32px;text-align:center;background:#fce8ef;">
-        <div style="font-size:2rem;">🧸</div>
-        <div style="font-size:22px;font-weight:700;color:var(--accent);margin-top:8px;">三麗鷗中毒日記</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:4px;">每天都被三麗鷗治癒中♡</div>
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div style="display:none;align-items:center;justify-content:center;flex-direction:column;padding:24px;background:#fce8ef;min-height:80px;">
+        <div style="font-size:22px;font-weight:700;color:var(--accent);">三麗鷗中毒日記</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px;">每天都被三麗鷗治癒中♡</div>
       </div>
-
     </div>
 
     <div class="sticky-bar">
@@ -741,8 +606,10 @@ function renderApp() {
             ${c.name}
           </button>`).join('')}
       </div>
-    </div>
+    </div>`;
 
+  // ── Gallery section ──
+  document.getElementById('gallery-section').innerHTML = `
     <div class="gallery-wrap">
       <div class="gallery" id="gallery"></div>
       <div class="load-more-wrap">
@@ -750,6 +617,12 @@ function renderApp() {
       </div>
     </div>`;
 
+  // 計算 header 高度，讓商品不被蓋住
+  updateHeaderOffset();
+  // 視窗改變時重新計算
+  window.addEventListener('resize', updateHeaderOffset);
+
+  // Events
   document.getElementById('searchInput').addEventListener('input', () => {
     clearTimeout(window._st);
     window._st = setTimeout(applyFilters, 220);
@@ -770,16 +643,18 @@ function applyFilters() {
   const q = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
   filtered = config.products.filter(p => {
     const matchCat = activeCategory === 'all' || p.category === activeCategory;
-    const matchQ   = !q || p.id.toLowerCase().includes(q) || (p.name||'').toLowerCase().includes(q);
+    const matchQ   = !q || p.id.toLowerCase().includes(q) || (p.name || '').toLowerCase().includes(q);
     return matchCat && matchQ && p.visible !== false;
   });
   currentPage = 0;
-  document.getElementById('gallery').innerHTML = '';
+  const g = document.getElementById('gallery');
+  if (g) g.innerHTML = '';
   renderPage();
 }
 
 function renderPage() {
   const gallery = document.getElementById('gallery');
+  if (!gallery) return;
   const start = currentPage * PAGE_SIZE;
   const slice = filtered.slice(start, start + PAGE_SIZE);
   const cats  = config.categories;
@@ -787,8 +662,8 @@ function renderPage() {
   if (filtered.length === 0) {
     gallery.innerHTML = `<div class="state-empty"><div class="icon">🔍</div><p>找不到符合條件的商品</p><small>試試其他關鍵字或分類</small></div>`;
     document.getElementById('loadMoreBtn').style.display = 'none';
-    const ci0 = document.getElementById('countInfo');
-    if (ci0) ci0.textContent = '找不到商品';
+    const ci = document.getElementById('countInfo');
+    if (ci) ci.textContent = '找不到商品';
     return;
   }
 
@@ -808,7 +683,7 @@ function renderPage() {
         <div class="card-id">No. ${p.id}</div>
         <div class="card-name">${p.name || p.id}</div>
         ${cat
-          ? `<span class="card-cat-badge" style="background:${cat.color}18;color:${cat.color};border:1px solid ${cat.color}33;"><span style="width:6px;height:6px;border-radius:50%;background:${cat.color};display:inline-block;"></span>${cat.name}</span>`
+          ? `<span class="card-cat-badge" style="background:${cat.color}18;color:${cat.color};border:1px solid ${cat.color}33;"><span style="width:6px;height:6px;border-radius:50%;background:${cat.color};display:inline-block;margin-right:2px;"></span>${cat.name}</span>`
           : '<span class="card-cat-badge" style="background:var(--surface2);color:var(--text3);">未分類</span>'}
       </div>`;
 
@@ -846,8 +721,7 @@ function renderPage() {
 
 // ── Lightbox ──
 function openLightbox(index) {
-  lbIndex = index;
-  updateLightbox();
+  lbIndex = index; updateLightbox();
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -856,19 +730,18 @@ function closeLightbox() {
   document.body.style.overflow = '';
 }
 function updateLightbox() {
-  const p   = filtered[lbIndex];
-  if (!p) return;
+  const p = filtered[lbIndex]; if (!p) return;
   const cat = config.categories.find(c => c.id === p.category);
-  document.getElementById('lbImg').src      = buildFullUrl(p);
-  document.getElementById('lbImg').alt      = p.name || p.id;
-  document.getElementById('lbId').textContent   = `No. ${p.id}`;
+  document.getElementById('lbImg').src           = buildFullUrl(p);
+  document.getElementById('lbImg').alt           = p.name || p.id;
+  document.getElementById('lbId').textContent    = `No. ${p.id}`;
   document.getElementById('lbName').textContent  = p.name || p.id;
   document.getElementById('lbCat').textContent   = cat ? `✦ ${cat.name}` : '';
   document.getElementById('lbCounter').textContent = `${lbIndex + 1} / ${filtered.length}`;
 }
 document.getElementById('lbClose').addEventListener('click', closeLightbox);
-document.getElementById('lbPrev').addEventListener('click', () => { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLightbox(); });
-document.getElementById('lbNext').addEventListener('click', () => { lbIndex = (lbIndex + 1) % filtered.length; updateLightbox(); });
+document.getElementById('lbPrev').addEventListener('click',  () => { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLightbox(); });
+document.getElementById('lbNext').addEventListener('click',  () => { lbIndex = (lbIndex + 1) % filtered.length; updateLightbox(); });
 document.getElementById('lightbox').addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) closeLightbox(); });
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lightbox').classList.contains('open')) return;
@@ -879,35 +752,23 @@ document.addEventListener('keydown', e => {
 
 // ── Scroll to top ──
 window.addEventListener('scroll', () => {
-  document.getElementById('toTop').classList.toggle('show', window.scrollY > 400);
+  document.getElementById('toTop').classList.toggle('show', window.scrollY > 300);
 });
-document.getElementById('toTop').addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
+document.getElementById('toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
 // ── LINE Modal ──
 const LINE_URL = 'https://line.me/R/ti/g/6NrgspyX5H';
-
 function openLineModal() {
   document.getElementById('lineModal').classList.add('open');
-  // Set the join button href dynamically (not hardcoded in HTML)
-  document.getElementById('lineJoinBtn').onclick = () => {
-    window.open(LINE_URL, '_blank', 'noopener');
-  };
+  document.getElementById('lineJoinBtn').onclick = () => window.open(LINE_URL, '_blank', 'noopener');
 }
 function closeLineModal(e) {
-  if (e.target === document.getElementById('lineModal')) {
+  if (e.target === document.getElementById('lineModal'))
     document.getElementById('lineModal').classList.remove('open');
-  }
 }
 function closeLineModalDirect() {
   document.getElementById('lineModal').classList.remove('open');
 }
-// Press ESC to close LINE modal
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.getElementById('lineModal')?.classList.remove('open');
-});
 
 // ── Start ──
 init();
