@@ -174,6 +174,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
     <button class="nav-btn" onclick="showPanel('categories',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>分類管理
     </button>
+    <button class="nav-btn" onclick="showPanel('github',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub 自動同步
+    </button>
     <button class="nav-btn" onclick="showPanel('display',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>展示設定
     </button>
@@ -181,7 +184,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="9" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="2" y="11" width="6" height="6" rx="1"/><rect x="9" y="11" width="6" height="6" rx="1"/><rect x="16" y="11" width="6" height="6" rx="1"/></svg>商品管理
     </button>
   </nav>
-  <div class="sidebar-footer">v2.0 · Cloudinary API 模式</div>
+  <div class="sidebar-footer">v3.0 · 自動同步模式</div>
 </aside>
 
 <main class="main">
@@ -190,10 +193,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
     <div class="topbar-actions">
       <button class="btn btn-ghost btn-sm" onclick="changePassword()">🔑 修改密碼</button>
       <button class="btn btn-ghost btn-sm" onclick="logout()">登出</button>
-      <button class="btn btn-success btn-sm" onclick="exportConfig()" title="匯出分類設定，上傳到 GitHub 後前台自動讀取，不需要重新上傳 index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        ⬇ 匯出 config.json
+      <button class="btn btn-success btn-sm" id="syncBtn" onclick="syncToGitHub()" title="直接儲存到 GitHub，前台立即更新">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span id="syncBtnText">☁ 儲存到 GitHub</span>
       </button>
+      <button class="btn btn-ghost btn-sm" onclick="exportConfig()" title="手動下載 config.json（備用）">⬇ 手動匯出</button>
       <button class="btn btn-ghost btn-sm" onclick="exportData()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>匯出設定
       </button>
@@ -321,6 +325,58 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
             匯入以上網址
           </button>
           <div id="pasteResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub Sync -->
+    <div class="panel" id="panel-github">
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><div class="card-title">🔗 GitHub 自動同步設定</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
+          <div class="info-box">
+            <strong>設定後，每次在後台儲存設定都會自動更新 GitHub，前台立即生效！</strong><br><br>
+            <strong>如何取得 Token（只需做一次）：</strong><br>
+            1. 登入 GitHub → 右上角頭像 → <strong>Settings</strong><br>
+            2. 左側最底部 → <strong>Developer settings</strong><br>
+            3. <strong>Personal access tokens → Tokens (classic)</strong><br>
+            4. 點 <strong>Generate new token (classic)</strong><br>
+            5. Note 填：<code style="background:#fff;padding:1px 4px;border-radius:3px;">sanrio-shop</code><br>
+            6. Expiration 選 <strong>No expiration</strong>（永不過期）<br>
+            7. 勾選 <strong>repo</strong>（第一個大項目打勾即可）<br>
+            8. 點 <strong>Generate token</strong> → 複製那串 <code style="background:#fff;padding:1px 4px;border-radius:3px;">ghp_xxx...</code><br><br>
+            ⚠️ Token 只顯示一次，請立即複製貼到下方！
+          </div>
+          <div class="setup-grid">
+            <div class="form-group">
+              <label>GitHub 帳號名稱 *</label>
+              <input type="text" id="ghUser" placeholder="例如：sanriolover0329">
+            </div>
+            <div class="form-group">
+              <label>Repository 名稱 *</label>
+              <input type="text" id="ghRepo" placeholder="例如：sanrio">
+            </div>
+            <div class="form-group full">
+              <label>Personal Access Token *</label>
+              <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxx">
+              <span class="hint">Token 只存在你的瀏覽器，不會上傳到任何地方</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="saveGitHubSettings()">儲存 GitHub 設定</button>
+            <button class="btn btn-ghost" onclick="testGitHubConnection()">測試連線</button>
+          </div>
+          <div id="ghStatus" style="font-size:13px;color:var(--text2);"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">📋 使用說明</div></div>
+        <div class="card-body" style="font-size:13px;color:var(--text2);line-height:1.9;display:flex;flex-direction:column;gap:8px;">
+          <div>✅ 設定完成後，頂部「<strong>☁ 儲存到 GitHub</strong>」按鈕會自動同步</div>
+          <div>✅ 每次改分類、改標語、改展示設定，點一下就完成</div>
+          <div>✅ 前台約 <strong>30 秒內</strong>自動讀到最新設定</div>
+          <div>⬇ 如果 GitHub 同步失敗，仍可用「手動匯出」下載 config.json 再上傳</div>
         </div>
       </div>
     </div>
@@ -528,6 +584,7 @@ function showPanel(id,btn){
   document.getElementById('pageTitle').textContent=titles[id]||id;
   if(id==='overview')renderOverview();
   if(id==='display')initDisplaySettings();
+  if(id==='github'){loadGitHubForm();}
   if(id==='products')renderProducts();
   if(id==='categories')renderCategories();
   if(id==='cloudinary')loadCloudinaryForm();
@@ -1005,6 +1062,143 @@ function toast(msg){
 
 
 
+
+// ── GitHub 自動同步 ──
+function saveGitHubSettings() {
+  const user  = document.getElementById('ghUser').value.trim();
+  const repo  = document.getElementById('ghRepo').value.trim();
+  const token = document.getElementById('ghToken').value.trim();
+  if (!user || !repo || !token) { toast('請填寫所有欄位'); return; }
+  state.ghUser  = user;
+  state.ghRepo  = repo;
+  state.ghToken = token;
+  saveState();
+  toast('✓ GitHub 設定已儲存');
+  updateSyncBtn();
+}
+
+function loadGitHubForm() {
+  const u = document.getElementById('ghUser');
+  const r = document.getElementById('ghRepo');
+  const t = document.getElementById('ghToken');
+  if (u) u.value = state.ghUser  || '';
+  if (r) r.value = state.ghRepo  || '';
+  if (t) t.value = state.ghToken || '';
+}
+
+function updateSyncBtn() {
+  const btn  = document.getElementById('syncBtn');
+  const text = document.getElementById('syncBtnText');
+  if (!btn || !text) return;
+  const ready = !!(state.ghUser && state.ghRepo && state.ghToken);
+  btn.title = ready ? '直接儲存到 GitHub，前台立即更新' : '請先到「GitHub 自動同步」完成設定';
+  text.textContent = ready ? '☁ 儲存到 GitHub' : '☁ 儲存到 GitHub（需先設定）';
+}
+
+async function testGitHubConnection() {
+  const el = document.getElementById('ghStatus');
+  if (!state.ghUser || !state.ghRepo || !state.ghToken) {
+    if (el) el.innerHTML = '<span style="color:var(--danger)">❌ 請先填寫並儲存 GitHub 設定</span>';
+    return;
+  }
+  if (el) el.textContent = '測試中…';
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${state.ghUser}/${state.ghRepo}`,
+      { headers: { Authorization: `token ${state.ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      if (el) el.innerHTML = `<span style="color:var(--success)">✅ 連線成功！Repository：${data.full_name}</span>`;
+    } else if (resp.status === 401) {
+      if (el) el.innerHTML = '<span style="color:var(--danger)">❌ Token 錯誤或已失效，請重新產生</span>';
+    } else if (resp.status === 404) {
+      if (el) el.innerHTML = '<span style="color:var(--danger)">❌ 找不到 Repository，請確認帳號和 repo 名稱</span>';
+    } else {
+      if (el) el.innerHTML = `<span style="color:var(--danger)">❌ 錯誤 ${resp.status}</span>`;
+    }
+  } catch(e) {
+    if (el) el.innerHTML = `<span style="color:var(--danger)">❌ 連線失敗：${e.message}</span>`;
+  }
+}
+
+async function syncToGitHub() {
+  if (!state.ghUser || !state.ghRepo || !state.ghToken) {
+    toast('請先到「GitHub 自動同步」完成設定');
+    showPanel('github', document.querySelector('[onclick*=github]'));
+    return;
+  }
+
+  const btn  = document.getElementById('syncBtn');
+  const text = document.getElementById('syncBtnText');
+  if (btn)  btn.disabled = true;
+  if (text) text.textContent = '同步中…';
+
+  // 建立要儲存的 config 內容
+  const cfg = {
+    cloudName:       state.cloudName,
+    displayPageSize: state.displayPageSize || 50,
+    displayCardSize: state.displayCardSize || 130,
+    slogans:         state.slogans || [],
+    sloganFontSize:  state.sloganFontSize || 14,
+    categories:      state.categories,
+    productCategories: (state.products || [])
+      .filter(p => p.category)
+      .map(p => ({ id: p.id, category: p.category })),
+    productNames: Object.fromEntries(
+      (state.products || [])
+        .filter(p => p.name && p.name !== p.id && p.name !== `娃娃 ${p.id}`)
+        .map(p => [p.id, p.name])
+    ),
+    exportedAt: new Date().toISOString()
+  };
+
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(cfg, null, 2))));
+  const apiUrl  = `https://api.github.com/repos/${state.ghUser}/${state.ghRepo}/contents/config.json`;
+
+  try {
+    // 先取得現有檔案的 SHA（更新檔案需要）
+    let sha = null;
+    const getResp = await fetch(apiUrl, {
+      headers: { Authorization: `token ${state.ghToken}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+    }
+
+    // PUT 更新或建立檔案
+    const body = { message: `更新設定 ${new Date().toLocaleString('zh-TW')}`, content };
+    if (sha) body.sha = sha;
+
+    const putResp = await fetch(apiUrl, {
+      method:  'PUT',
+      headers: {
+        Authorization:  `token ${state.ghToken}`,
+        Accept:         'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (putResp.ok) {
+      if (text) text.textContent = '✅ 已同步！';
+      toast('✅ 已儲存到 GitHub！前台約 30 秒後生效');
+      setTimeout(() => {
+        if (btn)  btn.disabled = false;
+        if (text) text.textContent = '☁ 儲存到 GitHub';
+      }, 3000);
+    } else {
+      const err = await putResp.json();
+      throw new Error(err.message || `HTTP ${putResp.status}`);
+    }
+  } catch(e) {
+    if (btn)  btn.disabled = false;
+    if (text) text.textContent = '☁ 儲存到 GitHub';
+    toast('❌ 同步失敗：' + e.message);
+  }
+}
+
 // ── 標語管理 ──
 const DEFAULT_SLOGANS = ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
 
@@ -1190,6 +1384,7 @@ updateStats();
 updateFilterDropdowns();
 updateFetchBtn();
 checkAuth();
+updateSyncBtn();
 // Live tag URL preview
 document.addEventListener('input',function(e){
   if(e.target.id==='tagName'||e.target.id==='cloudName') updateTagPreview();
