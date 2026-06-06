@@ -390,65 +390,136 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 <button id="toTop" aria-label="回頂部">↑</button>
 
 <script>
-// ── Load config from localStorage (set by admin.html) ──
-function loadConfig() {
-  try {
-    const raw = localStorage.getItem('doll_shop_frontend');
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
-}
+// ═══════════════════════════════════════════
+// 設定區：只需改這裡
+// ═══════════════════════════════════════════
+const CLOUD_NAME   = 'dkwviksvr';  // ← 你的 Cloudinary Cloud Name
+const SHOP_TAG     = 'shop';        // ← 你幫圖片加的 Tag 名稱
+const CONFIG_URL   = 'config.json'; // ← 分類設定檔（放在 GitHub 同資料夾）
+// ═══════════════════════════════════════════
 
-let PAGE_SIZE = 24; // overridden by config
-let config = null;
-let filtered = [];
+let PAGE_SIZE  = 50;
+let CARD_MIN   = 130;
+let config     = { categories: [], products: [] };
+let filtered   = [];
 let currentPage = 0;
-let lbIndex = 0;
+let lbIndex    = 0;
 let activeCategory = 'all';
 
-// ── Build image URL ──
-// Uses actual URL stored from Cloudinary API (includes version + correct filename)
+// ── 從 Cloudinary Tag 抓圖片清單 ──
+async function fetchFromCloudinary() {
+  const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/list/${encodeURIComponent(SHOP_TAG)}.json`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Cloudinary 回應 ${resp.status}，請確認 Tag 名稱和 Resource list 設定`);
+  const data = await resp.json();
+  return data.resources || [];
+}
+
+// ── 從 GitHub 同資料夾讀分類設定 ──
+async function fetchConfig() {
+  try {
+    const resp = await fetch(CONFIG_URL + '?t=' + Date.now()); // 防快取
+    if (!resp.ok) return { categories: [], displayPageSize: 50, displayCardSize: 130 };
+    return await resp.json();
+  } catch(e) {
+    return { categories: [], displayPageSize: 50, displayCardSize: 130 };
+  }
+}
+
+// ── 從 public_id 萃取商品編號：A13中文_後綴 → A13 ──
+function extractId(publicId) {
+  const filename = publicId.includes('/') ? publicId.split('/').pop() : publicId;
+  let decoded = filename;
+  try { decoded = decodeURIComponent(filename); } catch(e) {}
+  const m = decoded.match(/^([A-Za-z]+\d+)/);
+  return m ? m[1].toUpperCase() : null;
+}
+
+// ── 建立縮圖網址（直接用 Cloudinary transformation） ──
 function buildUrl(product) {
-  if (product.url) {
-    const sz = config.thumbSize || 500;
-    return product.url.replace('/image/upload/', `/image/upload/w_${sz},h_${sz},c_fill,q_auto,f_auto/`);
-  }
-  return '';
+  if (!product.url) return '';
+  const sz = CARD_MIN > 150 ? 600 : 400;
+  return product.url.replace('/image/upload/', `/image/upload/w_${sz},h_${sz},c_fill,q_auto,f_auto/`);
 }
-
 function buildFullUrl(product) {
-  if (product.url) {
-    return product.url.replace('/image/upload/', '/image/upload/w_1200,h_1200,c_fill,q_auto,f_auto/');
-  }
-  return '';
+  if (!product.url) return '';
+  return product.url.replace('/image/upload/', '/image/upload/w_1400,h_1400,c_fill,q_auto,f_auto/');
 }
 
-// ── Render app ──
-function renderApp() {
-  config = loadConfig();
-  const app = document.getElementById('app');
+// ── 主初始化 ──
+async function init() {
+  showLoading();
+  try {
+    // 同時抓圖片和設定
+    const [resources, cfg] = await Promise.all([fetchFromCloudinary(), fetchConfig()]);
 
-  if (!config || !config.cloudName) {
-    app.innerHTML = `
-      <div style="padding:20px;">
-        <div class="no-config">
-          <div class="icon">⚙️</div>
-          <h2>尚未完成設定</h2>
-          <p>請先前往後台管理介面，填入 Cloudinary 設定並建立分類，再回來瀏覽商品。</p>
-          <a href="admin.html">前往後台設定 →</a>
-        </div>
-      </div>`;
-    return;
+    // 套用顯示設定
+    PAGE_SIZE = cfg.displayPageSize || 50;
+    CARD_MIN  = cfg.displayCardSize || 130;
+    document.documentElement.style.setProperty('--card-min', CARD_MIN + 'px');
+
+    // 組合商品清單，對照分類
+    const catAssign = {};
+    (cfg.productCategories || []).forEach(pc => { catAssign[pc.id] = pc.category; });
+
+    const productMap = {};
+    resources.forEach(r => {
+      const id = extractId(r.public_id);
+      if (!id) return;
+      if (!productMap[id] || r.created_at > productMap[id].created_at) {
+        productMap[id] = {
+          id,
+          name: cfg.productNames?.[id] || id,
+          url: r.secure_url || `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${r.version}/${r.public_id}.${r.format}`,
+          format: r.format || 'jpg',
+          category: catAssign[id] || '',
+          visible: true
+        };
+      }
+    });
+
+    // 排序：A1 A2 … B1 B2 …
+    config.products = Object.values(productMap).sort((a, b) => {
+      const am = a.id.match(/^([A-Z]+)(\d+)$/), bm = b.id.match(/^([A-Z]+)(\d+)$/);
+      if (!am || !bm) return a.id.localeCompare(b.id);
+      if (am[1] !== bm[1]) return am[1].localeCompare(bm[1]);
+      return parseInt(am[2]) - parseInt(bm[2]);
+    });
+    config.categories = cfg.categories || [];
+
+    renderApp();
+  } catch(err) {
+    showError(err.message);
   }
+}
 
-  const cats = config.categories || [];
-  const products = config.products || [];
+// ── Loading 畫面 ──
+function showLoading() {
+  document.getElementById('app').innerHTML = `
+    <div style="text-align:center;padding:80px 20px;">
+      <div style="font-size:3rem;margin-bottom:16px;animation:spin 1.5s linear infinite;display:inline-block;">🧸</div>
+      <div style="font-size:15px;color:var(--text2);">商品載入中，請稍候…</div>
+    </div>
+    <style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>`;
+}
 
-  // Apply display settings from config
-  PAGE_SIZE = config.displayPageSize || 24;
-  const cardMin = config.displayCardSize || 130;
-  document.documentElement.style.setProperty('--card-min', cardMin + 'px');
+// ── 錯誤畫面 ──
+function showError(msg) {
+  document.getElementById('app').innerHTML = `
+    <div style="max-width:500px;margin:60px auto;text-align:center;padding:40px 24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;">
+      <div style="font-size:3rem;margin-bottom:12px;">😢</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;">圖片載入失敗</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">${msg}</div>
+      <button onclick="init()" style="padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">重試</button>
+    </div>`;
+}
 
-  app.innerHTML = `
+// ── 渲染整個 App ──
+function renderApp() {
+  const cats = config.categories;
+  const total = config.products.length;
+
+  document.getElementById('app').innerHTML = `
     <div class="hero">
       <img class="hero-logo-img" src="LOGO.jpg" alt="三麗鷗中毒日記"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
@@ -458,7 +529,7 @@ function renderApp() {
         <div style="font-size:13px;color:var(--text2);margin-top:4px;">每天都被三麗鷗治癒中♡</div>
       </div>
       <div class="hero-sub-bar">
-        共 <strong>${products.filter(p=>p.visible!==false).length}</strong> 件商品 · 持續更新中 ♡
+        共 <strong>${total}</strong> 件商品 · 持續更新中 ♡
       </div>
     </div>
 
@@ -474,15 +545,12 @@ function renderApp() {
 
     <div class="cat-scroll">
       <div class="cat-inner" id="catTabs">
-        <button class="cat-tab active" data-cat="all">
-          全部商品
-        </button>
+        <button class="cat-tab active" data-cat="all">全部商品</button>
         ${cats.map(c => `
           <button class="cat-tab" data-cat="${c.id}">
             <span class="cat-dot" style="background:${c.color}"></span>
             ${c.name}
-          </button>
-        `).join('')}
+          </button>`).join('')}
       </div>
     </div>
 
@@ -491,15 +559,12 @@ function renderApp() {
       <div class="load-more-wrap">
         <button id="loadMoreBtn" style="display:none;">載入更多商品</button>
       </div>
-    </div>
-  `;
+    </div>`;
 
-  // Events
   document.getElementById('searchInput').addEventListener('input', () => {
     clearTimeout(window._st);
     window._st = setTimeout(applyFilters, 220);
   });
-
   document.getElementById('catTabs').addEventListener('click', e => {
     const btn = e.target.closest('.cat-tab');
     if (!btn) return;
@@ -508,19 +573,16 @@ function renderApp() {
     activeCategory = btn.dataset.cat;
     applyFilters();
   });
-
   document.getElementById('loadMoreBtn').addEventListener('click', renderPage);
-
   applyFilters();
 }
 
 function applyFilters() {
-  const products = (config.products || []).filter(p => p.visible !== false);
   const q = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
-  filtered = products.filter(p => {
+  filtered = config.products.filter(p => {
     const matchCat = activeCategory === 'all' || p.category === activeCategory;
-    const matchQ = !q || p.id.toLowerCase().includes(q) || (p.name||'').toLowerCase().includes(q);
-    return matchCat && matchQ;
+    const matchQ   = !q || p.id.toLowerCase().includes(q) || (p.name||'').toLowerCase().includes(q);
+    return matchCat && matchQ && p.visible !== false;
   });
   currentPage = 0;
   document.getElementById('gallery').innerHTML = '';
@@ -531,25 +593,19 @@ function renderPage() {
   const gallery = document.getElementById('gallery');
   const start = currentPage * PAGE_SIZE;
   const slice = filtered.slice(start, start + PAGE_SIZE);
-
-  const cats = config.categories || [];
+  const cats  = config.categories;
 
   if (filtered.length === 0) {
-    gallery.innerHTML = `
-      <div class="state-empty">
-        <div class="icon">🔍</div>
-        <p>找不到符合條件的商品</p>
-        <small>試試其他關鍵字或分類</small>
-      </div>`;
+    gallery.innerHTML = `<div class="state-empty"><div class="icon">🔍</div><p>找不到符合條件的商品</p><small>試試其他關鍵字或分類</small></div>`;
     document.getElementById('loadMoreBtn').style.display = 'none';
     document.getElementById('countInfo').textContent = '0 件商品';
     return;
   }
 
   slice.forEach((p, i) => {
-    const cat = cats.find(c => c.id === p.category);
+    const cat    = cats.find(c => c.id === p.category);
     const imgUrl = buildUrl(p);
-    const card = document.createElement('div');
+    const card   = document.createElement('div');
     card.className = 'card';
     card.dataset.idx = start + i;
     card.innerHTML = `
@@ -562,42 +618,36 @@ function renderPage() {
         <div class="card-id">No. ${p.id}</div>
         <div class="card-name">${p.name || p.id}</div>
         ${cat
-          ? `<span class="card-cat-badge" style="background:${cat.color}18;color:${cat.color};border:1px solid ${cat.color}33;">
-               <span style="width:6px;height:6px;border-radius:50%;background:${cat.color};display:inline-block;"></span>
-               ${cat.name}
-             </span>`
-          : '<span class="card-cat-badge" style="background:var(--surface2);color:var(--text3);">未分類</span>'
-        }
+          ? `<span class="card-cat-badge" style="background:${cat.color}18;color:${cat.color};border:1px solid ${cat.color}33;"><span style="width:6px;height:6px;border-radius:50%;background:${cat.color};display:inline-block;"></span>${cat.name}</span>`
+          : '<span class="card-cat-badge" style="background:var(--surface2);color:var(--text3);">未分類</span>'}
       </div>`;
 
-    const img = card.querySelector('img');
+    const img  = card.querySelector('img');
     const wrap = card.querySelector('.img-wrap');
-    // Fix: also check if already loaded (cached images)
     const markLoaded = () => wrap.classList.add('img-loaded');
-    if (img.complete && img.naturalWidth > 0) {
-      markLoaded();
-    } else {
-      img.addEventListener('load', markLoaded);
-    }
+    if (img.complete && img.naturalWidth > 0) markLoaded();
+    else img.addEventListener('load', markLoaded);
     img.addEventListener('error', () => {
       wrap.classList.add('img-loaded');
       img.style.display = 'none';
-      const placeholder = document.createElement('div');
-      placeholder.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:13px;font-family:var(--mono);flex-direction:column;gap:4px;';
-      placeholder.innerHTML = `<span style="font-size:2rem">🧸</span><span>${p.id}</span>`;
-      wrap.appendChild(placeholder);
+      const ph = document.createElement('div');
+      ph.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--text3);font-size:12px;';
+      ph.innerHTML = '<span style="font-size:2rem">🧸</span>' + p.id;
+      wrap.appendChild(ph);
     });
-
     card.addEventListener('click', () => openLightbox(start + i));
     gallery.appendChild(card);
   });
 
   currentPage++;
-  const shown = currentPage * PAGE_SIZE;
-  const remaining = filtered.length - shown;
+  const remaining = filtered.length - currentPage * PAGE_SIZE;
   const btn = document.getElementById('loadMoreBtn');
-  btn.style.display = remaining > 0 ? 'inline-flex' : 'none';
-  if (remaining > 0) btn.textContent = `載入更多（還有 ${remaining} 件）`;
+  if (remaining > 0) {
+    btn.style.display = 'inline-flex';
+    btn.textContent = `載入更多（還有 ${remaining} 件）`;
+  } else {
+    btn.style.display = 'none';
+  }
   document.getElementById('countInfo').textContent = `${filtered.length} 件商品`;
 }
 
@@ -608,40 +658,29 @@ function openLightbox(index) {
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
 }
-
 function updateLightbox() {
-  const p = filtered[lbIndex];
+  const p   = filtered[lbIndex];
   if (!p) return;
-  const cat = (config.categories || []).find(c => c.id === p.category);
-  document.getElementById('lbImg').src = buildFullUrl(p);
-  document.getElementById('lbImg').alt = p.name || p.id;
-  document.getElementById('lbId').textContent = `No. ${p.id}`;
-  document.getElementById('lbName').textContent = p.name || p.id;
-  document.getElementById('lbCat').textContent = cat ? `✦ ${cat.name}` : '';
+  const cat = config.categories.find(c => c.id === p.category);
+  document.getElementById('lbImg').src      = buildFullUrl(p);
+  document.getElementById('lbImg').alt      = p.name || p.id;
+  document.getElementById('lbId').textContent   = `No. ${p.id}`;
+  document.getElementById('lbName').textContent  = p.name || p.id;
+  document.getElementById('lbCat').textContent   = cat ? `✦ ${cat.name}` : '';
   document.getElementById('lbCounter').textContent = `${lbIndex + 1} / ${filtered.length}`;
 }
-
 document.getElementById('lbClose').addEventListener('click', closeLightbox);
-document.getElementById('lbPrev').addEventListener('click', () => {
-  lbIndex = (lbIndex - 1 + filtered.length) % filtered.length;
-  updateLightbox();
-});
-document.getElementById('lbNext').addEventListener('click', () => {
-  lbIndex = (lbIndex + 1) % filtered.length;
-  updateLightbox();
-});
-document.getElementById('lightbox').addEventListener('click', e => {
-  if (e.target === document.getElementById('lightbox')) closeLightbox();
-});
+document.getElementById('lbPrev').addEventListener('click', () => { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLightbox(); });
+document.getElementById('lbNext').addEventListener('click', () => { lbIndex = (lbIndex + 1) % filtered.length; updateLightbox(); });
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) closeLightbox(); });
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lightbox').classList.contains('open')) return;
   if (e.key === 'Escape') closeLightbox();
-  if (e.key === 'ArrowLeft') { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLightbox(); }
+  if (e.key === 'ArrowLeft')  { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLightbox(); }
   if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % filtered.length; updateLightbox(); }
 });
 
@@ -651,13 +690,8 @@ window.addEventListener('scroll', () => {
 });
 document.getElementById('toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-// ── Init ──
-renderApp();
-
-// Re-render if admin saves new config (cross-tab via storage event)
-window.addEventListener('storage', e => {
-  if (e.key === 'doll_shop_frontend') renderApp();
-});
+// ── Start ──
+init();
 </script>
 </body>
 </html>

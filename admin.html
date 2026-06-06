@@ -190,6 +190,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
     <div class="topbar-actions">
       <button class="btn btn-ghost btn-sm" onclick="changePassword()">🔑 修改密碼</button>
       <button class="btn btn-ghost btn-sm" onclick="logout()">登出</button>
+      <button class="btn btn-success btn-sm" onclick="exportConfig()" title="匯出分類設定，上傳到 GitHub 後前台自動讀取，不需要重新上傳 index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ⬇ 匯出 config.json
+      </button>
       <button class="btn btn-ghost btn-sm" onclick="exportData()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>匯出設定
       </button>
@@ -894,6 +898,81 @@ function exportData(){
   const a=document.createElement('a');
   a.href=url;a.download='doll_shop_config.json';a.click();URL.revokeObjectURL(url);
   toast('✓ 設定已匯出');
+}
+
+// ── 匯出 config.json（上傳到 GitHub，前台自動讀取）──
+function exportConfig() {
+  if (state.categories.length === 0 && state.products.length === 0) {
+    toast('尚未設定任何分類或商品，請先完成後台設定');
+    return;
+  }
+
+  // 只儲存分類指定關係（product URL 由前台直接從 Cloudinary 抓）
+  const cfg = {
+    cloudName: state.cloudName,
+    displayPageSize: state.displayPageSize || 50,
+    displayCardSize: state.displayCardSize || 130,
+    categories: state.categories,
+    // 商品→分類的對應
+    productCategories: state.products
+      .filter(p => p.category)
+      .map(p => ({ id: p.id, category: p.category })),
+    // 自訂商品名稱（若有改過）
+    productNames: Object.fromEntries(
+      state.products
+        .filter(p => p.name && p.name !== `娃娃 ${p.id}` && p.name !== p.id)
+        .map(p => [p.id, p.name])
+    ),
+    exportedAt: new Date().toISOString()
+  };
+
+  const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'config.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('✓ config.json 已下載！上傳到 GitHub 後前台自動更新');
+}
+
+async function exportFrontend() {
+  if (!state.cloudName) { toast('請先完成 Cloudinary 設定再匯出'); return; }
+  if (state.products.length === 0) { toast('請先匯入商品圖片再匯出'); return; }
+
+  let template;
+  try {
+    const resp = await fetch('index.html');
+    template = await resp.text();
+  } catch(e) {
+    toast('無法讀取 index.html：' + e.message);
+    return;
+  }
+
+  const cfg = {
+    cloudName:state.cloudName, baseFolder:state.baseFolder||'',
+    thumbSize:state.thumbSize||500,
+    displayPageSize:state.displayPageSize||50,
+    displayCardSize:state.displayCardSize||130,
+    categories:state.categories, products:state.products
+  };
+
+  // Replace the marker line with real data
+  const marker = 'const EMBEDDED_CONFIG = null; // admin-replace-marker';
+  if (!template.includes(marker)) {
+    toast('❌ index.html 版本不符，請重新下載最新版 index.html');
+    return;
+  }
+
+  const patched = template.replace(
+    marker,
+    'const EMBEDDED_CONFIG = ' + JSON.stringify(cfg) + '; // exported ' + new Date().toLocaleString("zh-TW")
+  );
+
+  const blob = new Blob([patched], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
+  toast('✓ 已匯出 index.html，包含 ' + state.products.length + ' 件商品，上傳到 GitHub 即可！');
 }
 
 function toast(msg){
