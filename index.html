@@ -41,16 +41,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   display: block;
   object-fit: contain;
 }
-.hero-sub-bar {
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(8px);
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 13px;
-  color: var(--text2);
-  border-top: 1px solid var(--border);
-}
-.hero-sub-bar strong { color: var(--accent); }
+/* hero-sub-bar removed */
 
 /* ── Sticky Header ── */
 .sticky-bar {
@@ -356,10 +347,51 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 }
 #toTop.show { opacity: 1; pointer-events: all; }
 
+/* ── Fixed top / scrollable gallery layout ── */
+body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+#app { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+/* Hero: fixed height, never scrolls */
+.hero { flex-shrink: 0; }
+
+/* Sticky bar: fixed, never scrolls */
+.sticky-bar { flex-shrink: 0; position: relative; top: auto; }
+
+/* Category tabs: fixed, never scrolls */
+.cat-scroll { flex-shrink: 0; }
+
+/* Gallery wrap: takes remaining height, scrolls independently */
+.gallery-wrap {
+  flex: 1;
+  overflow-y: auto;
+  max-width: 100%;
+  padding: 16px 20px 40px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.gallery-wrap::-webkit-scrollbar { width: 6px; }
+.gallery-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* count-info merged into search bar area */
+.count-info {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  white-space: nowrap;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+/* scroll to top inside gallery-wrap */
+#toTop { bottom: 24px; right: 24px; }
+
 @media (max-width: 600px) {
-  .hero { padding: 40px 20px 36px; }
-  .sticky-inner, .cat-inner, .gallery-wrap { padding-left: 16px; padding-right: 16px; }
-  .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sticky-inner, .cat-inner, .gallery-wrap { padding-left: 12px; padding-right: 12px; }
+  .gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   #lbPrev { left: 8px; }
   #lbNext { right: 8px; }
 }
@@ -417,13 +449,40 @@ async function fetchFromCloudinary() {
 
 // ── 從 GitHub 同資料夾讀分類設定 ──
 async function fetchConfig() {
+  // Try GitHub config.json first
   try {
-    const resp = await fetch(CONFIG_URL + '?t=' + Date.now()); // 防快取
-    if (!resp.ok) return { categories: [], displayPageSize: 50, displayCardSize: 130 };
-    return await resp.json();
-  } catch(e) {
-    return { categories: [], displayPageSize: 50, displayCardSize: 130 };
-  }
+    const resp = await fetch(CONFIG_URL + '?t=' + Date.now());
+    if (resp.ok) {
+      const cfg = await resp.json();
+      // Also merge localStorage as fallback for categories if config.json is empty
+      if ((!cfg.categories || cfg.categories.length === 0)) {
+        const local = localStorage.getItem('doll_shop_frontend');
+        if (local) {
+          const lc = JSON.parse(local);
+          if (lc.categories && lc.categories.length > 0) {
+            cfg.categories = lc.categories;
+            cfg.productCategories = (lc.products||[]).filter(p=>p.category).map(p=>({id:p.id,category:p.category}));
+          }
+        }
+      }
+      return cfg;
+    }
+  } catch(e) {}
+  // Fallback: localStorage (same-browser admin)
+  try {
+    const local = localStorage.getItem('doll_shop_frontend');
+    if (local) {
+      const lc = JSON.parse(local);
+      return {
+        categories: lc.categories || [],
+        displayPageSize: lc.displayPageSize || 50,
+        displayCardSize: lc.displayCardSize || 130,
+        productCategories: (lc.products||[]).filter(p=>p.category).map(p=>({id:p.id,category:p.category})),
+        productNames: {}
+      };
+    }
+  } catch(e) {}
+  return { categories: [], displayPageSize: 50, displayCardSize: 130 };
 }
 
 // ── 從 public_id 萃取商品編號：A13中文_後綴 → A13 ──
@@ -528,9 +587,7 @@ function renderApp() {
         <div style="font-size:22px;font-weight:700;color:var(--accent);margin-top:8px;">三麗鷗中毒日記</div>
         <div style="font-size:13px;color:var(--text2);margin-top:4px;">每天都被三麗鷗治癒中♡</div>
       </div>
-      <div class="hero-sub-bar">
-        共 <strong>${total}</strong> 件商品 · 持續更新中 ♡
-      </div>
+
     </div>
 
     <div class="sticky-bar">
@@ -539,7 +596,7 @@ function renderApp() {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input type="text" id="searchInput" placeholder="搜尋商品編號或名稱…">
         </div>
-        <div class="count-info" id="countInfo"></div>
+        <div class="count-info" id="countInfo">共 ${total} 件商品</div>
       </div>
     </div>
 
@@ -598,7 +655,8 @@ function renderPage() {
   if (filtered.length === 0) {
     gallery.innerHTML = `<div class="state-empty"><div class="icon">🔍</div><p>找不到符合條件的商品</p><small>試試其他關鍵字或分類</small></div>`;
     document.getElementById('loadMoreBtn').style.display = 'none';
-    document.getElementById('countInfo').textContent = '0 件商品';
+    const ci0 = document.getElementById('countInfo');
+    if (ci0) ci0.textContent = '找不到商品';
     return;
   }
 
@@ -648,7 +706,10 @@ function renderPage() {
   } else {
     btn.style.display = 'none';
   }
-  document.getElementById('countInfo').textContent = `${filtered.length} 件商品`;
+  const ci = document.getElementById('countInfo');
+  if (ci) ci.textContent = filtered.length === config.products.length
+    ? `共 ${filtered.length} 件商品`
+    : `搜尋結果 ${filtered.length} 件`;
 }
 
 // ── Lightbox ──
@@ -685,10 +746,15 @@ document.addEventListener('keydown', e => {
 });
 
 // ── Scroll to top ──
-window.addEventListener('scroll', () => {
-  document.getElementById('toTop').classList.toggle('show', window.scrollY > 500);
+function getGalleryWrap() { return document.querySelector('.gallery-wrap'); }
+document.addEventListener('scroll', () => {
+  const gw = getGalleryWrap();
+  if (gw) document.getElementById('toTop').classList.toggle('show', gw.scrollTop > 400);
+}, true);
+document.getElementById('toTop').addEventListener('click', () => {
+  const gw = getGalleryWrap();
+  if (gw) gw.scrollTo({ top: 0, behavior: 'smooth' });
 });
-document.getElementById('toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
 // ── Start ──
 init();
