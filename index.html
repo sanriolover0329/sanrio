@@ -95,17 +95,21 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); over
 #searchInput::placeholder { color: var(--text3); }
 
 .shop-slogan {
-  font-size: 12px;
-  color: var(--accent);
+  /* flex: 1 讓它佔滿中間空間，把 count-info 推到最右 */
+  flex: 1;
+  text-align: center;
+  font-size: 14px;          /* 預設大小，可由後台設定覆蓋 */
   font-style: italic;
+  color: var(--accent);
   white-space: nowrap;
-  flex-shrink: 1;
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  transition: font-size 0.2s;
 }
-@media (max-width: 600px) { .shop-slogan { display: none; } }
+@media (max-width: 768px) { .shop-slogan { font-size: 12px; } }
+@media (max-width: 500px) { .shop-slogan { display: none; } }
 
 .count-info {
   font-family: var(--mono);
@@ -115,10 +119,11 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); over
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 4px 10px;
   flex-shrink: 0;
+  margin-left: auto;        /* 靠最右邊 */
 }
-@media (max-width: 480px) { .count-info { display: none; } }
+@media (max-width: 400px) { .count-info { display: none; } }
 
 /* ── Category Tabs ── */
 .cat-scroll {
@@ -562,8 +567,12 @@ async function init() {
 
     config.products   = Object.values(productMap).sort(sortFn);
     config.categories = cfg.categories || [];
+    config.slogans       = cfg.slogans || [];
+    config.sloganFontSize = cfg.sloganFontSize || 14;
 
     renderApp();
+    // 等 DOM 渲染完再初始化標語
+    setTimeout(() => initSlogans(cfg), 100);
   } catch(err) {
     document.getElementById('fixed-header').innerHTML = '';
     showError(err.message);
@@ -592,7 +601,7 @@ function renderApp() {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input type="text" id="searchInput" placeholder="搜尋商品編號或名稱…">
         </div>
-        <div class="shop-slogan">錢錢沒有不見，只是變成妳愛的樣子 ♡</div>
+        <div class="shop-slogan" id="shopSlogan">錢錢沒有不見，只是變成妳愛的樣子 ♡</div>
         <div class="count-info" id="countInfo">共 ${total} 件商品 · 持續更新中 ♡</div>
       </div>
     </div>
@@ -639,17 +648,67 @@ function renderApp() {
   applyFilters();
 }
 
+
+// ── 標語輪換系統 ──
+let sloganTimer = null;
+let sloganList  = [];
+let sloganIdx   = 0;
+
+function initSlogans(cfg) {
+  // 讀取後台設定的標語清單；若沒有設定則用預設值
+  sloganList = (cfg.slogans && cfg.slogans.length > 0)
+    ? cfg.slogans
+    : ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
+  const fontSize = cfg.sloganFontSize || 14;
+  const el = document.getElementById('shopSlogan');
+  if (el) el.style.fontSize = fontSize + 'px';
+  sloganIdx = Math.floor(Math.random() * sloganList.length);
+  rotateSlogans();
+}
+
+function rotateSlogans() {
+  clearInterval(sloganTimer);
+  const el = document.getElementById('shopSlogan');
+  if (!el || sloganList.length === 0) return;
+  const show = () => {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.5s';
+    setTimeout(() => {
+      el.textContent = sloganList[sloganIdx % sloganList.length];
+      el.style.opacity = '1';
+      sloganIdx = (sloganIdx + 1) % sloganList.length;
+    }, 500);
+  };
+  show(); // 立即顯示第一句
+  if (sloganList.length > 1) {
+    sloganTimer = setInterval(show, 4000); // 每 4 秒換一句
+  }
+}
+
 function applyFilters() {
-  const q = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
+  const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
   filtered = config.products.filter(p => {
     const matchCat = activeCategory === 'all' || p.category === activeCategory;
-    const matchQ   = !q || p.id.toLowerCase().includes(q) || (p.name || '').toLowerCase().includes(q);
+    // 搜尋：同時比對 id 和 name，大小寫不分
+    const pid = (p.id || '').toLowerCase();
+    const pname = (p.name || '').toLowerCase();
+    const matchQ = !q || pid.includes(q) || pname.includes(q);
     return matchCat && matchQ && p.visible !== false;
   });
   currentPage = 0;
   const g = document.getElementById('gallery');
   if (g) g.innerHTML = '';
+  // 強制立即渲染（不管 filtered 是否為空都執行）
   renderPage();
+  // 更新計數
+  const ci = document.getElementById('countInfo');
+  if (ci) {
+    if (!q && activeCategory === 'all') {
+      ci.textContent = `共 ${filtered.length} 件商品 · 持續更新中 ♡`;
+    } else {
+      ci.textContent = `搜尋結果 ${filtered.length} 件`;
+    }
+  }
 }
 
 function renderPage() {
@@ -662,8 +721,6 @@ function renderPage() {
   if (filtered.length === 0) {
     gallery.innerHTML = `<div class="state-empty"><div class="icon">🔍</div><p>找不到符合條件的商品</p><small>試試其他關鍵字或分類</small></div>`;
     document.getElementById('loadMoreBtn').style.display = 'none';
-    const ci = document.getElementById('countInfo');
-    if (ci) ci.textContent = '找不到商品';
     return;
   }
 
@@ -713,10 +770,7 @@ function renderPage() {
   } else {
     btn.style.display = 'none';
   }
-  const ci = document.getElementById('countInfo');
-  if (ci) ci.textContent = filtered.length === config.products.length
-    ? `共 ${filtered.length} 件商品 · 持續更新中 ♡`
-    : `搜尋結果 ${filtered.length} 件`;
+  // countInfo 由 applyFilters 統一管理
 }
 
 // ── Lightbox ──

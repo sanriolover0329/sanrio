@@ -384,6 +384,26 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
             </div>
           </div>
 
+          <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+
+          <!-- 標語設定 -->
+          <div class="form-group full" style="grid-column:1/-1;">
+            <label>✍️ 搜尋列標語（最多 5 句，前台隨機輪換）</label>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;" id="sloganInputs">
+              <!-- 動態產生 -->
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:6px;width:fit-content;" onclick="addSloganInput()">＋ 新增標語</button>
+          </div>
+
+          <div class="form-group">
+            <label>標語字體大小（px）</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input type="range" id="sloganFontSize" min="10" max="22" value="14" oninput="document.getElementById('sloganFontSizeVal').textContent=this.value" style="flex:1;">
+              <span id="sloganFontSizeVal" style="font-family:var(--mono);font-size:12px;min-width:28px;">14</span> px
+            </div>
+            <span class="hint">預覽：<span id="sloganPreview" style="color:var(--accent);font-style:italic;">錢錢沒有不見，只是變成妳愛的樣子 ♡</span></span>
+          </div>
+
           <button class="btn btn-primary" onclick="saveDisplaySettings()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             儲存並套用到前台
@@ -491,7 +511,9 @@ function saveState(){
   localStorage.setItem('doll_shop_admin_v2',JSON.stringify(state));
   localStorage.setItem('doll_shop_frontend',JSON.stringify({
     cloudName:state.cloudName,baseFolder:state.baseFolder,
-    thumbSize:state.thumbSize,categories:state.categories,products:state.products,displayPageSize:state.displayPageSize||50,displayCardSize:state.displayCardSize||130
+    thumbSize:state.thumbSize,categories:state.categories,products:state.products,displayPageSize:state.displayPageSize||50,displayCardSize:state.displayCardSize||130,
+    slogans:state.slogans||[],sloganFontSize:state.sloganFontSize||14,
+    productCategories:(state.products||[]).filter(p=>p.category).map(p=>({id:p.id,category:p.category}))
   }));
   updateFilterDropdowns();
 }
@@ -982,6 +1004,70 @@ function toast(msg){
 
 
 
+
+// ── 標語管理 ──
+const DEFAULT_SLOGANS = ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
+
+function renderSloganInputs() {
+  const container = document.getElementById('sloganInputs');
+  if (!container) return;
+  const slogans = state.slogans && state.slogans.length > 0 ? state.slogans : DEFAULT_SLOGANS;
+  container.innerHTML = slogans.map((s, i) => `
+    <div style="display:flex;gap:6px;align-items:center;">
+      <input type="text" value="${s.replace(/"/g,'&quot;')}" placeholder="輸入標語第 ${i+1} 句"
+        oninput="updateSloganPreview(this.value)"
+        style="flex:1;" data-slogan-idx="${i}">
+      <button class="btn btn-danger btn-sm" onclick="removeSloganInput(${i})"
+        ${slogans.length <= 1 ? 'disabled' : ''}>✕</button>
+    </div>`).join('');
+  const fs = state.sloganFontSize || 14;
+  const fsEl = document.getElementById('sloganFontSize');
+  const fsValEl = document.getElementById('sloganFontSizeVal');
+  if (fsEl) { fsEl.value = fs; }
+  if (fsValEl) { fsValEl.textContent = fs; }
+  updateSloganPreviewSize(fs);
+}
+
+function addSloganInput() {
+  const current = collectSlogans();
+  if (current.length >= 5) { toast('最多 5 句標語'); return; }
+  current.push('');
+  state.slogans = current;
+  renderSloganInputs();
+  // focus last
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-slogan-idx]');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeSloganInput(idx) {
+  const current = collectSlogans();
+  if (current.length <= 1) return;
+  current.splice(idx, 1);
+  state.slogans = current;
+  renderSloganInputs();
+}
+
+function collectSlogans() {
+  const inputs = document.querySelectorAll('[data-slogan-idx]');
+  return Array.from(inputs).map(el => el.value.trim()).filter(s => s);
+}
+
+function updateSloganPreview(val) {
+  const el = document.getElementById('sloganPreview');
+  if (el && val) el.textContent = val;
+}
+
+function updateSloganPreviewSize(size) {
+  const el = document.getElementById('sloganPreview');
+  if (el) el.style.fontSize = size + 'px';
+}
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'sloganFontSize') updateSloganPreviewSize(e.target.value);
+});
+
 // ── Display Settings ──
 let selectedPageSize = 50;
 let selectedCardSize = 130;
@@ -989,7 +1075,6 @@ let selectedCardSize = 130;
 function initDisplaySettings() {
   selectedPageSize = state.displayPageSize || 50;
   selectedCardSize = state.displayCardSize || 130;
-  // Mark active buttons
   document.querySelectorAll('#pageSizeBtns .size-opt-btn').forEach(b => {
     b.classList.toggle('active', parseInt(b.dataset.val) === selectedPageSize);
   });
@@ -997,6 +1082,7 @@ function initDisplaySettings() {
     b.classList.toggle('active', parseInt(b.dataset.val) === selectedCardSize);
   });
   updateDisplayPreview();
+  renderSloganInputs();
 }
 
 function selectPageSize(btn) {
@@ -1028,10 +1114,12 @@ function updateDisplayPreview() {
 }
 
 function saveDisplaySettings() {
-  state.displayPageSize = selectedPageSize;
-  state.displayCardSize = selectedCardSize;
+  state.displayPageSize  = selectedPageSize;
+  state.displayCardSize  = selectedCardSize;
+  state.slogans          = collectSlogans().length > 0 ? collectSlogans() : DEFAULT_SLOGANS;
+  state.sloganFontSize   = parseInt(document.getElementById('sloganFontSize')?.value) || 14;
   saveState();
-  toast(`✓ 已儲存：每頁 ${selectedPageSize} 張，格局 ${selectedCardSize}px`);
+  toast(`✓ 已儲存！每頁 ${selectedPageSize} 張，格局 ${selectedCardSize}px，${state.slogans.length} 句標語`);
 }
 
 // ── Login ──
