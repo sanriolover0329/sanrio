@@ -864,6 +864,7 @@ function saveCat(){
   else state.categories.push(cat);
   saveState();closeCatModal();renderCategories();updateStats();
   toast(`✓ 分類「${name}」已儲存`);
+  autoSync('分類設定');
 }
 
 function deleteCat(id){
@@ -872,6 +873,7 @@ function deleteCat(id){
   state.categories=state.categories.filter(c=>c.id!==id);
   state.products=state.products.map(p=>p.category===id?{...p,category:''}:p);
   saveState();renderCategories();updateStats();toast('分類已刪除');
+  autoSync('分類設定');
 }
 
 // ── Products ──
@@ -928,10 +930,12 @@ function batchAssign(){
   state.products=state.products.map(p=>selectedIds.has(p.id)?{...p,category:catId}:p);
   saveState();clearSelection();renderProducts();updateStats();
   toast(`✓ 已指定分類：${state.categories.find(c=>c.id===catId)?.name}`);
+  autoSync('商品分類');
 }
 function batchClear(){
   state.products=state.products.map(p=>selectedIds.has(p.id)?{...p,category:''}:p);
   saveState();clearSelection();renderProducts();updateStats();toast('已清除分類');
+  autoSync('商品分類');
 }
 
 // ── Overview ──
@@ -1122,7 +1126,22 @@ async function testGitHubConnection() {
   }
 }
 
-async function syncToGitHub() {
+
+// ── 自動同步（任何儲存動作後呼叫）──
+// 如果已設定 GitHub Token 就自動同步，否則靜默略過
+let autoSyncTimer = null;
+function autoSync(source) {
+  if (!state.ghUser || !state.ghRepo || !state.ghToken) return; // 未設定就略過
+  // 防抖：連續操作只同步最後一次（等 1.5 秒）
+  clearTimeout(autoSyncTimer);
+  autoSyncTimer = setTimeout(async () => {
+    const text = document.getElementById('syncBtnText');
+    if (text) text.textContent = `同步中（${source}）…`;
+    await syncToGitHub(true); // true = silent mode（不彈 toast，改用小提示）
+  }, 1500);
+}
+
+async function syncToGitHub(silent = false) {
   if (!state.ghUser || !state.ghRepo || !state.ghToken) {
     toast('請先到「GitHub 自動同步」完成設定');
     showPanel('github', document.querySelector('[onclick*=github]'));
@@ -1183,7 +1202,8 @@ async function syncToGitHub() {
 
     if (putResp.ok) {
       if (text) text.textContent = '✅ 已同步！';
-      toast('✅ 已儲存到 GitHub！前台約 30 秒後生效');
+      if (!silent) toast('✅ 已儲存到 GitHub！前台約 30 秒後生效');
+      else toast('✅ 已自動同步到 GitHub');
       setTimeout(() => {
         if (btn)  btn.disabled = false;
         if (text) text.textContent = '☁ 儲存到 GitHub';
@@ -1195,7 +1215,7 @@ async function syncToGitHub() {
   } catch(e) {
     if (btn)  btn.disabled = false;
     if (text) text.textContent = '☁ 儲存到 GitHub';
-    toast('❌ 同步失敗：' + e.message);
+    toast('❌ GitHub 同步失敗：' + e.message + '（可手動點「☁ 儲存到 GitHub」重試）');
   }
 }
 
@@ -1314,6 +1334,7 @@ function saveDisplaySettings() {
   state.sloganFontSize   = parseInt(document.getElementById('sloganFontSize')?.value) || 14;
   saveState();
   toast(`✓ 已儲存！每頁 ${selectedPageSize} 張，格局 ${selectedCardSize}px，${state.slogans.length} 句標語`);
+  autoSync('展示設定');
 }
 
 // ── Login ──
