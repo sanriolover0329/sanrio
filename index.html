@@ -29,6 +29,23 @@
 html, body { height: 100%; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); overflow-y: scroll; }
 
+/* ── 防護：圖片不可選取、不可拖曳 ── */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none; /* 停用所有滑鼠事件（含右鍵）*/
+}
+/* 但按鈕和互動元素的圖片要恢復 pointer-events */
+button img, a img, .cf-btn img { pointer-events: auto; }
+
+/* 整體文字防選取（可選：讓瀏覽體驗更完整可拿掉） */
+.gallery, .card, .img-wrap {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* ════════════════════════════════════════
    FIXED HEADER WRAPPER
    包含 Hero + 搜尋列 + 分類列，全部固定在頂部
@@ -94,22 +111,88 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); over
 #searchInput:focus { border-color: var(--accent); background: #fff; }
 #searchInput::placeholder { color: var(--text3); }
 
-.shop-slogan {
-  /* flex: 1 讓它佔滿中間空間，把 count-info 推到最右 */
+/* ── 標語容器 ── */
+.shop-slogan-wrap {
   flex: 1;
-  text-align: center;
-  font-size: 14px;          /* 預設大小，可由後台設定覆蓋 */
-  font-style: italic;
-  color: var(--accent);
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.03em;
-  font-weight: 500;
-  transition: font-size 0.2s;
+  min-width: 0;
 }
-@media (max-width: 768px) { .shop-slogan { font-size: 12px; } }
-@media (max-width: 500px) { .shop-slogan { display: none; } }
+@media (max-width: 500px) { .shop-slogan-wrap { display: none; } }
+
+/* ── Style A: 彩虹漸層 ── */
+.slogan-style-a {
+  font-size: 14px; font-weight: 700; font-style: italic;
+  background: linear-gradient(90deg,#ff6b9d,#ff9a3c,#ffd93d,#6bcb77,#4d96ff,#c77dff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbow-flow 3s linear infinite;
+  white-space: nowrap;
+}
+@keyframes rainbow-flow { 0%{background-position:0%} 100%{background-position:300%} }
+
+/* ── Style B: LED 跑馬燈 ── */
+.slogan-style-b-wrap {
+  width: 100%; overflow: hidden;
+  background: #1a0a0a; border-radius: 5px; padding: 5px 0;
+}
+.slogan-style-b-track {
+  display: flex; white-space: nowrap;
+  animation: marquee-scroll 12s linear infinite;
+}
+.slogan-style-b-text {
+  font-size: 13px; font-family: 'Courier New', monospace; font-weight: 700;
+  color: #ff3c3c; text-shadow: 0 0 6px #ff3c3c, 0 0 12px #ff3c3c;
+  padding-right: 80px; letter-spacing: 0.08em;
+}
+@keyframes marquee-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── Style C: 打字機 ── */
+.slogan-style-c {
+  font-size: 14px; font-weight: 600; font-style: italic;
+  white-space: nowrap; overflow: hidden;
+  border-right: 2.5px solid currentColor;
+  width: 0;
+  animation: typing-out 3.5s steps(30) infinite alternate;
+  letter-spacing: 0.04em;
+}
+@keyframes typing-out { 0%{width:0} 80%,100%{width:100%} }
+
+/* ── Style D: 逐字跳動 ── */
+.slogan-style-d { display: flex; align-items: center; white-space: nowrap; }
+.slogan-style-d span {
+  display: inline-block; font-size: 14px; font-weight: 700;
+  animation: char-bounce 1.2s ease-in-out infinite;
+}
+@keyframes char-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+/* ── Style E: 霓虹閃爍 ── */
+.slogan-style-e {
+  font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+  animation: neon-pulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+}
+.slogan-style-e .spin-icon { animation: icon-spin 3s linear infinite; display: inline-block; }
+@keyframes neon-pulse {
+  0%,100%{opacity:1;filter:brightness(1)}
+  50%{opacity:0.85;filter:brightness(1.3)}
+}
+@keyframes icon-spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+
+/* ── Style F: 波浪彩色 ── */
+.slogan-style-f { display: flex; align-items: center; white-space: nowrap; }
+.slogan-style-f span {
+  display: inline-block; font-size: 14px; font-weight: 700;
+  animation: wave-dance 2s ease-in-out infinite;
+}
+@keyframes wave-dance {
+  0%,100%{transform:translateY(0);filter:hue-rotate(0deg)}
+  25%{transform:translateY(-5px);filter:hue-rotate(90deg)}
+  75%{transform:translateY(-5px);filter:hue-rotate(270deg)}
+}
 
 .count-info {
   font-family: var(--mono);
@@ -389,29 +472,36 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); over
 
 <button id="toTop" aria-label="回頂部">↑</button>
 
-<!-- LINE 浮動按鈕 -->
-<div class="line-float" onclick="openLineModal()">
-  <button class="line-float-btn" aria-label="加入LINE群組">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-    </svg>
-  </button>
-  <div class="line-float-label">加入群組</div>
+<!-- ══ 浮動聯絡按鈕群組 ══ -->
+<div id="contact-float"></div>
+
+<!-- 通用 QR/連結 Modal -->
+<div class="modal-overlay" id="contactModal" onclick="closeContactModal(event)">
+  <div class="modal-box" id="contactModalBox">
+    <button class="modal-close-btn" onclick="closeContactModalDirect()">×</button>
+    <div class="modal-qr-body" id="contactModalBody"></div>
+  </div>
 </div>
 
-<!-- LINE QR Modal -->
-<div class="line-modal-bg" id="lineModal" onclick="closeLineModal(event)">
-  <div class="line-modal">
-    <button class="line-modal-close" onclick="closeLineModalDirect()">×</button>
-    <div class="line-modal-icon">💚</div>
-    <div class="line-modal-title">加入 LINE 群組</div>
-    <div class="line-modal-sub">掃描 QR Code 或點擊按鈕即可加入</div>
-    <img class="line-modal-qr" src="line-qr.jpg" alt="LINE QR Code">
-    <button class="line-modal-cta" id="lineJoinBtn">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-      立即加入群組
-    </button>
-    <div class="line-modal-hint">手機用戶點擊按鈕可直接開啟 LINE</div>
+<!-- AI 小幫手 Modal -->
+<div class="modal-overlay" id="aiModal" onclick="closeAiModal(event)">
+  <div class="modal-box ai-modal-box">
+    <div class="ai-header">
+      <div class="ai-header-avatar" id="aiAvatar">🤖</div>
+      <div>
+        <div class="ai-header-name" id="aiName">小幫手</div>
+        <div class="ai-header-sub">有任何問題都可以問我 ♡</div>
+      </div>
+      <button class="ai-close" onclick="closeAiModalDirect()">×</button>
+    </div>
+    <div class="ai-msgs" id="aiMsgs"></div>
+    <div class="ai-quick-btns" id="aiQuickBtns"></div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="aiInput" placeholder="輸入問題…" onkeydown="if(event.key==='Enter')sendAiMsg()">
+      <button class="ai-send" onclick="sendAiMsg()" aria-label="送出">
+        <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -567,12 +657,17 @@ async function init() {
 
     config.products   = Object.values(productMap).sort(sortFn);
     config.categories = cfg.categories || [];
-    config.slogans       = cfg.slogans || [];
+    config.slogans        = cfg.slogans || [];
     config.sloganFontSize = cfg.sloganFontSize || 14;
+    config.sloganStyle    = cfg.sloganStyle || 'C';
+    config.sloganColor    = cfg.sloganColor || '#c0325c';
+    config.contacts       = cfg.contacts || {};
+    config.aiAssistant    = cfg.aiAssistant || {};
 
     renderApp();
     // 等 DOM 渲染完再初始化標語
     setTimeout(() => initSlogans(cfg), 100);
+    initContactFloat(cfg);
   } catch(err) {
     document.getElementById('fixed-header').innerHTML = '';
     showError(err.message);
@@ -601,7 +696,7 @@ function renderApp() {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input type="text" id="searchInput" placeholder="搜尋商品編號或名稱…">
         </div>
-        <div class="shop-slogan" id="shopSlogan">錢錢沒有不見，只是變成妳愛的樣子 ♡</div>
+        <div class="shop-slogan-wrap"><div id="shopSlogan"></div></div>
         <div class="count-info" id="countInfo">共 ${total} 件商品 · 持續更新中 ♡</div>
       </div>
     </div>
@@ -649,40 +744,126 @@ function renderApp() {
 }
 
 
-// ── 標語輪換系統 ──
+// ── 標語系統 ──
 let sloganTimer = null;
 let sloganList  = [];
 let sloganIdx   = 0;
+let sloganStyle = 'C';
+let sloganColor = '#c0325c';
+let sloganSize  = 14;
+const CHAR_COLORS = ['#ff6b9d','#ff9a3c','#ffd93d','#6bcb77','#4d96ff','#c77dff'];
 
 function initSlogans(cfg) {
-  // 讀取後台設定的標語清單；若沒有設定則用預設值
-  sloganList = (cfg.slogans && cfg.slogans.length > 0)
-    ? cfg.slogans
-    : ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
-  const fontSize = cfg.sloganFontSize || 14;
-  const el = document.getElementById('shopSlogan');
-  if (el) el.style.fontSize = fontSize + 'px';
-  sloganIdx = Math.floor(Math.random() * sloganList.length);
+  sloganList  = (cfg.slogans && cfg.slogans.length > 0) ? cfg.slogans : ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
+  sloganStyle = cfg.sloganStyle  || 'C';
+  sloganColor = cfg.sloganColor  || '#c0325c';
+  sloganSize  = cfg.sloganFontSize || 14;
+  sloganIdx   = Math.floor(Math.random() * sloganList.length);
   rotateSlogans();
+}
+
+function buildSloganEl(text) {
+  const el = document.getElementById('shopSlogan');
+  if (!el) return;
+  el.innerHTML = '';
+  el.style.fontSize = '';
+  el.className = '';
+
+  if (sloganStyle === 'A') {
+    const span = document.createElement('span');
+    span.className = 'slogan-style-a';
+    span.style.fontSize = sloganSize + 'px';
+    span.textContent = text;
+    el.appendChild(span);
+
+  } else if (sloganStyle === 'B') {
+    const wrap = document.createElement('div');
+    wrap.className = 'slogan-style-b-wrap';
+    wrap.style.width = '100%';
+    const track = document.createElement('div');
+    track.className = 'slogan-style-b-track';
+    // 重複兩次讓跑馬燈無縫循環
+    for (let i = 0; i < 2; i++) {
+      const span = document.createElement('span');
+      span.className = 'slogan-style-b-text';
+      span.style.color = sloganColor;
+      span.style.textShadow = `0 0 6px ${sloganColor}, 0 0 14px ${sloganColor}`;
+      span.style.fontSize = sloganSize + 'px';
+      span.textContent = '🧸 ' + text + '   ';
+      track.appendChild(span);
+    }
+    wrap.appendChild(track);
+    el.appendChild(wrap);
+
+  } else if (sloganStyle === 'C') {
+    const span = document.createElement('span');
+    span.className = 'slogan-style-c';
+    span.style.color = sloganColor;
+    span.style.fontSize = sloganSize + 'px';
+    span.textContent = text;
+    el.appendChild(span);
+
+  } else if (sloganStyle === 'D') {
+    const wrap = document.createElement('div');
+    wrap.className = 'slogan-style-d';
+    ;[...text].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.textContent = ch === ' ' ? ' ' : ch;
+      span.style.color = CHAR_COLORS[i % CHAR_COLORS.length];
+      span.style.animationDelay = (i * 0.07) + 's';
+      span.style.fontSize = sloganSize + 'px';
+      wrap.appendChild(span);
+    });
+    el.appendChild(wrap);
+
+  } else if (sloganStyle === 'E') {
+    const span = document.createElement('span');
+    span.className = 'slogan-style-e';
+    span.style.color = sloganColor;
+    span.style.textShadow = `0 0 10px ${sloganColor}88`;
+    span.style.fontSize = sloganSize + 'px';
+    span.innerHTML = '<span class="spin-icon">🌸</span> ' + text + ' <span class="spin-icon">🌸</span>';
+    el.appendChild(span);
+
+  } else if (sloganStyle === 'F') {
+    const wrap = document.createElement('div');
+    wrap.className = 'slogan-style-f';
+    ;[...text].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.textContent = ch === ' ' ? ' ' : ch;
+      span.style.color = CHAR_COLORS[i % CHAR_COLORS.length];
+      span.style.animationDelay = (i * 0.1) + 's';
+      span.style.fontSize = sloganSize + 'px';
+      wrap.appendChild(span);
+    });
+    el.appendChild(wrap);
+  }
 }
 
 function rotateSlogans() {
   clearInterval(sloganTimer);
-  const el = document.getElementById('shopSlogan');
-  if (!el || sloganList.length === 0) return;
+  if (sloganList.length === 0) return;
+
   const show = () => {
+    const el = document.getElementById('shopSlogan');
+    if (!el) return;
+    // 樣式 B 不需要淡入淡出（跑馬燈本身就是連續的）
+    if (sloganStyle === 'B') {
+      buildSloganEl(sloganList[sloganIdx % sloganList.length]);
+      sloganIdx = (sloganIdx + 1) % sloganList.length;
+      return;
+    }
     el.style.opacity = '0';
     el.style.transition = 'opacity 0.5s';
     setTimeout(() => {
-      el.textContent = sloganList[sloganIdx % sloganList.length];
+      buildSloganEl(sloganList[sloganIdx % sloganList.length]);
       el.style.opacity = '1';
       sloganIdx = (sloganIdx + 1) % sloganList.length;
     }, 500);
   };
-  show(); // 立即顯示第一句
-  if (sloganList.length > 1) {
-    sloganTimer = setInterval(show, 4000); // 每 4 秒換一句
-  }
+
+  show();
+  if (sloganList.length > 1) sloganTimer = setInterval(show, 4500);
 }
 
 function applyFilters() {
@@ -810,19 +991,277 @@ window.addEventListener('scroll', () => {
 });
 document.getElementById('toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-// ── LINE Modal ──
-const LINE_URL = 'https://line.me/R/ti/g/6NrgspyX5H';
-function openLineModal() {
-  document.getElementById('lineModal').classList.add('open');
-  document.getElementById('lineJoinBtn').onclick = () => window.open(LINE_URL, '_blank', 'noopener');
+
+// ══════════════════════════════════════════════════════
+// 聯絡系統 + AI 小幫手
+// ══════════════════════════════════════════════════════
+
+// SVG icons
+const ICONS = {
+  line:  `<svg viewBox="0 0 24 24" fill="#fff" width="24" height="24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.07 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>`,
+  fb:    `<svg viewBox="0 0 24 24" fill="#fff" width="24" height="24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+  ig:    `<svg viewBox="0 0 24 24" fill="#fff" width="24" height="24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`,
+  wa:    `<svg viewBox="0 0 24 24" fill="#fff" width="24" height="24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`,
+  email: `<svg viewBox="0 0 24 24" fill="#fff" width="24" height="24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`,
+  ai:    `<svg viewBox="0 0 24 24" fill="#fff" width="24" height="24"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.387-1 1.731V7h1a7 7 0 017 7h1a1 1 0 010 2h-1v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1H2a1 1 0 010-2h1a7 7 0 017-7h1V5.731A2 2 0 0112 2m0 7a5 5 0 00-5 5v3h10v-3a5 5 0 00-5-5m-2 4a1 1 0 110 2 1 1 0 010-2m4 0a1 1 0 110 2 1 1 0 010-2z"/></svg>`
+};
+
+// ── 初始化聯絡浮動按鈕 ──
+function initContactFloat(cfg) {
+  const wrap = document.getElementById('contact-float');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  const contacts = cfg.contacts || {};
+  const aiCfg    = cfg.aiAssistant || {};
+
+  const platforms = [
+    { key:'line',  cls:'cf-line',  label:'加入 LINE',  action: () => openContactModal('line',  cfg) },
+    { key:'fb',    cls:'cf-fb',    label:'FB 私訊',    action: () => openContactModal('fb',    cfg) },
+    { key:'ig',    cls:'cf-ig',    label:'IG 私訊',    action: () => openContactModal('ig',    cfg) },
+    { key:'wa',    cls:'cf-wa',    label:'WhatsApp',   action: () => openContactModal('wa',    cfg) },
+    { key:'email', cls:'cf-email', label:'Email',      action: () => openContactModal('email', cfg) },
+  ];
+
+  // 加入啟用的平台按鈕
+  platforms.forEach(p => {
+    const c = contacts[p.key];
+    if (!c || !c.enabled) return;
+    const btn = document.createElement('button');
+    btn.className = 'cf-btn ' + p.cls;
+    btn.setAttribute('aria-label', p.label);
+    btn.innerHTML = ICONS[p.key] + `<span class="cf-tooltip">${p.label}</span>`;
+    btn.onclick = p.action;
+    wrap.appendChild(btn);
+  });
+
+  // AI 小幫手按鈕
+  if (aiCfg.enabled) {
+    const btn = document.createElement('button');
+    btn.className = 'cf-btn cf-ai';
+    btn.setAttribute('aria-label', aiCfg.name || 'AI 小幫手');
+    btn.innerHTML = ICONS.ai + `<span class="cf-tooltip">${aiCfg.name || 'AI 小幫手'}</span>`;
+    btn.onclick = () => openAiModal(aiCfg);
+    wrap.appendChild(btn);
+  }
 }
-function closeLineModal(e) {
-  if (e.target === document.getElementById('lineModal'))
-    document.getElementById('lineModal').classList.remove('open');
+
+// ── 聯絡 Modal（QR / 連結）──
+function openContactModal(platform, cfg) {
+  const c    = (cfg.contacts || {})[platform];
+  if (!c) return;
+  const box  = document.getElementById('contactModalBody');
+  const wrap = document.getElementById('contactModal');
+
+  const meta = {
+    line:  { color:'#06C755', label:'加入 LINE',   hint:'手機點按鈕直接開啟 LINE', icon:'💚' },
+    fb:    { color:'#1877F2', label:'FB 私訊',     hint:'點擊前往 Facebook 粉專',  icon:'💙' },
+    ig:    { color:'#E1306C', label:'IG 私訊',     hint:'點擊前往 Instagram',      icon:'🩷' },
+    wa:    { color:'#25D366', label:'WhatsApp',    hint:'點擊開啟 WhatsApp',       icon:'💬' },
+    email: { color:'#ea4335', label:'寄送 Email',  hint:'點擊開啟郵件程式',        icon:'📧' },
+  }[platform];
+
+  let qrHTML = '';
+  if (platform === 'line' && c.qrImage) {
+    qrHTML = `<img class="modal-qr-img" src="${c.qrImage}" alt="QR Code" style="color:${meta.color};border-color:${meta.color};">`;
+  }
+
+  box.innerHTML = `
+    <div class="modal-qr-icon">${meta.icon}</div>
+    <div class="modal-qr-title" style="color:${meta.color};">${c.title || meta.label}</div>
+    <div class="modal-qr-sub">${c.desc || ''}</div>
+    ${qrHTML}
+    <button class="modal-cta-btn" style="background:${meta.color};" id="contactCtaBtn">
+      ${ICONS[platform]} ${meta.label}
+    </button>
+    ${c.hint ? `<div class="modal-hint">${c.hint}</div>` : `<div class="modal-hint">${meta.hint}</div>`}`;
+
+  // 設定連結（不明文顯示在 HTML）
+  document.getElementById('contactCtaBtn').onclick = () => {
+    let url = '';
+    if (platform === 'line')  url = c.url || '';
+    if (platform === 'fb')    url = c.url || '';
+    if (platform === 'ig')    url = `https://ig.me/m/${c.username || ''}`;
+    if (platform === 'wa')    url = `https://wa.me/${(c.phone||'').replace(/\D/g,'')}`;
+    if (platform === 'email') url = `mailto:${c.email || ''}`;
+    if (url) window.open(url, '_blank', 'noopener');
+  };
+
+  wrap.classList.add('open');
 }
-function closeLineModalDirect() {
-  document.getElementById('lineModal').classList.remove('open');
+function closeContactModal(e) {
+  if (e.target === document.getElementById('contactModal'))
+    document.getElementById('contactModal').classList.remove('open');
 }
+function closeContactModalDirect() {
+  document.getElementById('contactModal').classList.remove('open');
+}
+
+// ── AI 小幫手 ──
+let aiQA = [];
+function openAiModal(aiCfg) {
+  aiQA = aiCfg.qa || [];
+  const nameEl   = document.getElementById('aiName');
+  const avatarEl = document.getElementById('aiAvatar');
+  if (nameEl)   nameEl.textContent   = aiCfg.name   || 'AI 小幫手';
+  if (avatarEl) avatarEl.textContent = aiCfg.avatar || '🤖';
+
+  // 清空重建
+  const msgs = document.getElementById('aiMsgs');
+  msgs.innerHTML = '';
+  addAiBubble('bot', `嗨！我是 ${aiCfg.name || '小幫手'} ${aiCfg.avatar || '🤖'}<br>有任何問題都可以問我喔！`);
+
+  // 快速問題按鈕
+  const qbtns = document.getElementById('aiQuickBtns');
+  qbtns.innerHTML = aiQA.slice(0,5).map(q =>
+    `<button class="ai-quick-btn" onclick="handleAiQuick(${JSON.stringify(q.q)})">${q.q}</button>`
+  ).join('');
+
+  document.getElementById('aiInput').value = '';
+  document.getElementById('aiModal').classList.add('open');
+}
+function closeAiModal(e) {
+  if (e.target === document.getElementById('aiModal'))
+    document.getElementById('aiModal').classList.remove('open');
+}
+function closeAiModalDirect() {
+  document.getElementById('aiModal').classList.remove('open');
+}
+
+function addAiBubble(type, html) {
+  const msgs = document.getElementById('aiMsgs');
+  const div  = document.createElement('div');
+  div.className = 'ai-bubble ' + type;
+  div.innerHTML  = html;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function handleAiQuick(q) {
+  document.getElementById('aiInput').value = q;
+  sendAiMsg();
+}
+
+function sendAiMsg() {
+  const input = document.getElementById('aiInput');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+
+  addAiBubble('user', q);
+
+  // 比對 QA（關鍵字模糊比對）
+  const lower = q.toLowerCase();
+  const match = aiQA.find(item =>
+    lower.includes(item.q.toLowerCase()) ||
+    item.q.toLowerCase().split('').some(ch => lower.includes(ch)) ||
+    (item.keywords || []).some(kw => lower.includes(kw.toLowerCase()))
+  );
+
+  // 打字動畫
+  const typingDiv = addAiBubble('bot typing', '···');
+  setTimeout(() => {
+    typingDiv.classList.remove('typing');
+    if (match) {
+      typingDiv.innerHTML = match.a;
+    } else {
+      typingDiv.innerHTML = '這個問題我還不確定，建議直接聯絡我們哦！<br><small style="color:#aaa">（你可以點右下角其他聯絡按鈕）</small>';
+    }
+    document.getElementById('aiMsgs').scrollTop = 9999;
+  }, 800);
+}
+
+// ESC 關閉所有 modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('contactModal')?.classList.remove('open');
+    document.getElementById('aiModal')?.classList.remove('open');
+  }
+});
+
+
+
+// ══════════════════════════════════════════════════════
+// 🔒 防護系統
+// ══════════════════════════════════════════════════════
+(function() {
+
+  // ── 1. 停用右鍵選單 ──
+  document.addEventListener('contextmenu', function(e) {
+    // 允許輸入框和 AI 聊天框右鍵（方便打字）
+    const tag = e.target.tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    e.preventDefault();
+    return false;
+  });
+
+  // ── 2. 停用圖片拖曳 ──
+  document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // ── 3. 停用長按選取（手機）──
+  document.addEventListener('touchstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // ── 4. 停用鍵盤快捷鍵：F12、Ctrl+U、Ctrl+Shift+I/J/C ──
+  document.addEventListener('keydown', function(e) {
+    // F12
+    if (e.key === 'F12') {
+      e.preventDefault(); return false;
+    }
+    // Ctrl+U（檢視原始碼）
+    if (e.ctrlKey && e.key === 'u') {
+      e.preventDefault(); return false;
+    }
+    // Ctrl+Shift+I / J / C（開發者工具）
+    if (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) {
+      e.preventDefault(); return false;
+    }
+    // Ctrl+S（另存網頁）
+    if (e.ctrlKey && e.key === 's') {
+      e.preventDefault(); return false;
+    }
+    // Ctrl+A（全選）在圖片區
+    if (e.ctrlKey && e.key === 'a') {
+      const active = document.activeElement?.tagName?.toLowerCase();
+      if (active !== 'input' && active !== 'textarea') {
+        e.preventDefault(); return false;
+      }
+    }
+  });
+
+  // ── 5. 偵測開發者工具是否開啟（尺寸差異法）──
+  let devToolsOpen = false;
+  const threshold = 160;
+  const checkDevTools = () => {
+    const widthDiff  = window.outerWidth  - window.innerWidth;
+    const heightDiff = window.outerHeight - window.innerHeight;
+    if (widthDiff > threshold || heightDiff > threshold) {
+      if (!devToolsOpen) {
+        devToolsOpen = true;
+        // 不做強烈阻擋，只做提示（避免影響正常使用者）
+        console.clear();
+        console.log('%c⚠️ 本網站圖片受版權保護，請勿複製或轉載。',
+          'color:#e8608a;font-size:16px;font-weight:bold;');
+      }
+    } else {
+      devToolsOpen = false;
+    }
+  };
+  setInterval(checkDevTools, 1000);
+
+  // ── 6. 清除 console（讓程式碼不易被分析）──
+  setInterval(() => { console.clear(); }, 3000);
+
+})();
 
 // ── Start ──
 init();

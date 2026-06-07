@@ -174,6 +174,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
     <button class="nav-btn" onclick="showPanel('categories',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>分類管理
     </button>
+    <button class="nav-btn" onclick="showPanel('contact',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>聯絡 &amp; AI 設定
+    </button>
     <button class="nav-btn" onclick="showPanel('github',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub 自動同步
     </button>
@@ -329,6 +332,142 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
       </div>
     </div>
 
+    <!-- Contact & AI Panel -->
+    <div class="panel" id="panel-contact">
+
+      <!-- 平台開關 -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><div class="card-title">📱 聯絡平台設定</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
+
+          <!-- LINE -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#06C75520;display:flex;align-items:center;justify-content:center;font-size:18px;">💚</div>
+              <div style="flex:1;font-weight:500;font-size:14px;">LINE</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+                <input type="checkbox" id="line-enabled" onchange="togglePlatform('line',this.checked)"> 啟用
+              </label>
+            </div>
+            <div id="line-fields" style="display:none;flex-direction:column;gap:8px;">
+              <div class="form-group"><label>顯示標題</label><input type="text" id="line-title" placeholder="加入 LINE 群組"></div>
+              <div class="form-group"><label>說明文字</label><input type="text" id="line-desc" placeholder="掃描 QR Code 或點擊按鈕加入"></div>
+              <div class="form-group"><label>LINE 連結網址（不顯示在前台）</label><input type="text" id="line-url" placeholder="https://line.me/R/ti/g/xxxxxxx"></div>
+              <div class="form-group"><label>QR Code 圖片路徑</label><input type="text" id="line-qr" placeholder="line-qr.jpg"></div>
+              <div class="form-group"><label>提示文字</label><input type="text" id="line-hint" placeholder="手機用戶點擊按鈕可直接開啟 LINE"></div>
+            </div>
+          </div>
+
+          <!-- Facebook -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#1877F220;display:flex;align-items:center;justify-content:center;font-size:18px;">💙</div>
+              <div style="flex:1;font-weight:500;font-size:14px;">Facebook 私訊</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+                <input type="checkbox" id="fb-enabled" onchange="togglePlatform('fb',this.checked)"> 啟用
+              </label>
+            </div>
+            <div id="fb-fields" style="display:none;flex-direction:column;gap:8px;">
+              <div class="form-group"><label>粉專連結或 Messenger 網址</label><input type="text" id="fb-url" placeholder="https://m.me/你的粉專名稱"></div>
+              <div class="form-group"><label>說明文字</label><input type="text" id="fb-desc" placeholder="點擊前往 Facebook 私訊"></div>
+            </div>
+          </div>
+
+          <!-- Instagram -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1306C20;display:flex;align-items:center;justify-content:center;font-size:18px;">🩷</div>
+              <div style="flex:1;font-weight:500;font-size:14px;">Instagram 私訊</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+                <input type="checkbox" id="ig-enabled" onchange="togglePlatform('ig',this.checked)"> 啟用
+              </label>
+            </div>
+            <div id="ig-fields" style="display:none;flex-direction:column;gap:8px;">
+              <div class="form-group"><label>IG 帳號（不含 @）</label><input type="text" id="ig-username" placeholder="your_ig_account"></div>
+              <div class="form-group"><label>說明文字</label><input type="text" id="ig-desc" placeholder="點擊前往 Instagram 私訊"></div>
+            </div>
+          </div>
+
+          <!-- WhatsApp -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#25D36620;display:flex;align-items:center;justify-content:center;font-size:18px;">💬</div>
+              <div style="flex:1;font-weight:500;font-size:14px;">WhatsApp</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+                <input type="checkbox" id="wa-enabled" onchange="togglePlatform('wa',this.checked)"> 啟用
+              </label>
+            </div>
+            <div id="wa-fields" style="display:none;flex-direction:column;gap:8px;">
+              <div class="form-group"><label>手機號碼（含國碼，例如 886912345678）</label><input type="text" id="wa-phone" placeholder="886912345678"></div>
+              <div class="form-group"><label>說明文字</label><input type="text" id="wa-desc" placeholder="點擊開啟 WhatsApp 對話"></div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#ea433520;display:flex;align-items:center;justify-content:center;font-size:18px;">📧</div>
+              <div style="flex:1;font-weight:500;font-size:14px;">Email</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+                <input type="checkbox" id="email-enabled" onchange="togglePlatform('email',this.checked)"> 啟用
+              </label>
+            </div>
+            <div id="email-fields" style="display:none;flex-direction:column;gap:8px;">
+              <div class="form-group"><label>Email 信箱</label><input type="text" id="email-addr" placeholder="shop@example.com"></div>
+              <div class="form-group"><label>說明文字</label><input type="text" id="email-desc" placeholder="點擊寄送 Email 給我們"></div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="saveContactSettings()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            儲存聯絡設定
+          </button>
+        </div>
+      </div>
+
+      <!-- AI 小幫手 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🤖 AI 小幫手設定</div>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
+            <input type="checkbox" id="ai-enabled"> 啟用 AI 小幫手
+          </label>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
+          <div class="setup-grid">
+            <div class="form-group">
+              <label>小幫手名稱</label>
+              <input type="text" id="ai-name" placeholder="例如：小三麗 / 糰子助理">
+              <span class="hint">客戶看到的名稱，越親切越好</span>
+            </div>
+            <div class="form-group">
+              <label>小幫手頭像（Emoji）</label>
+              <input type="text" id="ai-avatar" placeholder="例如：🧸 / 🌸 / 🤖" maxlength="4">
+              <span class="hint">填一個 Emoji 表情當頭像</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>常見問題與回答（最多 10 題）</label>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;" id="qaList"></div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:fit-content;" onclick="addQA()">＋ 新增問題</button>
+          </div>
+
+          <div class="info-box">
+            <strong>💡 設定技巧</strong><br>
+            問題欄位填客戶常問的話（例如「怎麼買」「有現貨嗎」「多大尺寸」）<br>
+            可以加上關鍵字欄位，幫助 AI 更準確比對客戶的提問<br>
+            回答可以加上 emoji，讓對話更有溫度！
+          </div>
+
+          <button class="btn btn-primary" onclick="saveAiSettings()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            儲存 AI 設定
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- GitHub Sync -->
     <div class="panel" id="panel-github">
       <div class="card" style="margin-bottom:16px;">
@@ -443,21 +582,84 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
           <div style="height:1px;background:var(--border);margin:4px 0;"></div>
 
           <!-- 標語設定 -->
-          <div class="form-group full" style="grid-column:1/-1;">
+          <!-- ── 標語文字 ── -->
+          <div class="form-group full">
             <label>✍️ 搜尋列標語（最多 5 句，前台隨機輪換）</label>
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;" id="sloganInputs">
-              <!-- 動態產生 -->
-            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;" id="sloganInputs"></div>
             <button class="btn btn-ghost btn-sm" style="margin-top:6px;width:fit-content;" onclick="addSloganInput()">＋ 新增標語</button>
           </div>
 
+          <!-- ── 樣式選擇 ── -->
+          <div class="form-group full">
+            <label>🎨 標語動畫樣式</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;" id="stylePickerBtns">
+              <button class="style-pick-btn" data-style="A" onclick="pickSloganStyle(this)">
+                <div class="style-pick-demo" style="background:linear-gradient(90deg,#ff6b9d,#ff9a3c,#ffd93d,#6bcb77,#4d96ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;">Abc</div>
+                <div>彩虹漸層</div>
+              </button>
+              <button class="style-pick-btn" data-style="B" onclick="pickSloganStyle(this)">
+                <div class="style-pick-demo" style="background:#111;color:#ff3c3c;text-shadow:0 0 6px #ff3c3c;font-family:monospace;">▶ LED</div>
+                <div>跑馬燈</div>
+              </button>
+              <button class="style-pick-btn" data-style="C" onclick="pickSloganStyle(this)">
+                <div class="style-pick-demo" style="border-right:2px solid #c0325c;overflow:hidden;white-space:nowrap;">打字機|</div>
+                <div>打字機</div>
+              </button>
+              <button class="style-pick-btn" data-style="D" onclick="pickSloganStyle(this)">
+                <div class="style-pick-demo">
+                  <span style="color:#ff6b9d;display:inline-block;animation:cb 1s ease infinite">跳</span><span style="color:#ff9a3c;display:inline-block;animation:cb 1s .15s ease infinite">動</span><span style="color:#6bcb77;display:inline-block;animation:cb 1s .3s ease infinite">字</span>
+                </div>
+                <div>逐字跳動</div>
+              </button>
+              <button class="style-pick-btn" data-style="E" onclick="pickSloganStyle(this)">
+                <div class="style-pick-demo" style="animation:np 2s ease infinite;">🌸 霓虹</div>
+                <div>霓虹閃爍</div>
+              </button>
+              <button class="style-pick-btn" data-style="F" onclick="pickSloganStyle(this)">
+                <div class="style-pick-demo">
+                  <span style="color:#ff6b9d;animation:wv 2s ease infinite">波</span><span style="color:#4d96ff;animation:wv 2s .2s ease infinite">浪</span><span style="color:#6bcb77;animation:wv 2s .4s ease infinite">彩</span>
+                </div>
+                <div>波浪彩色</div>
+              </button>
+            </div>
+            <style>
+            @keyframes cb{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+            @keyframes np{0%,100%{opacity:1}50%{opacity:.7;filter:brightness(1.4)}}
+            @keyframes wv{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+            .style-pick-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 6px;font-size:11px;color:var(--text2);cursor:pointer;text-align:center;transition:all .15s;font-family:var(--sans);}
+            .style-pick-btn:hover{border-color:var(--accent);}
+            .style-pick-btn.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark);font-weight:600;}
+            .style-pick-demo{font-size:15px;margin-bottom:4px;min-height:24px;display:flex;align-items:center;justify-content:center;}
+            </style>
+          </div>
+
+          <!-- ── 顏色選擇（只有非彩虹/跳動類型才顯示）── -->
+          <div class="form-group" id="colorPickerRow">
+            <label>🎨 標語顏色</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;" id="colorSwatches"></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+              <label style="margin:0;font-size:11px;">自訂顏色：</label>
+              <input type="color" id="sloganColorCustom" value="#c0325c"
+                oninput="selectSloganColor(this.value,null)" style="width:36px;height:28px;border:none;border-radius:4px;cursor:pointer;background:none;">
+              <span id="sloganColorHex" style="font-family:var(--mono);font-size:12px;color:var(--text2);">#c0325c</span>
+            </div>
+          </div>
+
+          <!-- ── 字體大小 ── -->
           <div class="form-group">
-            <label>標語字體大小（px）</label>
+            <label>字體大小（px）</label>
             <div style="display:flex;align-items:center;gap:10px;">
-              <input type="range" id="sloganFontSize" min="10" max="22" value="14" oninput="document.getElementById('sloganFontSizeVal').textContent=this.value" style="flex:1;">
+              <input type="range" id="sloganFontSize" min="10" max="22" value="14"
+                oninput="document.getElementById('sloganFontSizeVal').textContent=this.value;updateSloganPreviewSize(this.value)"
+                style="flex:1;">
               <span id="sloganFontSizeVal" style="font-family:var(--mono);font-size:12px;min-width:28px;">14</span> px
             </div>
-            <span class="hint">預覽：<span id="sloganPreview" style="color:var(--accent);font-style:italic;">錢錢沒有不見，只是變成妳愛的樣子 ♡</span></span>
+          </div>
+
+          <!-- ── 即時預覽 ── -->
+          <div class="form-group full">
+            <label>即時預覽</label>
+            <div id="sloganLivePreview" style="margin-top:6px;padding:14px 20px;background:var(--bg);border:1px solid var(--border);border-radius:8px;min-height:44px;display:flex;align-items:center;justify-content:center;overflow:hidden;"></div>
           </div>
 
           <button class="btn btn-primary" onclick="saveDisplaySettings()">
@@ -568,7 +770,8 @@ function saveState(){
   localStorage.setItem('doll_shop_frontend',JSON.stringify({
     cloudName:state.cloudName,baseFolder:state.baseFolder,
     thumbSize:state.thumbSize,categories:state.categories,products:state.products,displayPageSize:state.displayPageSize||50,displayCardSize:state.displayCardSize||130,
-    slogans:state.slogans||[],sloganFontSize:state.sloganFontSize||14,
+    slogans:state.slogans||[],sloganFontSize:state.sloganFontSize||14,sloganStyle:state.sloganStyle||'C',sloganColor:state.sloganColor||'#c0325c',
+    contacts:state.contacts||{},aiAssistant:state.aiAssistant||{},
     productCategories:(state.products||[]).filter(p=>p.category).map(p=>({id:p.id,category:p.category}))
   }));
   updateFilterDropdowns();
@@ -585,6 +788,7 @@ function showPanel(id,btn){
   if(id==='overview')renderOverview();
   if(id==='display')initDisplaySettings();
   if(id==='github'){loadGitHubForm();}
+  if(id==='contact'){initContactPanel();}
   if(id==='products')renderProducts();
   if(id==='categories')renderCategories();
   if(id==='cloudinary')loadCloudinaryForm();
@@ -1067,6 +1271,135 @@ function toast(msg){
 
 
 
+
+// ══ 聯絡 & AI 小幫手後台 ══
+const PLATFORMS = ['line','fb','ig','wa','email'];
+
+function initContactPanel() {
+  const contacts = state.contacts || {};
+  PLATFORMS.forEach(p => {
+    const c   = contacts[p] || {};
+    const chk = document.getElementById(p+'-enabled');
+    if (chk) { chk.checked = !!c.enabled; togglePlatform(p, !!c.enabled, true); }
+    const fields = {
+      line:  [['line-title',c.title],['line-desc',c.desc],['line-url',c.url],['line-qr',c.qrImage],['line-hint',c.hint]],
+      fb:    [['fb-url',c.url],['fb-desc',c.desc]],
+      ig:    [['ig-username',c.username],['ig-desc',c.desc]],
+      wa:    [['wa-phone',c.phone],['wa-desc',c.desc]],
+      email: [['email-addr',c.email],['email-desc',c.desc]],
+    }[p] || [];
+    fields.forEach(([id,val]) => { const el=document.getElementById(id); if(el&&val) el.value=val; });
+  });
+
+  const ai = state.aiAssistant || {};
+  const aiChk = document.getElementById('ai-enabled');
+  const aiName = document.getElementById('ai-name');
+  const aiAvatar = document.getElementById('ai-avatar');
+  if (aiChk) aiChk.checked = !!ai.enabled;
+  if (aiName) aiName.value = ai.name || '';
+  if (aiAvatar) aiAvatar.value = ai.avatar || '🤖';
+  renderQAList(ai.qa || []);
+}
+
+function togglePlatform(platform, enabled, silent) {
+  const fields = document.getElementById(platform+'-fields');
+  if (fields) fields.style.display = enabled ? 'flex' : 'none';
+}
+
+function collectContacts() {
+  const contacts = {};
+  PLATFORMS.forEach(p => {
+    const enabled = document.getElementById(p+'-enabled')?.checked || false;
+    const get = id => document.getElementById(id)?.value.trim() || '';
+    contacts[p] = {
+      enabled,
+      ...(p==='line'  && {title:get('line-title'),desc:get('line-desc'),url:get('line-url'),qrImage:get('line-qr'),hint:get('line-hint')}),
+      ...(p==='fb'    && {url:get('fb-url'),desc:get('fb-desc')}),
+      ...(p==='ig'    && {username:get('ig-username'),desc:get('ig-desc')}),
+      ...(p==='wa'    && {phone:get('wa-phone'),desc:get('wa-desc')}),
+      ...(p==='email' && {email:get('email-addr'),desc:get('email-desc')}),
+    };
+  });
+  return contacts;
+}
+
+function saveContactSettings() {
+  state.contacts = collectContacts();
+  saveState();
+  autoSync('聯絡設定');
+  toast('✓ 聯絡設定已儲存並同步');
+}
+
+// ── QA 列表 ──
+function renderQAList(qa) {
+  const list = document.getElementById('qaList');
+  if (!list) return;
+  if (qa.length === 0) qa = [{ q:'', a:'', keywords:'' }];
+  list.innerHTML = qa.map((item,i) => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:12px;font-weight:600;color:var(--text2);">第 ${i+1} 題</span>
+        <button class="btn btn-danger btn-sm" onclick="removeQA(${i})" ${qa.length<=1?'disabled':''}>✕ 刪除</button>
+      </div>
+      <div class="form-group">
+        <label>客戶問題</label>
+        <input type="text" value="${(item.q||'').replace(/"/g,'&quot;')}" placeholder="例如：怎麼購買？" data-qa="${i}" data-field="q">
+      </div>
+      <div class="form-group">
+        <label>小幫手回答</label>
+        <textarea rows="2" placeholder="例如：可以點右下角 LINE 按鈕聯絡我們，或私訊 IG 喔！🧸" data-qa="${i}" data-field="a" style="resize:vertical;">${item.a||''}</textarea>
+      </div>
+      <div class="form-group">
+        <label>關鍵字（可選，逗號分隔，幫助比對）</label>
+        <input type="text" value="${(item.keywords||[]).join?.(',')||''}" placeholder="例如：購買,買,訂購" data-qa="${i}" data-field="keywords">
+      </div>
+    </div>`).join('');
+}
+
+function collectQA() {
+  const items = [];
+  document.querySelectorAll('[data-qa]').forEach(el => {
+    const i     = parseInt(el.dataset.qa);
+    const field = el.dataset.field;
+    if (!items[i]) items[i] = { q:'', a:'', keywords:[] };
+    if (field === 'keywords') {
+      items[i].keywords = el.value.split(',').map(s=>s.trim()).filter(Boolean);
+    } else {
+      items[i][field] = el.value;
+    }
+  });
+  return items.filter(item => item.q || item.a);
+}
+
+function addQA() {
+  const current = collectQA();
+  if (current.length >= 10) { toast('最多 10 題'); return; }
+  current.push({ q:'', a:'', keywords:[] });
+  renderQAList(current);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-field="q"]');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeQA(idx) {
+  const current = collectQA();
+  if (current.length <= 1) return;
+  current.splice(idx, 1);
+  renderQAList(current);
+}
+
+function saveAiSettings() {
+  const aiEnabled = document.getElementById('ai-enabled')?.checked || false;
+  const aiName    = document.getElementById('ai-name')?.value.trim() || 'AI 小幫手';
+  const aiAvatar  = document.getElementById('ai-avatar')?.value.trim() || '🤖';
+  const qa        = collectQA();
+  state.aiAssistant = { enabled: aiEnabled, name: aiName, avatar: aiAvatar, qa };
+  saveState();
+  autoSync('AI 小幫手');
+  toast(`✓ AI 設定已儲存（${qa.length} 題）並同步`);
+}
+
 // ── GitHub 自動同步 ──
 function saveGitHubSettings() {
   const user  = document.getElementById('ghUser').value.trim();
@@ -1221,25 +1554,128 @@ async function syncToGitHub(silent = false) {
 
 // ── 標語管理 ──
 const DEFAULT_SLOGANS = ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
+const PALETTE = ['#c0325c','#e8608a','#ff9a3c','#f5c518','#6bcb77','#4d96ff','#9b59b6','#1abc9c','#e74c3c','#2c3e50','#ffffff','#000000'];
+const CHAR_COLORS_ADM = ['#ff6b9d','#ff9a3c','#ffd93d','#6bcb77','#4d96ff','#c77dff'];
+let currentSloganStyle = 'C';
+let currentSloganColor = '#c0325c';
+let previewTimer = null;
 
 function renderSloganInputs() {
   const container = document.getElementById('sloganInputs');
   if (!container) return;
-  const slogans = state.slogans && state.slogans.length > 0 ? state.slogans : DEFAULT_SLOGANS;
+  const slogans = (state.slogans && state.slogans.length > 0) ? state.slogans : DEFAULT_SLOGANS;
   container.innerHTML = slogans.map((s, i) => `
     <div style="display:flex;gap:6px;align-items:center;">
       <input type="text" value="${s.replace(/"/g,'&quot;')}" placeholder="輸入標語第 ${i+1} 句"
-        oninput="updateSloganPreview(this.value)"
-        style="flex:1;" data-slogan-idx="${i}">
+        oninput="refreshLivePreview()" style="flex:1;" data-slogan-idx="${i}">
       <button class="btn btn-danger btn-sm" onclick="removeSloganInput(${i})"
-        ${slogans.length <= 1 ? 'disabled' : ''}>✕</button>
+        ${slogans.length<=1?'disabled':''}>✕</button>
     </div>`).join('');
+
+  // 還原設定值
+  currentSloganStyle = state.sloganStyle || 'C';
+  currentSloganColor = state.sloganColor || '#c0325c';
   const fs = state.sloganFontSize || 14;
+  document.querySelectorAll('#stylePickerBtns .style-pick-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.style === currentSloganStyle));
   const fsEl = document.getElementById('sloganFontSize');
   const fsValEl = document.getElementById('sloganFontSizeVal');
-  if (fsEl) { fsEl.value = fs; }
-  if (fsValEl) { fsValEl.textContent = fs; }
-  updateSloganPreviewSize(fs);
+  if (fsEl) fsEl.value = fs;
+  if (fsValEl) fsValEl.textContent = fs;
+  renderColorSwatches();
+  updateColorPickerVisibility();
+  refreshLivePreview();
+}
+
+function renderColorSwatches() {
+  const wrap = document.getElementById('colorSwatches');
+  if (!wrap) return;
+  wrap.innerHTML = PALETTE.map(c => `
+    <div onclick="selectSloganColor('${c}',this)"
+      style="width:24px;height:24px;border-radius:5px;background:${c};cursor:pointer;
+             border:2px solid ${c===currentSloganColor?'var(--text)':'transparent'};
+             box-shadow:0 1px 4px rgba(0,0,0,.15);transition:transform .1s;flex-shrink:0;"
+      title="${c}" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+    </div>`).join('');
+  const custom = document.getElementById('sloganColorCustom');
+  const hex = document.getElementById('sloganColorHex');
+  if (custom) custom.value = currentSloganColor;
+  if (hex) hex.textContent = currentSloganColor;
+}
+
+function selectSloganColor(color, el) {
+  currentSloganColor = color;
+  renderColorSwatches();
+  const custom = document.getElementById('sloganColorCustom');
+  const hex = document.getElementById('sloganColorHex');
+  if (custom) custom.value = color;
+  if (hex) hex.textContent = color;
+  refreshLivePreview();
+}
+
+function pickSloganStyle(btn) {
+  document.querySelectorAll('#stylePickerBtns .style-pick-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSloganStyle = btn.dataset.style;
+  updateColorPickerVisibility();
+  refreshLivePreview();
+}
+
+// 彩虹/逐字類樣式不需要單色選擇器
+function updateColorPickerVisibility() {
+  const row = document.getElementById('colorPickerRow');
+  if (!row) return;
+  const noColor = ['A','D','F'].includes(currentSloganStyle);
+  row.style.display = noColor ? 'none' : 'flex';
+}
+
+function refreshLivePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(() => {
+    const el = document.getElementById('sloganLivePreview');
+    if (!el) return;
+    const texts = collectSlogans();
+    const text = texts[0] || '錢錢沒有不見，只是變成妳愛的樣子 ♡';
+    const sz = parseInt(document.getElementById('sloganFontSize')?.value) || 14;
+    el.innerHTML = buildPreviewHTML(text, currentSloganStyle, currentSloganColor, sz);
+  }, 200);
+}
+
+function buildPreviewHTML(text, style, color, sz) {
+  if (style === 'A') {
+    return `<span style="font-size:${sz}px;font-weight:700;font-style:italic;
+      background:linear-gradient(90deg,#ff6b9d,#ff9a3c,#ffd93d,#6bcb77,#4d96ff,#c77dff);
+      background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;animation:rainbow-flow 3s linear infinite;">${text}</span>`;
+  }
+  if (style === 'B') {
+    return `<div style="background:#1a0a0a;border-radius:5px;padding:5px 10px;width:100%;overflow:hidden;">
+      <span style="font-size:${sz}px;font-family:monospace;font-weight:700;color:${color};
+        text-shadow:0 0 6px ${color};letter-spacing:.08em;">▶ ${text}</span></div>`;
+  }
+  if (style === 'C') {
+    return `<span style="font-size:${sz}px;font-weight:600;font-style:italic;color:${color};
+      border-right:2.5px solid ${color};white-space:nowrap;overflow:hidden;
+      width:0;animation:typing-out 3.5s steps(30) infinite alternate;">${text}</span>`;
+  }
+  if (style === 'D') {
+    return [...text].map((ch,i)=>`<span style="display:inline-block;font-size:${sz}px;font-weight:700;
+      color:${CHAR_COLORS_ADM[i%CHAR_COLORS_ADM.length]};animation:char-bounce 1.2s ${(i*.07).toFixed(2)}s ease-in-out infinite;">
+      ${ch===' '?'&nbsp;':ch}</span>`).join('');
+  }
+  if (style === 'E') {
+    return `<span style="font-size:${sz}px;font-weight:700;color:${color};
+      text-shadow:0 0 10px ${color}88;animation:neon-pulse 2.5s ease-in-out infinite;">
+      <span style="animation:icon-spin 3s linear infinite;display:inline-block;">🌸</span>
+      ${text}
+      <span style="animation:icon-spin 3s linear infinite;display:inline-block;">🌸</span></span>`;
+  }
+  if (style === 'F') {
+    return [...text].map((ch,i)=>`<span style="display:inline-block;font-size:${sz}px;font-weight:700;
+      color:${CHAR_COLORS_ADM[i%CHAR_COLORS_ADM.length]};animation:wave-dance 2s ${(i*.1).toFixed(2)}s ease-in-out infinite;">
+      ${ch===' '?'&nbsp;':ch}</span>`).join('');
+  }
+  return `<span style="font-size:${sz}px;color:${color};">${text}</span>`;
 }
 
 function addSloganInput() {
@@ -1248,7 +1684,6 @@ function addSloganInput() {
   current.push('');
   state.slogans = current;
   renderSloganInputs();
-  // focus last
   setTimeout(() => {
     const inputs = document.querySelectorAll('[data-slogan-idx]');
     if (inputs.length) inputs[inputs.length-1].focus();
@@ -1264,22 +1699,14 @@ function removeSloganInput(idx) {
 }
 
 function collectSlogans() {
-  const inputs = document.querySelectorAll('[data-slogan-idx]');
-  return Array.from(inputs).map(el => el.value.trim()).filter(s => s);
+  return Array.from(document.querySelectorAll('[data-slogan-idx]'))
+    .map(el => el.value.trim()).filter(s => s);
 }
 
-function updateSloganPreview(val) {
-  const el = document.getElementById('sloganPreview');
-  if (el && val) el.textContent = val;
-}
-
-function updateSloganPreviewSize(size) {
-  const el = document.getElementById('sloganPreview');
-  if (el) el.style.fontSize = size + 'px';
-}
+function updateSloganPreviewSize(size) { refreshLivePreview(); }
 
 document.addEventListener('input', e => {
-  if (e.target.id === 'sloganFontSize') updateSloganPreviewSize(e.target.value);
+  if (e.target.id === 'sloganFontSize') refreshLivePreview();
 });
 
 // ── Display Settings ──
@@ -1330,8 +1757,10 @@ function updateDisplayPreview() {
 function saveDisplaySettings() {
   state.displayPageSize  = selectedPageSize;
   state.displayCardSize  = selectedCardSize;
-  state.slogans          = collectSlogans().length > 0 ? collectSlogans() : DEFAULT_SLOGANS;
-  state.sloganFontSize   = parseInt(document.getElementById('sloganFontSize')?.value) || 14;
+  state.slogans        = collectSlogans().length > 0 ? collectSlogans() : DEFAULT_SLOGANS;
+  state.sloganFontSize = parseInt(document.getElementById('sloganFontSize')?.value) || 14;
+  state.sloganStyle    = currentSloganStyle;
+  state.sloganColor    = currentSloganColor;
   saveState();
   toast(`✓ 已儲存！每頁 ${selectedPageSize} 張，格局 ${selectedCardSize}px，${state.slogans.length} 句標語`);
   autoSync('展示設定');
