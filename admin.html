@@ -136,6 +136,23 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
 .login-btn:hover{background:#8a4f28;}
 .login-err{font-size:12px;color:#c04040;text-align:center;min-height:18px;margin-top:8px;}
 .login-hint{font-size:11px;color:#b0a49e;text-align:center;margin-top:16px;line-height:1.6;}
+
+/* ── 標語預覽動畫（後台用）── */
+@keyframes rainbow-flow { 0%{background-position:0%} 100%{background-position:300%} }
+@keyframes marquee-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes typing-out { 0%{width:0} 80%,100%{width:18em} }
+@keyframes char-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes neon-pulse { 0%,100%{opacity:1;filter:brightness(1)} 50%{opacity:.85;filter:brightness(1.3)} }
+@keyframes icon-spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+@keyframes wave-dance { 0%,100%{transform:translateY(0);filter:hue-rotate(0deg)} 25%{transform:translateY(-5px);filter:hue-rotate(90deg)} 75%{transform:translateY(-5px);filter:hue-rotate(270deg)} }
+#sloganLivePreview .slogan-c {
+  font-style:italic; font-weight:600; border-right:2.5px solid currentColor;
+  white-space:nowrap; overflow:hidden; display:inline-block;
+  width:0; animation:typing-out 3.5s steps(30) infinite alternate;
+}
+#sloganLivePreview .slogan-e { animation:neon-pulse 2.5s ease-in-out infinite; }
+#sloganLivePreview .slogan-e .spin { animation:icon-spin 3s linear infinite; display:inline-block; }
+
 </style>
 </head>
 <body>
@@ -516,6 +533,47 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
           <div>✅ 每次改分類、改標語、改展示設定，點一下就完成</div>
           <div>✅ 前台約 <strong>30 秒內</strong>自動讀到最新設定</div>
           <div>⬇ 如果 GitHub 同步失敗，仍可用「手動匯出」下載 config.json 再上傳</div>
+        </div>
+      </div>
+
+      <!-- 圖片上傳到 GitHub -->
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header"><div class="card-title">🖼️ 上傳圖片到 GitHub</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="info-box">
+            設定好 GitHub Token 後，可以直接在後台上傳 LOGO 和 LINE QR Code 到 GitHub，不需要手動上傳！
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <!-- LOGO 上傳 -->
+            <div style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;">
+              <div style="font-weight:600;font-size:13px;">🖼️ 網站 LOGO（頂部橫幅）</div>
+              <div id="logoPreviewWrap" style="background:var(--surface2);border-radius:8px;overflow:hidden;min-height:80px;display:flex;align-items:center;justify-content:center;">
+                <img id="logoPreview" src="" alt="" style="max-width:100%;max-height:120px;display:none;object-fit:contain;">
+                <span id="logoPreviewEmpty" style="font-size:12px;color:var(--text3);">尚未選擇圖片</span>
+              </div>
+              <input type="file" id="logoFile" accept="image/*" onchange="previewImage('logo',this)" style="font-size:12px;">
+              <button class="btn btn-primary btn-sm" onclick="uploadImageToGitHub('logo','LOGO.jpg')">
+                上傳 LOGO 到 GitHub
+              </button>
+              <div id="logoUploadStatus" style="font-size:12px;color:var(--text2);"></div>
+            </div>
+
+            <!-- LINE QR 上傳 -->
+            <div style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;">
+              <div style="font-weight:600;font-size:13px;">💚 LINE QR Code</div>
+              <div id="qrPreviewWrap" style="background:var(--surface2);border-radius:8px;overflow:hidden;min-height:80px;display:flex;align-items:center;justify-content:center;">
+                <img id="qrPreview" src="" alt="" style="max-width:100%;max-height:120px;display:none;object-fit:contain;">
+                <span id="qrPreviewEmpty" style="font-size:12px;color:var(--text3);">尚未選擇圖片</span>
+              </div>
+              <input type="file" id="qrFile" accept="image/*" onchange="previewImage('qr',this)" style="font-size:12px;">
+              <button class="btn btn-success btn-sm" onclick="uploadImageToGitHub('qr','line-qr.jpg')">
+                上傳 QR Code 到 GitHub
+              </button>
+              <div id="qrUploadStatus" style="font-size:12px;color:var(--text2);"></div>
+            </div>
+          </div>
+          <div class="hint">支援 JPG、PNG、WebP。LOGO 建議寬度 1400px 以上。上傳後前台約 30 秒生效。</div>
         </div>
       </div>
     </div>
@@ -1552,6 +1610,85 @@ async function syncToGitHub(silent = false) {
   }
 }
 
+
+// ── 圖片上傳到 GitHub ──
+function previewImage(type, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = document.getElementById(type === 'logo' ? 'logoPreview' : 'qrPreview');
+    const empty = document.getElementById(type === 'logo' ? 'logoPreviewEmpty' : 'qrPreviewEmpty');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    if (empty) empty.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadImageToGitHub(type, filename) {
+  if (!state.ghUser || !state.ghRepo || !state.ghToken) {
+    toast('請先設定 GitHub Token');
+    showPanel('github', document.querySelector('[onclick*=github]'));
+    return;
+  }
+  const input = document.getElementById(type === 'logo' ? 'logoFile' : 'qrFile');
+  const statusEl = document.getElementById(type === 'logo' ? 'logoUploadStatus' : 'qrUploadStatus');
+  if (!input.files[0]) { toast('請先選擇圖片'); return; }
+
+  statusEl.textContent = '上傳中…';
+  const file = input.files[0];
+
+  // 轉成 Base64
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  const apiUrl = `https://api.github.com/repos/${state.ghUser}/${state.ghRepo}/contents/${filename}`;
+
+  try {
+    // 取得現有 SHA（更新需要）
+    let sha = null;
+    const getResp = await fetch(apiUrl, {
+      headers: { Authorization: `token ${state.ghToken}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+    }
+
+    const body = {
+      message: `更新${type === 'logo' ? 'LOGO' : 'LINE QR'} ${new Date().toLocaleString('zh-TW')}`,
+      content: base64
+    };
+    if (sha) body.sha = sha;
+
+    const putResp = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${state.ghToken}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (putResp.ok) {
+      statusEl.innerHTML = '<span style="color:var(--success)">✅ 上傳成功！前台約 30 秒後生效</span>';
+      toast(`✅ ${filename} 上傳成功！`);
+    } else {
+      const err = await putResp.json();
+      throw new Error(err.message || `HTTP ${putResp.status}`);
+    }
+  } catch(e) {
+    statusEl.innerHTML = `<span style="color:var(--danger)">❌ 失敗：${e.message}</span>`;
+    toast('❌ 上傳失敗：' + e.message);
+  }
+}
+
 // ── 標語管理 ──
 const DEFAULT_SLOGANS = ['錢錢沒有不見，只是變成妳愛的樣子 ♡'];
 const PALETTE = ['#c0325c','#e8608a','#ff9a3c','#f5c518','#6bcb77','#4d96ff','#9b59b6','#1abc9c','#e74c3c','#2c3e50','#ffffff','#000000'];
@@ -1654,9 +1791,7 @@ function buildPreviewHTML(text, style, color, sz) {
         text-shadow:0 0 6px ${color};letter-spacing:.08em;">▶ ${text}</span></div>`;
   }
   if (style === 'C') {
-    return `<span style="font-size:${sz}px;font-weight:600;font-style:italic;color:${color};
-      border-right:2.5px solid ${color};white-space:nowrap;overflow:hidden;
-      width:0;animation:typing-out 3.5s steps(30) infinite alternate;">${text}</span>`;
+    return `<span class="slogan-c" style="font-size:${sz}px;color:${color};">${text}</span>`;
   }
   if (style === 'D') {
     return [...text].map((ch,i)=>`<span style="display:inline-block;font-size:${sz}px;font-weight:700;
@@ -1664,11 +1799,7 @@ function buildPreviewHTML(text, style, color, sz) {
       ${ch===' '?'&nbsp;':ch}</span>`).join('');
   }
   if (style === 'E') {
-    return `<span style="font-size:${sz}px;font-weight:700;color:${color};
-      text-shadow:0 0 10px ${color}88;animation:neon-pulse 2.5s ease-in-out infinite;">
-      <span style="animation:icon-spin 3s linear infinite;display:inline-block;">🌸</span>
-      ${text}
-      <span style="animation:icon-spin 3s linear infinite;display:inline-block;">🌸</span></span>`;
+    return `<span class="slogan-e" style="font-size:${sz}px;font-weight:700;color:${color};text-shadow:0 0 10px ${color}88;"><span class="spin">🌸</span> ${text} <span class="spin">🌸</span></span>`;
   }
   if (style === 'F') {
     return [...text].map((ch,i)=>`<span style="display:inline-block;font-size:${sz}px;font-weight:700;
