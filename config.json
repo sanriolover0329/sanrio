@@ -10,6 +10,8 @@
     "不管你是誰，心中都住著一個小孩。快來尋找那份能讓你找回夢想希望的專屬精品。"
   ],
   "sloganFontSize": 16,
+  "sloganStyle": "C",
+  "sloganColor": "#c0325c",
   "categories": [
     {
       "id": "cat_1780730126274",
@@ -40,6 +42,48 @@
       "color": "#a87070"
     }
   ],
+  "contacts": {
+    "line": {
+      "enabled": true,
+      "title": "",
+      "desc": "",
+      "url": "",
+      "qrImage": "line-qr.jpg",
+      "hint": ""
+    },
+    "fb": {
+      "enabled": false,
+      "url": "",
+      "desc": ""
+    },
+    "ig": {
+      "enabled": false,
+      "username": "",
+      "desc": ""
+    },
+    "wa": {
+      "enabled": false,
+      "phone": "",
+      "desc": ""
+    },
+    "email": {
+      "enabled": false,
+      "email": "",
+      "desc": ""
+    }
+  },
+  "aiAssistant": {
+    "enabled": true,
+    "name": "佩佩",
+    "avatar": "🤖",
+    "qa": [
+      {
+        "q": "怎購買",
+        "a": "可以加入我們群組 喊購買KT+1喔",
+        "keywords": []
+      }
+    ]
+  },
   "productCategories": [
     {
       "id": "A1",
@@ -1067,5 +1111,5 @@
     }
   ],
   "productNames": {},
-  "exportedAt": "2026-06-07T22:42:14.513Z"
+  "exportedAt": "2026-06-08T09:57:15.342Z"
 }
