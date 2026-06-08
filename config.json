@@ -74,12 +74,12 @@
   },
   "aiAssistant": {
     "enabled": true,
-    "name": "佩佩",
+    "name": "三麗鷗 狂粉",
     "avatar": "🤖",
     "qa": [
       {
         "q": "怎購買",
-        "a": "可以加入我們群組 喊購買KT+1喔",
+        "a": "可以加入我們官方帳號 告知型號喔 每隻KT都是正版 ",
         "keywords": []
       }
     ]
@@ -1112,5 +1112,5 @@
   ],
   "productNames": {},
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
-  "exportedAt": "2026-06-08T20:22:28.639Z"
+  "exportedAt": "2026-06-08T20:25:13.641Z"
 }
