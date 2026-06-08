@@ -268,6 +268,34 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
     <!-- Cloudinary -->
     <div class="panel" id="panel-cloudinary">
 
+      <!-- LOGO 上傳（最頂部）-->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><div class="card-title">🖼️ 網站 LOGO 上傳</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;">
+            <div id="logoPreviewWrap" style="width:180px;min-height:80px;background:var(--surface2);border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+              <img id="logoPreview" src="LOGO.jpg" alt="LOGO" style="max-width:100%;max-height:120px;object-fit:contain;"
+                onerror="this.style.display='none';document.getElementById('logoPreviewEmpty').style.display='block'">
+              <span id="logoPreviewEmpty" style="font-size:12px;color:var(--text3);display:none;padding:8px;">尚未上傳</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="form-group">
+                <label>選擇新 LOGO 圖片</label>
+                <input type="file" id="logoFile" accept="image/*" onchange="previewImage('logo',this)" style="font-size:13px;">
+                <span class="hint">支援 JPG、PNG、WebP，建議寬度 1400px 以上</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <button class="btn btn-primary btn-sm" onclick="uploadImageToGitHub('logo','LOGO.jpg')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  上傳 LOGO 到 GitHub
+                </button>
+                <div id="logoUploadStatus" style="font-size:12px;color:var(--text2);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Step 1 -->
       <div class="card" style="margin-bottom:16px;">
         <div class="card-header"><div class="card-title">☁️ Step 1 · Cloudinary 基本設定</div></div>
@@ -370,7 +398,25 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
               <div class="form-group"><label>顯示標題</label><input type="text" id="line-title" placeholder="加入 LINE 群組"></div>
               <div class="form-group"><label>說明文字</label><input type="text" id="line-desc" placeholder="掃描 QR Code 或點擊按鈕加入"></div>
               <div class="form-group"><label>LINE 連結網址（不顯示在前台）</label><input type="text" id="line-url" placeholder="https://line.me/R/ti/g/xxxxxxx"></div>
-              <div class="form-group"><label>QR Code 圖片路徑</label><input type="text" id="line-qr" placeholder="line-qr.jpg"></div>
+              <div class="form-group">
+                <label>QR Code 圖片</label>
+                <div style="display:flex;gap:12px;align-items:flex-start;margin-top:4px;">
+                  <div id="qrPreviewWrap" style="width:90px;height:90px;flex-shrink:0;background:var(--surface2);border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+                    <img id="qrPreview" src="line-qr.jpg" alt="QR" style="width:100%;height:100%;object-fit:contain;"
+                      onerror="this.style.display='none';document.getElementById('qrPreviewEmpty').style.display='block'">
+                    <span id="qrPreviewEmpty" style="font-size:10px;color:var(--text3);display:none;text-align:center;padding:4px;">尚未上傳</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+                    <input type="file" id="qrFile" accept="image/*" onchange="previewImage('qr',this)" style="font-size:12px;">
+                    <button class="btn btn-success btn-sm" onclick="uploadImageToGitHub('qr','line-qr.jpg')" style="width:fit-content;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      上傳 QR Code
+                    </button>
+                    <div id="qrUploadStatus" style="font-size:11px;color:var(--text2);"></div>
+                    <input type="hidden" id="line-qr" value="line-qr.jpg">
+                  </div>
+                </div>
+              </div>
               <div class="form-group"><label>提示文字</label><input type="text" id="line-hint" placeholder="手機用戶點擊按鈕可直接開啟 LINE"></div>
             </div>
           </div>
@@ -536,46 +582,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
         </div>
       </div>
 
-      <!-- 圖片上傳到 GitHub -->
-      <div class="card" style="margin-top:16px;">
-        <div class="card-header"><div class="card-title">🖼️ 上傳圖片到 GitHub</div></div>
-        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
-          <div class="info-box">
-            設定好 GitHub Token 後，可以直接在後台上傳 LOGO 和 LINE QR Code 到 GitHub，不需要手動上傳！
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <!-- LOGO 上傳 -->
-            <div style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;">
-              <div style="font-weight:600;font-size:13px;">🖼️ 網站 LOGO（頂部橫幅）</div>
-              <div id="logoPreviewWrap" style="background:var(--surface2);border-radius:8px;overflow:hidden;min-height:80px;display:flex;align-items:center;justify-content:center;">
-                <img id="logoPreview" src="" alt="" style="max-width:100%;max-height:120px;display:none;object-fit:contain;">
-                <span id="logoPreviewEmpty" style="font-size:12px;color:var(--text3);">尚未選擇圖片</span>
-              </div>
-              <input type="file" id="logoFile" accept="image/*" onchange="previewImage('logo',this)" style="font-size:12px;">
-              <button class="btn btn-primary btn-sm" onclick="uploadImageToGitHub('logo','LOGO.jpg')">
-                上傳 LOGO 到 GitHub
-              </button>
-              <div id="logoUploadStatus" style="font-size:12px;color:var(--text2);"></div>
-            </div>
-
-            <!-- LINE QR 上傳 -->
-            <div style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;">
-              <div style="font-weight:600;font-size:13px;">💚 LINE QR Code</div>
-              <div id="qrPreviewWrap" style="background:var(--surface2);border-radius:8px;overflow:hidden;min-height:80px;display:flex;align-items:center;justify-content:center;">
-                <img id="qrPreview" src="" alt="" style="max-width:100%;max-height:120px;display:none;object-fit:contain;">
-                <span id="qrPreviewEmpty" style="font-size:12px;color:var(--text3);">尚未選擇圖片</span>
-              </div>
-              <input type="file" id="qrFile" accept="image/*" onchange="previewImage('qr',this)" style="font-size:12px;">
-              <button class="btn btn-success btn-sm" onclick="uploadImageToGitHub('qr','line-qr.jpg')">
-                上傳 QR Code 到 GitHub
-              </button>
-              <div id="qrUploadStatus" style="font-size:12px;color:var(--text2);"></div>
-            </div>
-          </div>
-          <div class="hint">支援 JPG、PNG、WebP。LOGO 建議寬度 1400px 以上。上傳後前台約 30 秒生效。</div>
-        </div>
-      </div>
     </div>
 
     <!-- Display Settings -->
@@ -854,6 +860,15 @@ function showPanel(id,btn){
 
 // ── Cloudinary Form ──
 function loadCloudinaryForm(){
+  // 嘗試載入目前 LOGO 預覽
+  const logoImg = document.getElementById('logoPreview');
+  const logoEmpty = document.getElementById('logoPreviewEmpty');
+  if (logoImg) {
+    logoImg.src = 'LOGO.jpg?t=' + Date.now();
+    logoImg.style.display = 'block';
+    logoImg.onerror = () => { logoImg.style.display='none'; if(logoEmpty) logoEmpty.style.display='block'; };
+  }
+
   document.getElementById('cloudName').value=state.cloudName||'';
   document.getElementById('thumbSize').value=state.thumbSize||500;
   updateFetchBtn();
@@ -1334,6 +1349,15 @@ function toast(msg){
 const PLATFORMS = ['line','fb','ig','wa','email'];
 
 function initContactPanel() {
+  // 嘗試載入目前的 QR Code 預覽
+  const qrImg = document.getElementById('qrPreview');
+  const qrEmpty = document.getElementById('qrPreviewEmpty');
+  if (qrImg) {
+    qrImg.src = (state.contacts?.line?.qrImage) || 'line-qr.jpg';
+    qrImg.style.display = 'block';
+    qrImg.onerror = () => { qrImg.style.display='none'; if(qrEmpty) qrEmpty.style.display='block'; };
+  }
+
   const contacts = state.contacts || {};
   PLATFORMS.forEach(p => {
     const c   = contacts[p] || {};
