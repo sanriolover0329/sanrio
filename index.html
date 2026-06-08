@@ -40,6 +40,15 @@ img {
 /* 但按鈕和互動元素的圖片要恢復 pointer-events */
 button img, a img, .cf-btn img { pointer-events: auto; }
 
+/* AI 聊天框所有元素恢復正常互動 */
+.ai-quick-btn, .ai-input, .ai-send,
+.cf-btn, .modal-overlay, .modal-box,
+#aiModal *, #contactModal * {
+  pointer-events: all !important;
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+}
+
 /* 整體文字防選取（可選：讓瀏覽體驗更完整可拿掉） */
 .gallery, .card, .img-wrap {
   -webkit-user-select: none;
@@ -1320,11 +1329,17 @@ function openAiModal(aiCfg) {
   msgs.innerHTML = '';
   addAiBubble('bot', `嗨！我是 ${aiCfg.name || '小幫手'} ${aiCfg.avatar || '🤖'}<br>有任何問題都可以問我喔！`);
 
-  // 快速問題按鈕
+  // 快速問題按鈕（用 data 屬性，避免 onclick 字串引號衝突）
   const qbtns = document.getElementById('aiQuickBtns');
-  qbtns.innerHTML = aiQA.slice(0,5).map(q =>
-    `<button class="ai-quick-btn" onclick="handleAiQuick(${JSON.stringify(q.q)})">${q.q}</button>`
-  ).join('');
+  qbtns.innerHTML = '';
+  aiQA.slice(0, 5).forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'ai-quick-btn';
+    btn.textContent = q.q;
+    btn.dataset.question = q.q;
+    btn.addEventListener('click', () => handleAiQuick(q.q));
+    qbtns.appendChild(btn);
+  });
 
   document.getElementById('aiInput').value = '';
   document.getElementById('aiModal').classList.add('open');
