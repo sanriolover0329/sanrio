@@ -170,7 +170,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#f
     <div class="login-err" id="loginErr"></div>
     <div class="login-hint">
       預設密碼：<strong>admin888</strong><br>
-      可在登入後於「設定」中修改密碼
+      修改密碼後自動同步到 GitHub<br>
+      <span style="color:rgba(255,255,255,0.4);font-size:10px;">任何電腦都能使用同一組密碼</span>
     </div>
   </div>
 </div>
@@ -827,7 +828,13 @@ let selectedColor=COLORS[0];
 let state={cloudName:'',apiKey:'',baseFolder:'',thumbSize:500,categories:[],products:[]};
 
 function loadState(){
-  try{const s=localStorage.getItem('doll_shop_admin_v2');if(s)state={...state,...JSON.parse(s)};}catch(e){}
+  try{
+    const s=localStorage.getItem('doll_shop_admin_v2');
+    if(s) state={...state,...JSON.parse(s)};
+    // 也讀 localStorage 的舊密碼（相容舊版）
+    const oldPwd = localStorage.getItem('admin_pwd_hash');
+    if (oldPwd && !state.adminPwdHash) state.adminPwdHash = oldPwd;
+  }catch(e){}
 }
 function saveState(){
   localStorage.setItem('doll_shop_admin_v2',JSON.stringify(state));
@@ -1283,6 +1290,7 @@ function exportConfig() {
         .filter(p => p.name && p.name !== `娃娃 ${p.id}` && p.name !== p.id)
         .map(p => [p.id, p.name])
     ),
+    adminPwdHash: state.adminPwdHash || '',
     exportedAt: new Date().toISOString()
   };
 
@@ -1592,8 +1600,14 @@ async function syncToGitHub(silent = false) {
         .filter(p => p.name && p.name !== p.id && p.name !== `娃娃 ${p.id}`)
         .map(p => [p.id, p.name])
     ),
+    adminPwdHash: state.adminPwdHash || '',
     exportedAt: new Date().toISOString()
   };
+
+  // 若沒有密碼 hash，補上預設值
+  if (!cfg.adminPwdHash) {
+    cfg.adminPwdHash = await hashPassword('admin888');
+  }
 
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(cfg, null, 2))));
   const apiUrl  = `https://api.github.com/repos/${state.ghUser}/${state.ghRepo}/contents/config.json`;
@@ -1930,62 +1944,132 @@ function saveDisplaySettings() {
 }
 
 // ── Login ──
-const DEFAULT_PWD_HASH='9a4b8c2e1d6f3a7b5c0e8d2f4a6b1c3e'; // placeholder, real hash computed at runtime
+// ══════════════════════════════════════════════════════
+// 密碼系統 v2：密碼存在 GitHub config.json，任何電腦都能用
+// ══════════════════════════════════════════════════════
 
 function hashPassword(pwd){
-  // Simple but effective: SHA-256 via SubtleCrypto
   return crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd))
-    .then(buf=>Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+    .then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+}
+
+// 取得目前有效的密碼 hash（優先 GitHub，其次 localStorage，最後預設）
+async function getStoredHash() {
+  try {
+    if (state.adminPwdHash) return state.adminPwdHash;
+    const local = localStorage.getItem('admin_pwd_hash');
+    if (local) return local;
+    return await hashPassword('admin888');
+  } catch(e) {
+    return await hashPassword('admin888');
+  }
 }
 
 async function doLogin(){
-  const pwd=document.getElementById('loginPwd').value;
-  const errEl=document.getElementById('loginErr');
-  if(!pwd){errEl.textContent='請輸入密碼';return;}
-  const hash=await hashPassword(pwd);
-  const stored=localStorage.getItem('admin_pwd_hash');
-  // First time: use default password "admin888"
-  const defaultHash=await hashPassword('admin888');
-  const correct=stored?hash===stored:hash===defaultHash;
-  if(correct){
-    // Save session (valid for 8 hours)
-    sessionStorage.setItem('admin_authed', Date.now().toString());
-    document.getElementById('loginOverlay').classList.add('hidden');
-    errEl.textContent='';
-  }else{
-    errEl.textContent='密碼錯誤，請重試';
-    document.getElementById('loginPwd').value='';
-    document.getElementById('loginPwd').focus();
+  const pwd   = document.getElementById('loginPwd').value;
+  const errEl = document.getElementById('loginErr');
+  if (!pwd) { errEl.textContent = '請輸入密碼'; return; }
+
+  const loginBtn = document.querySelector('.login-btn');
+  if (loginBtn) { loginBtn.textContent = '驗證中…'; loginBtn.disabled = true; }
+
+  try {
+    // 從 GitHub 載入密碼（最多等 2 秒，超時就略過）
+    if (!state.adminPwdHash) {
+      await Promise.race([
+        loadPwdFromGitHub(),
+        new Promise(resolve => setTimeout(resolve, 2000))
+      ]);
+    }
+
+    const hash    = await hashPassword(pwd);
+    const stored  = await getStoredHash();
+    const correct = (hash === stored);
+
+    if (correct) {
+      sessionStorage.setItem('admin_authed', Date.now().toString());
+      document.getElementById('loginOverlay').classList.add('hidden');
+      errEl.textContent = '';
+    } else {
+      errEl.textContent = '密碼錯誤，請重試';
+      document.getElementById('loginPwd').value = '';
+      document.getElementById('loginPwd').focus();
+    }
+  } catch(e) {
+    // 任何錯誤都不卡住，用本地密碼驗證
+    const hash    = await hashPassword(pwd).catch(() => '');
+    const stored  = await getStoredHash().catch(() => '');
+    if (hash && hash === stored) {
+      sessionStorage.setItem('admin_authed', Date.now().toString());
+      document.getElementById('loginOverlay').classList.add('hidden');
+    } else {
+      errEl.textContent = '密碼錯誤，請重試';
+      document.getElementById('loginPwd').value = '';
+    }
+  } finally {
+    if (loginBtn) { loginBtn.textContent = '登入後台'; loginBtn.disabled = false; }
+  }
+}
+
+// 從 GitHub config.json 讀取密碼 hash（靜默失敗，不影響登入流程）
+async function loadPwdFromGitHub() {
+  if (!state.ghUser || !state.ghRepo || !state.ghToken) return;
+  try {
+    const apiUrl = `https://api.github.com/repos/${state.ghUser}/${state.ghRepo}/contents/config.json`;
+    const resp = await fetch(apiUrl, {
+      headers: { Authorization: `token ${state.ghToken}`, Accept: 'application/vnd.github.v3+json' },
+      signal: AbortSignal.timeout(3000) // 3秒超時
+    });
+    if (!resp.ok) return;
+    const data = await resp.json();
+    const decoded = atob(data.content.replace(/\n/g, ''));
+    const cfg = JSON.parse(decoded);
+    if (cfg.adminPwdHash) state.adminPwdHash = cfg.adminPwdHash;
+  } catch(e) {
+    // 靜默失敗：網路問題或 Token 未設定，繼續用本地密碼
   }
 }
 
 async function checkAuth(){
-  const authed=sessionStorage.getItem('admin_authed');
-  if(authed&&Date.now()-parseInt(authed)<8*60*60*1000){
+  const authed = sessionStorage.getItem('admin_authed');
+  if (authed && Date.now() - parseInt(authed) < 8 * 60 * 60 * 1000) {
     document.getElementById('loginOverlay').classList.add('hidden');
+    return;
   }
-  // else stays visible
+  // 嘗試從 GitHub 載入密碼（背景執行，不阻塞頁面）
+  loadPwdFromGitHub().catch(() => {});
 }
 
 async function changePassword(){
-  const current=prompt('請輸入目前的密碼：');
-  if(!current)return;
-  const currentHash=await hashPassword(current);
-  const stored=localStorage.getItem('admin_pwd_hash');
-  const defaultHash=await hashPassword('admin888');
-  const correct=stored?currentHash===stored:currentHash===defaultHash;
-  if(!correct){toast('目前密碼錯誤');return;}
-  const newPwd=prompt('請輸入新密碼（至少6位）：');
-  if(!newPwd||newPwd.length<6){toast('新密碼至少需要6位數');return;}
-  const confirm=prompt('請再次輸入新密碼確認：');
-  if(newPwd!==confirm){toast('兩次輸入的密碼不同');return;}
-  const newHash=await hashPassword(newPwd);
-  localStorage.setItem('admin_pwd_hash',newHash);
-  toast('✓ 密碼已更新');
+  const current = prompt('請輸入目前的密碼：');
+  if (!current) return;
+
+  const currentHash = await hashPassword(current);
+  const stored      = await getStoredHash();
+  if (currentHash !== stored) { toast('目前密碼錯誤'); return; }
+
+  const newPwd = prompt('請輸入新密碼（至少 6 位）：');
+  if (!newPwd || newPwd.length < 6) { toast('新密碼至少需要 6 位數'); return; }
+  const confirm = prompt('請再次輸入新密碼確認：');
+  if (newPwd !== confirm) { toast('兩次輸入的密碼不同'); return; }
+
+  const newHash = await hashPassword(newPwd);
+
+  // 同時存到 state + localStorage + GitHub
+  state.adminPwdHash = newHash;
+  localStorage.setItem('admin_pwd_hash', newHash);
+
+  // 同步到 GitHub（這樣任何電腦都能用新密碼）
+  if (state.ghUser && state.ghRepo && state.ghToken) {
+    const saved = await syncToGitHub(true);
+    toast('✓ 密碼已更新，並同步到 GitHub！任何電腦登入都會使用新密碼');
+  } else {
+    toast('✓ 密碼已更新（請設定 GitHub Token 以跨裝置同步）');
+  }
 }
 
 function logout(){
-  if(!confirm('確定要登出嗎？'))return;
+  if (!confirm('確定要登出嗎？')) return;
   sessionStorage.removeItem('admin_authed');
   location.reload();
 }
