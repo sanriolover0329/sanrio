@@ -45,16 +45,16 @@
   "contacts": {
     "line": {
       "enabled": true,
-      "title": "",
-      "desc": "",
-      "url": "",
+      "title": "歡迎加入 三麗鷗狂粉",
+      "desc": "掃描QR Code即可",
+      "url": "https://lin.ee/RJEWMld",
       "qrImage": "line-qr.jpg",
-      "hint": ""
+      "hint": "手機用戶直接點即可加入中毒日記喔"
     },
     "fb": {
-      "enabled": false,
-      "url": "",
-      "desc": ""
+      "enabled": true,
+      "url": "https://m.me/1090125860860982",
+      "desc": "點擊可私訊我"
     },
     "ig": {
       "enabled": false,
@@ -1112,5 +1112,5 @@
   ],
   "productNames": {},
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
-  "exportedAt": "2026-06-08T20:16:47.094Z"
+  "exportedAt": "2026-06-08T20:21:36.449Z"
 }
