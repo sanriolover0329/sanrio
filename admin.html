@@ -841,7 +841,7 @@ function showPanel(id,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
-  const titles={overview:'總覽',cloudinary:'Cloudinary 設定',categories:'分類管理',products:'商品管理'};
+  const titles={overview:'總覽',cloudinary:'Cloudinary 設定',categories:'分類管理',products:'商品管理',display:'展示設定',contact:'聯絡 & AI 設定',github:'GitHub 自動同步'};
   document.getElementById('pageTitle').textContent=titles[id]||id;
   if(id==='overview')renderOverview();
   if(id==='display')initDisplaySettings();
@@ -1360,8 +1360,12 @@ function initContactPanel() {
 }
 
 function togglePlatform(platform, enabled, silent) {
-  const fields = document.getElementById(platform+'-fields');
-  if (fields) fields.style.display = enabled ? 'flex' : 'none';
+  const fields = document.getElementById(platform + '-fields');
+  if (fields) {
+    fields.style.display = enabled ? 'flex' : 'none';
+    fields.style.flexDirection = 'column';
+    fields.style.gap = '8px';
+  }
 }
 
 function collectContacts() {
@@ -1544,14 +1548,18 @@ async function syncToGitHub(silent = false) {
   if (btn)  btn.disabled = true;
   if (text) text.textContent = '同步中…';
 
-  // 建立要儲存的 config 內容
+  // 建立要儲存的 config 內容（完整版，包含所有設定）
   const cfg = {
     cloudName:       state.cloudName,
     displayPageSize: state.displayPageSize || 50,
     displayCardSize: state.displayCardSize || 130,
     slogans:         state.slogans || [],
     sloganFontSize:  state.sloganFontSize || 14,
+    sloganStyle:     state.sloganStyle || 'C',
+    sloganColor:     state.sloganColor || '#c0325c',
     categories:      state.categories,
+    contacts:        state.contacts || {},
+    aiAssistant:     state.aiAssistant || {},
     productCategories: (state.products || [])
       .filter(p => p.category)
       .map(p => ({ id: p.id, category: p.category })),

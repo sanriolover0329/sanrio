@@ -248,7 +248,7 @@ button img, a img, .cf-btn img { pointer-events: auto; }
    JS 會動態計算 header 實際高度並設定 padding-top
    ════════════════════════════════════════ */
 #gallery-section {
-  padding-top: var(--header-h, 320px); /* fallback */
+  padding-top: var(--header-h, 380px); /* fallback - JS 會動態更新 */
 }
 .gallery-wrap {
   max-width: 1400px;
@@ -627,12 +627,51 @@ let lbIndex   = 0;
 let activeCategory = 'all';
 
 // ── 動態計算 fixed header 高度，讓商品區不被蓋住 ──
+let _headerObserver = null;
+
 function updateHeaderOffset() {
   const h = document.getElementById('fixed-header');
   const s = document.getElementById('gallery-section');
-  if (h && s) {
-    const height = h.getBoundingClientRect().height;
-    s.style.paddingTop = height + 'px';
+  if (!h || !s) return;
+  const height = h.getBoundingClientRect().height;
+  if (height > 0) {
+    s.style.paddingTop = (height + 4) + 'px'; // +4px 安全邊距
+  }
+}
+
+function startHeaderObserver() {
+  const h = document.getElementById('fixed-header');
+  if (!h) return;
+
+  // 立即計算一次
+  updateHeaderOffset();
+
+  // 用 ResizeObserver 監聽 header 高度變化（字體載入/圖片載入都會觸發）
+  if (_headerObserver) _headerObserver.disconnect();
+  _headerObserver = new ResizeObserver(() => {
+    updateHeaderOffset();
+  });
+  _headerObserver.observe(h);
+
+  // 額外保險：在多個時間點再算一次
+  // 字體通常在 100-500ms 後才完全載入
+  [50, 150, 300, 600, 1200].forEach(ms => {
+    setTimeout(updateHeaderOffset, ms);
+  });
+
+  // 圖片載入完成後再算一次
+  const logo = h.querySelector('.hero-logo-img');
+  if (logo) {
+    if (logo.complete) {
+      updateHeaderOffset();
+    } else {
+      logo.addEventListener('load', () => {
+        setTimeout(updateHeaderOffset, 50);
+      });
+      logo.addEventListener('error', () => {
+        setTimeout(updateHeaderOffset, 50);
+      });
+    }
   }
 }
 
@@ -647,37 +686,40 @@ async function fetchFromCloudinary() {
 
 // ── 從 GitHub 讀分類設定 ──
 async function fetchConfig() {
+  // ── 從 GitHub config.json 讀取（優先）──
+  let cfg = null;
   try {
     const resp = await fetch(CONFIG_URL + '?t=' + Date.now());
-    if (resp.ok) {
-      const cfg = await resp.json();
-      if (!cfg.categories || cfg.categories.length === 0) {
-        const local = localStorage.getItem('doll_shop_frontend');
-        if (local) {
-          const lc = JSON.parse(local);
-          if (lc.categories && lc.categories.length > 0) {
-            cfg.categories = lc.categories;
-            cfg.productCategories = (lc.products || []).filter(p => p.category).map(p => ({ id: p.id, category: p.category }));
-          }
-        }
-      }
-      return cfg;
-    }
+    if (resp.ok) cfg = await resp.json();
   } catch(e) {}
+
+  // ── 從 localStorage 讀取（備用或補充）──
+  let local = null;
   try {
-    const local = localStorage.getItem('doll_shop_frontend');
-    if (local) {
-      const lc = JSON.parse(local);
-      return {
-        categories: lc.categories || [],
-        displayPageSize: lc.displayPageSize || 50,
-        displayCardSize: lc.displayCardSize || 130,
-        productCategories: (lc.products || []).filter(p => p.category).map(p => ({ id: p.id, category: p.category })),
-        productNames: {}
-      };
-    }
+    const raw = localStorage.getItem('doll_shop_frontend');
+    if (raw) local = JSON.parse(raw);
   } catch(e) {}
-  return { categories: [], displayPageSize: 50, displayCardSize: 130 };
+
+  // ── 合併：config.json 為主，localStorage 補缺漏欄位 ──
+  const merged = {
+    // 顯示設定
+    displayPageSize:    cfg?.displayPageSize    || local?.displayPageSize    || 50,
+    displayCardSize:    cfg?.displayCardSize    || local?.displayCardSize    || 130,
+    // 標語
+    slogans:            cfg?.slogans?.length    ? cfg.slogans    : (local?.slogans    || []),
+    sloganFontSize:     cfg?.sloganFontSize     || local?.sloganFontSize     || 14,
+    sloganStyle:        cfg?.sloganStyle        || local?.sloganStyle        || 'C',
+    sloganColor:        cfg?.sloganColor        || local?.sloganColor        || '#c0325c',
+    // 分類
+    categories:         cfg?.categories?.length ? cfg.categories : (local?.categories || []),
+    productCategories:  cfg?.productCategories  || local?.productCategories  || [],
+    productNames:       cfg?.productNames       || local?.productNames       || {},
+    // 聯絡
+    contacts:           cfg?.contacts           || local?.contacts           || {},
+    aiAssistant:        cfg?.aiAssistant        || local?.aiAssistant        || {},
+  };
+
+  return merged;
 }
 
 // ── 從 public_id 萃取商品編號 ──
@@ -720,7 +762,7 @@ function showError(msg) {
       <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">${msg}</div>
       <button onclick="init()" style="padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:var(--sans);">重試</button>
     </div>`;
-  updateHeaderOffset();
+  setTimeout(updateHeaderOffset, 100);
 }
 
 // ── 主初始化 ──
@@ -826,8 +868,8 @@ function renderApp() {
       </div>
     </div>`;
 
-  // 計算 header 高度，讓商品不被蓋住
-  updateHeaderOffset();
+  // 啟動 header 高度監聽（ResizeObserver + 多時間點）
+  startHeaderObserver();
   // 視窗改變時重新計算
   window.addEventListener('resize', updateHeaderOffset);
 
