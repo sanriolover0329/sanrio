@@ -11,7 +11,7 @@
   ],
   "sloganFontSize": 16,
   "sloganStyle": "C",
-  "sloganColor": "#c0325c",
+  "sloganColor": "#ff9a3c",
   "categories": [
     {
       "id": "cat_1780730126274",
@@ -1111,5 +1111,5 @@
     }
   ],
   "productNames": {},
-  "exportedAt": "2026-06-08T09:57:15.342Z"
+  "exportedAt": "2026-06-08T09:57:28.233Z"
 }
