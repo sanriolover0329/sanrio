@@ -74,7 +74,7 @@
   },
   "aiAssistant": {
     "enabled": true,
-    "name": "三麗鷗 狂熱者",
+    "name": "三麗鷗 狂熱AI助手",
     "avatar": "🤖",
     "qa": [
       {
@@ -1142,5 +1142,5 @@
   ],
   "productNames": {},
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
-  "exportedAt": "2026-06-08T20:32:03.401Z"
+  "exportedAt": "2026-06-08T20:41:11.578Z"
 }
