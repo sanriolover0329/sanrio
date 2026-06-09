@@ -840,10 +840,71 @@ function loadState(){
   try{
     const s=localStorage.getItem('doll_shop_admin_v2');
     if(s) state={...state,...JSON.parse(s)};
-    // 也讀 localStorage 的舊密碼（相容舊版）
     const oldPwd = localStorage.getItem('admin_pwd_hash');
     if (oldPwd && !state.adminPwdHash) state.adminPwdHash = oldPwd;
   }catch(e){}
+}
+
+// 從 GitHub config.json 讀取非敏感設定（Token 除外）
+async function loadStateFromGitHub() {
+  // 需要 Token 才能讀（或用公開 URL 讀）
+  const ghUser = state.ghUser;
+  const ghRepo = state.ghRepo;
+  if (!ghUser || !ghRepo) return;
+
+  try {
+    // 先試用公開 URL（不需要 Token，Public repo 才能用）
+    const publicUrl = 'https://' + ghUser + '.github.io/' + ghRepo + '/config.json?t=' + Date.now();
+    const resp = await fetch(publicUrl);
+    if (!resp.ok) throw new Error('public fetch failed');
+    const cfg = await resp.json();
+    mergeConfigToState(cfg);
+    return;
+  } catch(e) {}
+
+  // 改用 GitHub API（需要 Token）
+  if (!state.ghToken) return;
+  try {
+    const apiUrl = 'https://api.github.com/repos/' + ghUser + '/' + ghRepo + '/contents/config.json';
+    const resp = await fetch(apiUrl, {
+      headers: { Authorization: 'token ' + state.ghToken, Accept: 'application/vnd.github.v3+json' },
+      signal: AbortSignal.timeout(4000)
+    });
+    if (!resp.ok) return;
+    const data = await resp.json();
+    const cfg = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    mergeConfigToState(cfg);
+  } catch(e) {}
+}
+
+function mergeConfigToState(cfg) {
+  // 只合併非敏感的設定（不覆蓋 Token）
+  const safe = ['cloudName','baseFolder','thumbSize','adminPwdHash',
+    'displayPageSize','displayCardSize','slogans','sloganFontSize',
+    'sloganStyle','sloganColor','categories','contacts','aiAssistant'];
+  safe.forEach(k => {
+    if (cfg[k] !== undefined && cfg[k] !== null) {
+      // 只有本地沒有才覆蓋（保留本地修改）
+      const localEmpty = !state[k] ||
+        (Array.isArray(state[k]) && state[k].length === 0) ||
+        (typeof state[k] === 'object' && !Array.isArray(state[k]) && Object.keys(state[k]).length === 0) ||
+        state[k] === '' || state[k] === 0;
+      if (localEmpty) state[k] = cfg[k];
+    }
+  });
+  // 合併商品分類對應
+  if (cfg.productCategories && state.products.length > 0) {
+    const cm = {};
+    cfg.productCategories.forEach(pc => { cm[pc.id] = pc.category; });
+    state.products = state.products.map(p => ({
+      ...p, category: cm[p.id] || p.category || ''
+    }));
+  }
+  saveState();
+  updateStats();
+  updateFilterDropdowns();
+  updateSyncBtn();
+  updateFetchBtn();
 }
 function saveState(){
   localStorage.setItem('doll_shop_admin_v2',JSON.stringify(state));
@@ -2050,6 +2111,8 @@ async function doLogin(){
       sessionStorage.setItem('admin_authed', Date.now().toString());
       document.getElementById('loginOverlay').classList.add('hidden');
       errEl.textContent = '';
+      // 登入成功：從 GitHub 同步最新設定
+      setTimeout(() => loadStateFromGitHub(), 300);
     } else {
       errEl.textContent = '密碼錯誤，請重試';
       document.getElementById('loginPwd').value = '';
@@ -2094,9 +2157,11 @@ async function checkAuth(){
   const authed = sessionStorage.getItem('admin_authed');
   if (authed && Date.now() - parseInt(authed) < 8 * 60 * 60 * 1000) {
     document.getElementById('loginOverlay').classList.add('hidden');
+    // 已登入：背景同步 GitHub 最新設定
+    setTimeout(() => loadStateFromGitHub(), 500);
     return;
   }
-  // 嘗試從 GitHub 載入密碼（背景執行，不阻塞頁面）
+  // 未登入：背景載入密碼
   loadPwdFromGitHub().catch(() => {});
 }
 
