@@ -716,6 +716,10 @@
       "category": "cat_1780730126274"
     },
     {
+      "id": "B2",
+      "category": "cat_1780730126274"
+    },
+    {
       "id": "B3",
       "category": "cat_1780730126274"
     },
@@ -1142,5 +1146,5 @@
   ],
   "productNames": {},
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
-  "exportedAt": "2026-06-10T16:14:31.185Z"
+  "exportedAt": "2026-06-10T16:15:20.695Z"
 }
