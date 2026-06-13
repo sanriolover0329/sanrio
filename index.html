@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>三麗鷗中毒日記</title>
+<meta name="description" content="精選三麗鷗娃娃收藏，每天都被三麗鷗治癒中♡">
+<meta name="theme-color" content="#e8608a">
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="三麗鷗中毒日記">
+<meta property="og:description" content="精選三麗鷗娃娃收藏，每天都被三麗鷗治癒中♡">
+<meta property="og:image"       content="LOGO.jpg">
+<meta property="og:locale"      content="zh_TW">
+<!-- Favicon（用 LOGO）-->
+<link rel="icon" type="image/jpeg" href="LOGO.jpg">
+<link rel="apple-touch-icon"       href="LOGO.jpg">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono&display=swap');
 
@@ -615,10 +626,46 @@ button img, a img, .cf-btn img { pointer-events: auto; }
   #lbPrev { left: 6px; } #lbNext { right: 6px; }
   .lb-nav { width: 36px; height: 36px; font-size: 16px; }
 }
+
+/* ── 頁面載入進度條 ── */
+#pageProgress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; z-index: 99999;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.3s ease, opacity 0.5s ease;
+  opacity: 1;
+  pointer-events: none;
+}
+#pageProgress.done { transform: scaleX(1); opacity: 0; }
+
+
+/* ── 分類數量 badge ── */
+.cat-count-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-family: var(--mono);
+  background: var(--surface2);
+  color: var(--text3);
+  border-radius: 10px;
+  padding: 0px 6px;
+  margin-left: 3px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 16px;
+  vertical-align: middle;
+}
+.cat-tab.active .cat-count-badge {
+  background: rgba(255,255,255,0.25);
+  color: var(--accent);
+}
+
 </style>
 </head>
 <body>
 
+<div id="pageProgress"></div>
 <div id="fixed-header">
   <!-- Hero + Search + Categories injected here by JS -->
 </div>
@@ -811,6 +858,7 @@ function buildFullUrl(product) {
 
 // ── Loading 畫面 ──
 function showLoading() {
+  progressStart();
   document.getElementById('fixed-header').innerHTML = '';
   document.getElementById('gallery-section').innerHTML = `
     <div style="text-align:center;padding:80px 20px;">
@@ -822,6 +870,7 @@ function showLoading() {
 
 // ── 錯誤畫面 ──
 function showError(msg) {
+  progressDone();
   document.getElementById('gallery-section').innerHTML = `
     <div style="max-width:480px;margin:60px auto;text-align:center;padding:40px 24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;">
       <div style="font-size:3rem;margin-bottom:12px;">😢</div>
@@ -879,6 +928,7 @@ async function init() {
     config.aiAssistant    = cfg.aiAssistant || {};
 
     renderApp();
+    progressDone();
     // 等 DOM 渲染完再初始化標語
     setTimeout(() => initSlogans(cfg), 100);
     initContactFloat(cfg);
@@ -917,12 +967,16 @@ function renderApp() {
 
     <div class="cat-scroll">
       <div class="cat-inner" id="catTabs">
-        <button class="cat-tab active" data-cat="all">全部商品</button>
-        ${cats.map(c => `
-          <button class="cat-tab" data-cat="${c.id}">
+        <button class="cat-tab active" data-cat="all">
+          全部商品 <span class="cat-count-badge">${total}</span>
+        </button>
+        ${cats.map(c => {
+          const cnt = config.products.filter(p => p.category === c.id && p.visible !== false).length;
+          return `<button class="cat-tab" data-cat="${c.id}">
             <span class="cat-dot" style="background:${c.color}"></span>
-            ${c.name}
-          </button>`).join('')}
+            ${c.name} <span class="cat-count-badge">${cnt}</span>
+          </button>`;
+        }).join('')}
       </div>
     </div>`;
 
@@ -1084,16 +1138,33 @@ function rotateSlogans() {
   if (sloganList.length > 1) sloganTimer = setInterval(show, 4500);
 }
 
+// 目前搜尋關鍵字（供卡片高亮使用）
+let searchQuery = '';
+
+function highlightText(text, query) {
+  if (!query || query.length < 1) return text;
+  const escaped = query.replace(/[-.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('(' + escaped + ')', 'gi'),
+    '<span style="background:#fde68a;color:#92400e;border-radius:2px;padding:0 1px;">$1</span>');
+}
+
 function applyFilters() {
   const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+  searchQuery = q;
+  const sort = document.getElementById('sortSelect')?.value || 'id';
+
   filtered = config.products.filter(p => {
     const matchCat = activeCategory === 'all' || p.category === activeCategory;
-    // 搜尋：同時比對 id 和 name，大小寫不分
-    const pid = (p.id || '').toLowerCase();
+    const pid   = (p.id   || '').toLowerCase();
     const pname = (p.name || '').toLowerCase();
     const matchQ = !q || pid.includes(q) || pname.includes(q);
     return matchCat && matchQ && p.visible !== false;
   });
+
+  // 排序
+  if (sort === 'newest') {
+    filtered = [...filtered].sort((a, b) => (b.created_at || '') > (a.created_at || '') ? 1 : -1);
+  }
   currentPage = 0;
   const g = document.getElementById('gallery');
   if (g) g.innerHTML = '';
@@ -1132,12 +1203,12 @@ function renderPage() {
     card.innerHTML = `
       <div class="img-wrap">
         <div class="skeleton"></div>
-        <img src="${imgUrl}" alt="${p.name || p.id}">
+        <img src="${imgUrl}" alt="${p.name || p.id}" loading="lazy">
         <div class="overlay"><span class="overlay-hint">點擊放大 🔍</span></div>
       </div>
       <div class="card-info">
         <div class="card-id">No. ${p.id}</div>
-        <div class="card-name">${p.name || p.id}</div>
+        <div class="card-name">${highlightText(p.name || p.id, searchQuery)}</div>
         ${cat
           ? `<span class="card-cat-badge" style="background:${cat.color}18;color:${cat.color};border:1px solid ${cat.color}33;"><span style="width:6px;height:6px;border-radius:50%;background:${cat.color};display:inline-block;margin-right:2px;"></span>${cat.name}</span>`
           : '<span class="card-cat-badge" style="background:var(--surface2);color:var(--text3);">未分類</span>'}
@@ -1152,8 +1223,8 @@ function renderPage() {
       wrap.classList.add('img-loaded');
       img.style.display = 'none';
       const ph = document.createElement('div');
-      ph.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--text3);font-size:12px;';
-      ph.innerHTML = '<span style="font-size:2rem">🧸</span>' + p.id;
+      ph.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:linear-gradient(135deg,#fff0f3,#fce8ef);';
+      ph.innerHTML = '<span style=\'font-size:1.8rem;opacity:.45;\'>🧸</span><span style=\'font-size:10px;font-family:var(--mono);color:var(--text3);\'>'+p.id+'</span>';
       wrap.appendChild(ph);
     });
     card.addEventListener('click', () => openLightbox(start + i));
@@ -1202,6 +1273,26 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; updateLightbox(); }
   if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % filtered.length; updateLightbox(); }
 });
+
+// 手機觸控左右滑動切換
+(function() {
+  let touchStartX = 0, touchStartY = 0;
+  const lb = document.getElementById('lightbox');
+  lb.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    if (!lb.classList.contains('open')) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx < 0) { lbIndex = (lbIndex + 1) % filtered.length; }
+      else         { lbIndex = (lbIndex - 1 + filtered.length) % filtered.length; }
+      updateLightbox();
+    }
+  }, { passive: true });
+})();
 
 // ── Scroll to top ──
 window.addEventListener('scroll', () => {
@@ -1486,6 +1577,23 @@ document.addEventListener('keydown', e => {
   setInterval(() => { console.clear(); }, 3000);
 
 })();
+
+
+// ── 頁面載入進度條 ──
+function progressStart() {
+  const el = document.getElementById('pageProgress');
+  if (!el) return;
+  el.style.transition = 'transform 2s ease';
+  el.style.transform = 'scaleX(0.7)';
+  el.style.opacity = '1';
+}
+function progressDone() {
+  const el = document.getElementById('pageProgress');
+  if (!el) return;
+  el.style.transition = 'transform 0.3s ease, opacity 0.6s ease 0.3s';
+  el.style.transform = 'scaleX(1)';
+  setTimeout(() => { el.style.opacity = '0'; }, 300);
+}
 
 // ── Start ──
 init();
