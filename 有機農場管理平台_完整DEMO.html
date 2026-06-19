@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>有機作物生產管理平台 2.0 — 客戶展示 DEMO</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g50:#EAF3DE;--g100:#C0DD97;--g200:#97C459;--g400:#639922;--g600:#3B6D11;--g800:#27500A;
+  --t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;
+  --a50:#FAEEDA;--a100:#FAC775;--a200:#EF9F27;--a400:#BA7517;--a600:#854F0B;
+  --c50:#FAECE7;--c100:#F5C4B3;--c200:#F0997B;--c400:#D85A30;--c600:#993C1D;
+  --b50:#E6F1FB;--b100:#B5D4F4;--b400:#378ADD;--b600:#185FA5;
+  --p50:#EEEDFE;--p100:#CECBF6;--p400:#7F77DD;--p600:#534AB7;
+  --gr50:#F1EFE8;--gr100:#D3D1C7;--gr400:#888780;--gr600:#5F5E5A;--gr800:#444441;
+  --red:#E24B4A;
+  --bg:#f5f8f2;--card:#fff;--border:#e4eada;--text:#1e2618;--muted:#6b7560;
+  --r8:8px;--r12:12px;--r16:16px;
+  font-family:'Noto Sans TC',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── TOP NAV ── */
+#topnav{background:#fff;border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;padding:0 20px;gap:0;position:sticky;top:0;z-index:200;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--g600);margin-right:28px;white-space:nowrap}
+.logo svg{width:34px;height:34px;flex-shrink:0}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+.nav-tab{padding:7px 14px;border-radius:var(--r8);font-size:13.5px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:inherit;white-space:nowrap;transition:.14s}
+.nav-tab:hover{background:var(--g50);color:var(--g600)}
+.nav-tab.on{background:var(--g50);color:var(--g600);font-weight:600}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.bell-btn{width:34px;height:34px;border-radius:var(--r8);border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.bell-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--c400);border:1.5px solid #fff}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--g600)}
+.ver-badge{font-size:11px;font-weight:700;background:var(--g400);color:#fff;padding:2px 8px;border-radius:20px}
+
+/* ── LAYOUT ── */
+#wrap{display:flex;min-height:calc(100vh - 58px)}
+#sidebar{width:210px;background:#fff;border-right:1px solid var(--border);padding:16px 10px;flex-shrink:0;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto}
+.sb-group{font-size:10.5px;color:var(--gr400);font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:12px 8px 5px;margin-top:6px}
+.sb-group:first-child{margin-top:0}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--r8);font-size:13.5px;color:var(--muted);cursor:pointer;transition:.13s;margin-bottom:1px}
+.sb-item svg{width:17px;height:17px;flex-shrink:0;opacity:.7}
+.sb-item:hover{background:var(--gr50)}
+.sb-item.on{background:var(--g50);color:var(--g600);font-weight:600}
+.sb-item.on svg{opacity:1}
+.sb-pill{margin-left:auto;background:var(--c400);color:#fff;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:20px;min-width:18px;text-align:center}
+.sb-new{margin-left:auto;background:var(--b50);color:var(--b600);font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px}
+
+#main{flex:1;padding:26px 28px;overflow-x:hidden;max-width:1080px}
+
+/* ── PAGE ── */
+.page{display:none}.page.on{display:block}
+.ph{margin-bottom:22px}
+.pt{font-size:21px;font-weight:700;color:#111d0a}
+.ps{font-size:13px;color:var(--muted);margin-top:3px}
+
+/* ── ALERTS ── */
+.alert{display:flex;gap:10px;padding:12px 16px;border-radius:var(--r8);margin-bottom:18px;align-items:flex-start;font-size:13px;line-height:1.55}
+.alert-r{background:var(--c50);border:1px solid var(--c100);color:var(--c600)}
+.alert-y{background:var(--a50);border:1px solid var(--a100);color:var(--a400)}
+.alert-g{background:var(--g50);border:1px solid var(--g100);color:var(--g600)}
+.alert-b{background:var(--b50);border:1px solid var(--b100);color:var(--b600)}
+.alert svg{flex-shrink:0;margin-top:1px}
+
+/* ── STAT CARDS ── */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:var(--r12);padding:18px 18px 14px;transition:.18s}
+.sc:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.sc-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.ic-g{background:var(--g50)} .ic-t{background:var(--t50)} .ic-a{background:var(--a50)} .ic-c{background:var(--c50)} .ic-b{background:var(--b50)} .ic-p{background:var(--p50)}
+.sc-lbl{font-size:11.5px;color:var(--muted);font-weight:500;letter-spacing:.03em}
+.sc-val{font-size:26px;font-weight:700;color:#111d0a;line-height:1.1;margin-top:5px}
+.sc-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.up{color:var(--g600)} .dn{color:var(--c400)}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r12);padding:20px 22px;margin-bottom:18px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ct{font-size:14.5px;font-weight:600;color:#111d0a}
+.ca{font-size:12.5px;color:var(--g600);cursor:pointer;padding:5px 12px;border-radius:var(--r8);border:1px solid var(--g100);background:var(--g50);font-weight:500;transition:.14s;white-space:nowrap}
+.ca:hover{background:var(--g100)}
+.btn{padding:8px 18px;border-radius:var(--r8);font-size:13.5px;font-weight:500;cursor:pointer;font-family:inherit;border:none;transition:.15s;white-space:nowrap}
+.btn-g{background:var(--g400);color:#fff} .btn-g:hover{background:var(--g600)}
+.btn-o{background:var(--g50);color:var(--g600);border:1px solid var(--g100)} .btn-o:hover{background:var(--g100)}
+.btn-r{background:var(--c50);color:var(--c600);border:1px solid var(--c100)}
+.btn-b{background:var(--b50);color:var(--b600);border:1px solid var(--b100)}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;padding:0 12px 10px;text-transform:uppercase;border-bottom:1.5px solid var(--g50)}
+td{padding:11px 12px;border-bottom:1px solid #f5f5f0;vertical-align:middle;color:#2a3020}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafdf6}
+
+/* ── BADGE ── */
+.bdg{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.bdg-g{background:var(--g50);color:var(--g600)} .bdg-t{background:var(--t50);color:var(--t600)}
+.bdg-a{background:var(--a50);color:var(--a400)} .bdg-c{background:var(--c50);color:var(--c600)}
+.bdg-gr{background:var(--gr50);color:var(--gr600)} .bdg-b{background:var(--b50);color:var(--b600)}
+.bdg-p{background:var(--p50);color:var(--p600)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ── PROGRESS BAR ── */
+.prog{display:flex;gap:3px;align-items:center}
+.ps-step{height:5px;flex:1;border-radius:3px;background:#eef2e8}
+.ps-done{background:var(--g400)} .ps-cur{background:var(--a200)} .ps-late{background:var(--c200)}
+
+/* ── CHART ── */
+.cw{position:relative;width:100%;height:220px}
+.cw-sm{height:170px}
+
+/* ── TIMELINE ── */
+.tl{padding-left:22px;position:relative}
+.tl::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:#e4eada}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-dot{position:absolute;left:-19px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;background:var(--g400)}
+.tl-dot.warn{background:var(--a200)} .tl-dot.late{background:var(--c200)} .tl-dot.dim{background:#dde8d5;border-color:#dde8d5}
+.tl-date{font-size:11px;color:var(--muted);margin-bottom:2px}
+.tl-title{font-size:13.5px;font-weight:600;color:#111d0a}
+.tl-body{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.6}
+
+/* ── FARMER CARD ── */
+.fc{background:#fff;border:1px solid var(--border);border-radius:var(--r12);padding:16px;display:flex;gap:12px;cursor:pointer;transition:.16s}
+.fc:hover{box-shadow:0 2px 10px rgba(0,0,0,.08);border-color:var(--g100)}
+.fa{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.fi{flex:1}
+.fn{font-size:14px;font-weight:600;color:#111d0a}
+.fm{font-size:11.5px;color:var(--muted);margin-top:3px}
+.ftags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.ftag{font-size:11px;background:var(--g50);color:var(--g600);padding:2px 8px;border-radius:20px}
+
+/* ── TOGGLE ── */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #f5f5f0}
+.trow:last-child{border-bottom:none}
+.tinfo{flex:1;margin-right:16px}
+.tname{font-size:13.5px;font-weight:500;color:#111d0a}
+.tdesc{font-size:12px;color:var(--muted);margin-top:2px}
+.tog{width:38px;height:22px;border-radius:11px;background:#dde8d5;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
+.tog.on{background:var(--g400)}
+.tog::after{content:'';position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:2.5px;left:2.5px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.tog.on::after{left:18.5px}
+
+/* ── FEATURE CARDS ── */
+.feat{background:#fff;border:1px solid var(--border);border-radius:var(--r12);padding:18px;text-align:center;transition:.2s;position:relative}
+.feat:hover{box-shadow:0 3px 14px rgba(0,0,0,.09);transform:translateY(-2px)}
+.feat-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.feat-t{font-size:13.5px;font-weight:600;color:#111d0a;margin-bottom:5px}
+.feat-d{font-size:12px;color:var(--muted);line-height:1.6}
+.feat-new{position:absolute;top:10px;right:10px;background:var(--b400);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+
+/* ── SECURITY CARD ── */
+.sec-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #f5f5f0;align-items:flex-start}
+.sec-item:last-child{border-bottom:none}
+.sec-lv{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.lv-h{background:var(--c50);color:var(--c600)} .lv-m{background:var(--a50);color:var(--a400)} .lv-l{background:var(--g50);color:var(--g600)}
+.sec-body{flex:1}
+.sec-title{font-size:13.5px;font-weight:600;color:#111d0a}
+.sec-desc{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.6}
+.sec-fix{font-size:12px;color:var(--b600);background:var(--b50);padding:3px 10px;border-radius:20px;margin-top:6px;display:inline-block;border:1px solid var(--b100)}
+
+/* ── PHONE FRAME ── */
+.phone{background:#1c1c1e;border-radius:34px;padding:10px;width:198px;flex-shrink:0;box-shadow:0 10px 36px rgba(0,0,0,.22)}
+.pscreen{background:#f5f8f2;border-radius:26px;overflow:hidden}
+.pbar{background:#fff;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);font-size:10.5px}
+.prow{display:flex;gap:6px;padding:5px 8px}
+.pcell{flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px;text-align:center}
+.pcell-val{font-size:16px;font-weight:700}
+.pcell-lbl{font-size:9.5px;color:var(--muted);margin-top:2px}
+.pbtn{background:var(--g400);color:#fff;font-size:11px;font-weight:600;padding:9px 12px;border-radius:8px;margin:6px 8px;display:flex;align-items:center;gap:5px;cursor:pointer}
+
+/* ── QR DEMO ── */
+.qr-box{background:#fff;border:1px solid var(--border);border-radius:var(--r12);padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.qr-svg{width:110px;height:110px}
+.qr-label{font-size:12px;color:var(--muted)}
+.qr-id{font-size:13px;font-weight:600;color:var(--g600)}
+
+/* ── LINE DEMO ── */
+.line-msg{background:#f5f5f5;border-radius:12px 12px 12px 2px;padding:10px 14px;font-size:12.5px;max-width:85%;line-height:1.6;color:#1a1a1a}
+.line-msg-r{background:#3CB371;color:#fff;border-radius:12px 12px 2px 12px;margin-left:auto;text-align:right}
+.line-time{font-size:10px;color:#aaa;margin:3px 0 6px 6px}
+
+/* ── IOT SENSOR ── */
+.iot-sensor{background:var(--gr50);border:1px solid var(--gr100);border-radius:var(--r8);padding:12px 14px;display:flex;align-items:center;gap:12px}
+.iot-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.iot-val{font-size:20px;font-weight:700;color:#111d0a}
+.iot-lbl{font-size:11.5px;color:var(--muted)}
+.iot-status{margin-left:auto;width:8px;height:8px;border-radius:50%}
+.sts-ok{background:#639922} .sts-warn{background:#BA7517} .sts-err{background:#D85A30}
+
+/* ── ROADMAP ── */
+.rm-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f5f5f0;align-items:flex-start}
+.rm-item:last-child{border-bottom:none}
+.rm-phase{width:70px;flex-shrink:0;text-align:center}
+.rm-circle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:12px;font-weight:700}
+.rm-month{font-size:10.5px;color:var(--muted)}
+.rm-body{flex:1}
+.rm-title{font-size:13.5px;font-weight:600;color:#111d0a;margin-bottom:4px}
+.rm-tasks{display:flex;flex-wrap:wrap;gap:5px}
+.rm-task{font-size:11.5px;padding:2px 9px;border-radius:20px}
+
+/* ── INPUT ── */
+input[type=text],input[type=search],select,textarea{font-family:inherit;font-size:13.5px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r8);outline:none;color:var(--text);background:#fff;transition:.13s}
+input[type=text]:focus,input[type=search]:focus,select:focus{border-color:var(--g400);box-shadow:0 0 0 2px rgba(99,153,34,.12)}
+
+/* ── MISC ── */
+.new-tag{background:var(--b400);color:#fff;font-size:10px;font-weight:700;padding:1.5px 6px;border-radius:20px;margin-left:5px;vertical-align:middle}
+.section-divider{height:1px;background:var(--border);margin:20px 0}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state svg{margin-bottom:10px;opacity:.3}
+.pct-bar{background:#eef2e8;border-radius:4px;height:6px;overflow:hidden;margin-top:4px}
+.pct-fill{height:100%;border-radius:4px;background:var(--g400);transition:.4s}
+
+@media(max-width:900px){
+  .sg{grid-template-columns:1fr 1fr}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  #sidebar{display:none}
+  #main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav id="topnav">
+  <div class="logo">
+    <svg viewBox="0 0 34 34" fill="none">
+      <rect width="34" height="34" rx="10" fill="#3B6D11"/>
+      <path d="M8 24C8 24 10 15 17 13C24 11 26 17 26 19" stroke="#C0DD97" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M17 13C17 13 15 7.5 13 8.5" stroke="#9FE1CB" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <path d="M17 13C17 13 19 7.5 21 8.5" stroke="#9FE1CB" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <path d="M8 26L26 26" stroke="#C0DD97" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    農友現場工作平台
+    <span class="ver-badge">v2.0</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab on" onclick="goPage('dashboard',this)">📊 總覽</button>
+    <button class="nav-tab" onclick="goPage('farmers',this)">👩‍🌾 農友管理</button>
+    <button class="nav-tab" onclick="goPage('grow',this)">🌱 生產情報</button>
+    <button class="nav-tab" onclick="goPage('certify',this)">✅ 驗證管理</button>
+    <button class="nav-tab" onclick="goPage('analysis',this)">📈 數據分析</button>
+    <button class="nav-tab" onclick="goPage('iot',this)">🌡️ IoT 感測 <span class="new-tag">NEW</span></button>
+    <button class="nav-tab" onclick="goPage('traceability',this)">🔍 產銷履歷 <span class="new-tag">NEW</span></button>
+    <button class="nav-tab" onclick="goPage('mobile',this)">📱 行動端</button>
+    <button class="nav-tab" onclick="goPage('security',this)">🔐 安全升級</button>
+    <button class="nav-tab" onclick="goPage('roadmap',this)">🗺️ 升級藍圖</button>
+  </div>
+  <div class="nav-right">
+    <div class="bell-btn">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5F5E5A" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="bell-dot"></div>
+    </div>
+    <div class="avatar">沛芳</div>
+  </div>
+</nav>
+
+<div id="wrap">
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-group">主要功能</div>
+  <div class="sb-item on" onclick="goPage('dashboard',null,'dashboard')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    系統總覽
+  </div>
+  <div class="sb-item" onclick="goPage('farmers',null,'farmers')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    農友資料管理
+  </div>
+  <div class="sb-item" onclick="goPage('grow',null,'grow')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22V12M12 12C12 12 7 10 5 5C9 5 12 8 12 12ZM12 12C12 12 17 10 19 5C15 5 12 8 12 12Z"/></svg>
+    生產情報
+    <span class="sb-pill">3</span>
+  </div>
+  <div class="sb-item" onclick="goPage('certify',null,'certify')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    驗證管理
+  </div>
+  <div class="sb-item" onclick="goPage('analysis',null,'analysis')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    數據分析
+  </div>
+  <div class="sb-group">新功能模組</div>
+  <div class="sb-item" onclick="goPage('iot',null,'iot')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg>
+    IoT 感測器
+    <span class="sb-new">NEW</span>
+  </div>
+  <div class="sb-item" onclick="goPage('traceability',null,'traceability')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    產銷履歷 QR
+    <span class="sb-new">NEW</span>
+  </div>
+  <div class="sb-item" onclick="goPage('mobile',null,'mobile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    行動端預覽
+  </div>
+  <div class="sb-group">系統設定</div>
+  <div class="sb-item" onclick="goPage('security',null,'security')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    安全性升級
+    <span class="sb-pill" style="background:var(--c400)">4</span>
+  </div>
+  <div class="sb-item" onclick="goPage('roadmap',null,'roadmap')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    升級藍圖
+  </div>
+</aside>
+
+<main id="main">
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<div id="pg-dashboard" class="page on">
+  <div class="ph">
+    <div class="pt">系統總覽</div>
+    <div class="ps">2026年6月18日 · 沛芳有機綜合農場 · 歡迎回來 👋</div>
+  </div>
+  <div class="alert alert-r">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div><strong>3 筆生產情報</strong>超過 8 天未更新，請儘速填寫或聯繫農友。<span style="margin-left:8px;text-decoration:underline;cursor:pointer;font-weight:500" onclick="goPage('grow',null,'grow')">立即查看</span></div>
+  </div>
+  <div class="sg">
+    <div class="sc">
+      <div class="sc-ico ic-g"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <div class="sc-lbl">在籍農友</div>
+      <div class="sc-val">48</div>
+      <div class="sc-sub"><span class="up">+3</span> 本月新增</div>
+    </div>
+    <div class="sc">
+      <div class="sc-ico ic-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><path d="M12 22V12M12 12C12 12 7 10 5 5C9 5 12 8 12 12ZM12 12C12 12 17 10 19 5C15 5 12 8 12 12Z"/></svg></div>
+      <div class="sc-lbl">進行中情報</div>
+      <div class="sc-val">127</div>
+      <div class="sc-sub"><span class="up">+12</span> 本週開立</div>
+    </div>
+    <div class="sc">
+      <div class="sc-ico ic-a"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="sc-lbl">本月採收完成</div>
+      <div class="sc-val">34</div>
+      <div class="sc-sub"><span class="up">↑8</span> 較上月</div>
+    </div>
+    <div class="sc">
+      <div class="sc-ico ic-c"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="sc-lbl">逾期未更新</div>
+      <div class="sc-val" style="color:var(--c400)">3</div>
+      <div class="sc-sub"><span class="dn">需立即處理</span></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">情報各階段數量</div><span class="ca" onclick="goPage('grow',null,'grow')">查看全部</span></div>
+      <div class="cw"><canvas id="c-status" role="img" aria-label="各狀態情報數量長條圖">播種28 栽培35 施肥22 除草18 採收24</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">最新情報動態</div><span class="ca" onclick="goPage('grow',null,'grow')">全部</span></div>
+      <table>
+        <thead><tr><th>農友</th><th>作物</th><th>狀態</th><th>最後更新</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500">沛芳農場</td><td>有機番茄</td><td><span class="bdg bdg-a"><span class="dot"></span>施肥</span></td><td style="color:var(--muted);font-size:12px">2天前</td></tr>
+          <tr><td style="font-weight:500">綠野農場</td><td>小白菜</td><td><span class="bdg bdg-t"><span class="dot"></span>採收</span></td><td style="color:var(--muted);font-size:12px">昨天</td></tr>
+          <tr><td style="font-weight:500">陽光農場</td><td>高麗菜</td><td><span class="bdg bdg-c"><span class="dot"></span>逾期</span></td><td style="color:var(--c400);font-size:12px;font-weight:500">9天前 ⚠</td></tr>
+          <tr><td style="font-weight:500">山谷農場</td><td>有機地瓜</td><td><span class="bdg bdg-gr"><span class="dot"></span>栽培</span></td><td style="color:var(--muted);font-size:12px">今天</td></tr>
+          <tr><td style="font-weight:500">清泉農場</td><td>有機青椒</td><td><span class="bdg bdg-b"><span class="dot"></span>播種</span></td><td style="color:var(--muted);font-size:12px">3天前</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">月採收量趨勢（公斤）</div></div>
+      <div class="cw"><canvas id="c-harvest" role="img" aria-label="月採收量折線圖">1月280 2月310 3月290 4月350 5月410 6月380</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">作物種類佔比</div></div>
+      <div style="display:flex;align-items:center;gap:20px;padding-top:8px">
+        <div style="position:relative;width:130px;height:130px;flex-shrink:0">
+          <canvas id="c-crop" role="img" aria-label="作物圓餅圖">葉菜40 根莖25 果菜20 其他15</canvas>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;font-size:12.5px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:2px;background:#639922;flex-shrink:0"></span>葉菜類<span style="margin-left:auto;color:var(--muted)">40%</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;flex-shrink:0"></span>根莖類<span style="margin-left:auto;color:var(--muted)">25%</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:2px;background:#BA7517;flex-shrink:0"></span>果菜類<span style="margin-left:auto;color:var(--muted)">20%</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:2px;background:#888780;flex-shrink:0"></span>其他<span style="margin-left:auto;color:var(--muted)">15%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FARMERS ═══════════ -->
+<div id="pg-farmers" class="page">
+  <div class="ph"><div class="pt">農友資料管理</div><div class="ps">共 48 位在籍農友 · 支援多層組織架構</div></div>
+  <div class="card" style="padding:12px 16px;display:flex;gap:10px;align-items:center;margin-bottom:16px">
+    <input type="search" placeholder="搜尋農友名稱 / 帳號..." style="flex:1">
+    <select><option>全部縣市</option><option>桃園市</option><option>新竹縣</option><option>苗栗縣</option><option>台中市</option></select>
+    <select><option>全部狀態</option><option>正常</option><option>逾期</option><option>待審核</option></select>
+    <button class="btn btn-g">＋ 新增農友</button>
+  </div>
+  <div class="g2">
+    <div class="fc">
+      <div class="fa" style="background:var(--t50);color:var(--t600)">沛芳</div>
+      <div class="fi">
+        <div class="fn">沛芳有機綜合農場</div>
+        <div class="fm">桃園市 · peifang · 驗證有效期至 2025-12</div>
+        <div class="ftags"><span class="ftag">番茄</span><span class="ftag">高麗菜</span><span class="ftag">地瓜葉</span></div>
+      </div>
+      <span class="bdg bdg-g" style="flex-shrink:0">正常</span>
+    </div>
+    <div class="fc">
+      <div class="fa" style="background:var(--a50);color:var(--a400)">綠野</div>
+      <div class="fi">
+        <div class="fn">綠野有機蔬菜農場</div>
+        <div class="fm">新竹縣 · luye2021 · 驗證有效期至 2025-09</div>
+        <div class="ftags"><span class="ftag">小白菜</span><span class="ftag">青江菜</span></div>
+      </div>
+      <span class="bdg bdg-g" style="flex-shrink:0">正常</span>
+    </div>
+    <div class="fc">
+      <div class="fa" style="background:var(--c50);color:var(--c600)">陽光</div>
+      <div class="fi">
+        <div class="fn">陽光自然農法農場</div>
+        <div class="fm">苗栗縣 · sunshine · 已逾 9 天未更新</div>
+        <div class="ftags"><span class="ftag">高麗菜</span><span class="ftag">花椰菜</span><span class="ftag">芥藍</span></div>
+      </div>
+      <span class="bdg bdg-c" style="flex-shrink:0">逾期</span>
+    </div>
+    <div class="fc">
+      <div class="fa" style="background:var(--g50);color:var(--g600)">山谷</div>
+      <div class="fi">
+        <div class="fn">山谷自然農場</div>
+        <div class="fm">台中市 · valley · 驗證有效期至 2026-03</div>
+        <div class="ftags"><span class="ftag">地瓜</span><span class="ftag">芋頭</span></div>
+      </div>
+      <span class="bdg bdg-g" style="flex-shrink:0">正常</span>
+    </div>
+    <div class="fc">
+      <div class="fa" style="background:var(--b50);color:var(--b600)">清泉</div>
+      <div class="fi">
+        <div class="fn">清泉有機農場</div>
+        <div class="fm">南投縣 · spring21 · 待審核中</div>
+        <div class="ftags"><span class="ftag">青椒</span><span class="ftag">茄子</span></div>
+      </div>
+      <span class="bdg bdg-a" style="flex-shrink:0">待審</span>
+    </div>
+    <div class="fc" style="border:1.5px dashed var(--g100);justify-content:center;gap:8px;color:var(--g600);font-size:13.5px;font-weight:500;cursor:pointer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      新增農友帳號
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ GROW ═══════════ -->
+<div id="pg-grow" class="page">
+  <div class="ph"><div class="pt">生產情報管理</div><div class="ps">追蹤每一批次完整生長流程，支援照片記錄</div></div>
+  <div class="g2" style="gap:16px">
+    <div>
+      <div class="card" style="margin-bottom:0">
+        <div class="ch">
+          <div class="ct">情報清單</div>
+          <div style="display:flex;gap:8px">
+            <select style="font-size:12px;padding:5px 10px"><option>全部狀態</option><option>播種</option><option>栽培</option><option>施肥</option><option>採收</option></select>
+            <button class="btn btn-g" style="padding:5px 12px;font-size:12.5px">＋ 新增</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>批次</th><th>作物</th><th>進度</th><th>狀態</th></tr></thead>
+          <tbody>
+            <tr style="cursor:pointer">
+              <td style="font-size:12px;color:var(--muted)">#031</td>
+              <td style="font-weight:500">有機番茄</td>
+              <td><div class="prog"><div class="ps-step ps-done"></div><div class="ps-step ps-done"></div><div class="ps-step ps-cur"></div><div class="ps-step"></div><div class="ps-step"></div></div></td>
+              <td><span class="bdg bdg-a" style="font-size:11px"><span class="dot"></span>施肥</span></td>
+            </tr>
+            <tr style="cursor:pointer">
+              <td style="font-size:12px;color:var(--muted)">#030</td>
+              <td style="font-weight:500">小白菜</td>
+              <td><div class="prog"><div class="ps-step ps-done"></div><div class="ps-step ps-done"></div><div class="ps-step ps-done"></div><div class="ps-step ps-done"></div><div class="ps-step ps-cur"></div></div></td>
+              <td><span class="bdg bdg-t" style="font-size:11px"><span class="dot"></span>採收</span></td>
+            </tr>
+            <tr style="cursor:pointer">
+              <td style="font-size:12px;color:var(--muted)">#029</td>
+              <td style="font-weight:500">高麗菜</td>
+              <td><div class="prog"><div class="ps-step ps-done"></div><div class="ps-step ps-done"></div><div class="ps-step ps-late"></div><div class="ps-step"></div><div class="ps-step"></div></div></td>
+              <td><span class="bdg bdg-c" style="font-size:11px"><span class="dot"></span>逾期</span></td>
+            </tr>
+            <tr style="cursor:pointer">
+              <td style="font-size:12px;color:var(--muted)">#028</td>
+              <td style="font-weight:500">有機地瓜</td>
+              <td><div class="prog"><div class="ps-step ps-done"></div><div class="ps-step ps-cur"></div><div class="ps-step"></div><div class="ps-step"></div><div class="ps-step"></div></div></td>
+              <td><span class="bdg bdg-gr" style="font-size:11px"><span class="dot"></span>栽培</span></td>
+            </tr>
+            <tr style="cursor:pointer">
+              <td style="font-size:12px;color:var(--muted)">#027</td>
+              <td style="font-weight:500">有機青椒</td>
+              <td><div class="prog"><div class="ps-step ps-cur"></div><div class="ps-step"></div><div class="ps-step"></div><div class="ps-step"></div><div class="ps-step"></div></div></td>
+              <td><span class="bdg bdg-b" style="font-size:11px"><span class="dot"></span>播種</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:0">
+        <div class="ch">
+          <div>
+            <div class="ct">#031 有機番茄詳情</div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:2px">沛芳有機綜合農場</div>
+          </div>
+          <span class="bdg bdg-a"><span class="dot"></span>施肥作業</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+          <div style="background:var(--gr50);border-radius:var(--r8);padding:10px">
+            <div style="font-size:10.5px;color:var(--muted)">播種日</div>
+            <div style="font-size:13px;font-weight:600;margin-top:2px">04-12</div>
+          </div>
+          <div style="background:var(--gr50);border-radius:var(--r8);padding:10px">
+            <div style="font-size:10.5px;color:var(--muted)">預計採收</div>
+            <div style="font-size:13px;font-weight:600;margin-top:2px">07-20</div>
+          </div>
+          <div style="background:var(--gr50);border-radius:var(--r8);padding:10px">
+            <div style="font-size:10.5px;color:var(--muted)">種植面積</div>
+            <div style="font-size:13px;font-weight:600;margin-top:2px">0.3 分</div>
+          </div>
+        </div>
+        <div class="tl">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">04-12</div><div class="tl-title">種子(苗)登記</div><div class="tl-body">溫室 A3，聖女番茄，面積 0.3 分地</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">04-28</div><div class="tl-title">栽培作業</div><div class="tl-body">移植大田，行距 60cm，株距 45cm</div></div>
+          <div class="tl-item"><div class="tl-dot warn"></div><div class="tl-date">05-15（進行中）</div><div class="tl-title">施肥作業</div><div class="tl-body">有機液肥，第一次施用 5L</div></div>
+          <div class="tl-item" style="opacity:.4"><div class="tl-dot dim"></div><div class="tl-date">待記錄</div><div class="tl-title">除草/防治作業</div></div>
+          <div class="tl-item" style="opacity:.4;margin-bottom:0"><div class="tl-dot dim"></div><div class="tl-date">待記錄</div><div class="tl-title">採收作業</div></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-g" style="flex:1">📸 新增作業記錄</button>
+          <button class="btn btn-b">📄 產生 PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CERTIFY ═══════════ -->
+<div id="pg-certify" class="page">
+  <div class="ph"><div class="pt">驗證管理</div><div class="ps">有機驗證審核、地籍地號管理、驗證履歷查詢</div></div>
+  <div class="sg" style="grid-template-columns:repeat(3,1fr)">
+    <div class="sc"><div class="sc-lbl">驗證中農場</div><div class="sc-val">32</div><div class="sc-sub">有效期內</div></div>
+    <div class="sc"><div class="sc-lbl">即將到期（90天內）</div><div class="sc-val" style="color:var(--a400)">6</div><div class="sc-sub">需提前更新</div></div>
+    <div class="sc"><div class="sc-lbl">待審核申請</div><div class="sc-val" style="color:var(--c400)">3</div><div class="sc-sub">請儘速審核</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">驗證清單</div><button class="btn btn-g" style="font-size:12.5px;padding:5px 12px">＋ 新增申請</button></div>
+      <table>
+        <thead><tr><th>農場</th><th>驗證項目</th><th>有效期</th><th>狀態</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500">沛芳農場</td><td>有機蔬菜</td><td style="font-size:12px">2025-12-31</td><td><span class="bdg bdg-g" style="font-size:11px">有效</span></td></tr>
+          <tr><td style="font-weight:500">綠野農場</td><td>有機蔬菜</td><td style="font-size:12px;color:var(--a400);font-weight:500">2025-09-15</td><td><span class="bdg bdg-a" style="font-size:11px">即將到期</span></td></tr>
+          <tr><td style="font-weight:500">山谷農場</td><td>有機雜糧</td><td style="font-size:12px">2026-03-20</td><td><span class="bdg bdg-g" style="font-size:11px">有效</span></td></tr>
+          <tr><td style="font-weight:500">清泉農場</td><td>有機蔬菜</td><td style="font-size:12px;color:var(--muted)">—</td><td><span class="bdg bdg-b" style="font-size:11px">審核中</span></td></tr>
+          <tr><td style="font-weight:500">陽光農場</td><td>有機蔬菜</td><td style="font-size:12px;color:var(--muted)">—</td><td><span class="bdg bdg-a" style="font-size:11px">待補件</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">驗證檢核項目</div></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">生產紀錄完整度</span><span style="color:var(--g600);font-weight:600">87%</span></div>
+          <div class="pct-bar"><div class="pct-fill" style="width:87%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">土壤/水質檢驗</span><span style="color:var(--t600);font-weight:600">100%</span></div>
+          <div class="pct-bar"><div class="pct-fill" style="width:100%;background:var(--t400)"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">投入資材申報</span><span style="color:var(--a400);font-weight:600">72%</span></div>
+          <div class="pct-bar"><div class="pct-fill" style="width:72%;background:var(--a200)"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">照片佐證資料</span><span style="color:var(--a400);font-weight:600">63%</span></div>
+          <div class="pct-bar"><div class="pct-fill" style="width:63%;background:var(--a200)"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn btn-b" style="width:100%">📄 一鍵產生驗證報告 PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ANALYSIS ═══════════ -->
+<div id="pg-analysis" class="page">
+  <div class="ph"><div class="pt">數據分析</div><div class="ps">從生產數據洞察農場績效</div></div>
+  <div class="sg" style="grid-template-columns:repeat(3,1fr)">
+    <div class="sc"><div class="sc-lbl">本季總產量</div><div class="sc-val">1,240 <span style="font-size:14px;color:var(--muted)">kg</span></div><div class="sc-sub"><span class="up">↑12%</span> 較上季</div></div>
+    <div class="sc"><div class="sc-lbl">年度結案情報</div><div class="sc-val">89 <span style="font-size:14px;color:var(--muted)">批</span></div><div class="sc-sub">累計</div></div>
+    <div class="sc"><div class="sc-lbl">平均生長週期</div><div class="sc-val">68 <span style="font-size:14px;color:var(--muted)">天</span></div><div class="sc-sub">所有作物平均</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">各農場產量比較（kg）</div></div>
+      <div class="cw"><canvas id="c-farm" role="img" aria-label="各農場產量比較">沛芳320 綠野280 陽光210 山谷190 清泉240</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">近 6 月採收趨勢</div></div>
+      <div class="cw"><canvas id="c-h2" role="img" aria-label="近6月採收趨勢">1月280 2月320 3月300 4月360 5月420 6月390</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ct">問卷回覆分析</div></div>
+    <div class="g3">
+      <div style="text-align:center;padding:10px 0">
+        <div style="font-size:38px;font-weight:700;color:var(--g600)">87%</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:4px">農友整體滿意度</div>
+      </div>
+      <div style="text-align:center;padding:10px 0;border-left:1px solid var(--border);border-right:1px solid var(--border)">
+        <div style="font-size:38px;font-weight:700;color:var(--t600)">23</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:4px">已完成問卷</div>
+      </div>
+      <div style="text-align:center;padding:10px 0">
+        <div style="font-size:38px;font-weight:700;color:var(--a400)">78%</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:4px">平均回覆率</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ IOT ═══════════ -->
+<div id="pg-iot" class="page">
+  <div class="ph">
+    <div class="pt">IoT 感測器整合 <span class="new-tag">NEW</span></div>
+    <div class="ps">溫濕度、土壤水分、光照自動上傳，省去人工記錄</div>
+  </div>
+  <div class="alert alert-g">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <div>目前有 <strong>4 個感測器</strong>正常上線，資料每 15 分鐘自動同步一次。</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">溫室 A3 即時數據</div><span style="font-size:11.5px;color:var(--g600)">更新 3 分鐘前</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="iot-sensor">
+          <div class="iot-icon ic-c"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+          <div><div class="iot-val">28.5°C</div><div class="iot-lbl">溫度</div></div>
+          <div class="iot-status sts-ok" style="margin-left:auto"></div>
+          <div style="font-size:11px;color:var(--g600)">正常</div>
+        </div>
+        <div class="iot-sensor">
+          <div class="iot-icon ic-b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+          <div><div class="iot-val">72%</div><div class="iot-lbl">濕度</div></div>
+          <div class="iot-status sts-ok" style="margin-left:auto"></div>
+          <div style="font-size:11px;color:var(--g600)">正常</div>
+        </div>
+        <div class="iot-sensor">
+          <div class="iot-icon ic-t"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+          <div><div class="iot-val">45%</div><div class="iot-lbl">土壤水分</div></div>
+          <div class="iot-status sts-warn" style="margin-left:auto"></div>
+          <div style="font-size:11px;color:var(--a400)">偏低</div>
+        </div>
+        <div class="iot-sensor">
+          <div class="iot-icon ic-a"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+          <div><div class="iot-val">8,200 lux</div><div class="iot-lbl">光照度</div></div>
+          <div class="iot-status sts-ok" style="margin-left:auto"></div>
+          <div style="font-size:11px;color:var(--g600)">正常</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">感測器清單</div><button class="btn btn-g" style="font-size:12.5px;padding:5px 12px">＋ 新增感測器</button></div>
+      <table>
+        <thead><tr><th>感測器</th><th>位置</th><th>上次更新</th><th>狀態</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500">TH-001</td><td>溫室 A3</td><td style="font-size:12px">3 分前</td><td><span class="bdg bdg-g" style="font-size:11px">●在線</span></td></tr>
+          <tr><td style="font-weight:500">TH-002</td><td>大田區 B</td><td style="font-size:12px">5 分前</td><td><span class="bdg bdg-g" style="font-size:11px">●在線</span></td></tr>
+          <tr><td style="font-weight:500">SW-001</td><td>溫室 A3</td><td style="font-size:12px">3 分前</td><td><span class="bdg bdg-a" style="font-size:11px">⚠偏低</span></td></tr>
+          <tr><td style="font-weight:500">LX-001</td><td>溫室 A3</td><td style="font-size:12px">3 分前</td><td><span class="bdg bdg-g" style="font-size:11px">●在線</span></td></tr>
+          <tr><td style="font-weight:500">TH-003</td><td>大田區 C</td><td style="font-size:12px;color:var(--c400)">2 小時前</td><td><span class="bdg bdg-c" style="font-size:11px">●離線</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px">
+        <div class="cw cw-sm"><canvas id="c-iot" role="img" aria-label="今日溫度趨勢">6:00=24 9:00=26 12:00=30 15:00=29 18:00=27</canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TRACEABILITY ═══════════ -->
+<div id="pg-traceability" class="page">
+  <div class="ph">
+    <div class="pt">產銷履歷 QR Code <span class="new-tag">NEW</span></div>
+    <div class="ps">消費者掃描 QR Code 即可查詢完整生產過程與驗證資訊</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">QR Code 管理</div><button class="btn btn-g" style="font-size:12.5px;padding:5px 12px">產生新 QR Code</button></div>
+      <table>
+        <thead><tr><th>批次</th><th>作物</th><th>農場</th><th>掃描次數</th><th>QR</th></tr></thead>
+        <tbody>
+          <tr><td style="font-size:12px">#031</td><td style="font-weight:500">有機番茄</td><td style="font-size:12.5px">沛芳農場</td><td style="font-weight:600;color:var(--g600)">142</td><td><button class="btn btn-o" style="font-size:11px;padding:3px 9px">下載</button></td></tr>
+          <tr><td style="font-size:12px">#030</td><td style="font-weight:500">小白菜</td><td style="font-size:12.5px">綠野農場</td><td style="font-weight:600;color:var(--g600)">89</td><td><button class="btn btn-o" style="font-size:11px;padding:3px 9px">下載</button></td></tr>
+          <tr><td style="font-size:12px">#028</td><td style="font-weight:500">有機地瓜</td><td style="font-size:12.5px">山谷農場</td><td style="font-weight:600;color:var(--g600)">67</td><td><button class="btn btn-o" style="font-size:11px;padding:3px 9px">下載</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="margin-bottom:0">
+        <div class="ch"><div class="ct">QR Code 預覽（#031 有機番茄）</div></div>
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div class="qr-box" style="flex:0 0 auto">
+            <svg class="qr-svg" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="110" height="110" fill="white"/>
+              <rect x="8" y="8" width="35" height="35" rx="3" fill="#1e2618"/>
+              <rect x="12" y="12" width="27" height="27" rx="2" fill="white"/>
+              <rect x="16" y="16" width="19" height="19" rx="1" fill="#1e2618"/>
+              <rect x="67" y="8" width="35" height="35" rx="3" fill="#1e2618"/>
+              <rect x="71" y="12" width="27" height="27" rx="2" fill="white"/>
+              <rect x="75" y="16" width="19" height="19" rx="1" fill="#1e2618"/>
+              <rect x="8" y="67" width="35" height="35" rx="3" fill="#1e2618"/>
+              <rect x="12" y="71" width="27" height="27" rx="2" fill="white"/>
+              <rect x="16" y="75" width="19" height="19" rx="1" fill="#1e2618"/>
+              <rect x="50" y="8" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="58" y="8" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="50" y="16" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="50" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="58" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="67" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="75" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="83" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="91" y="58" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="67" y="66" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="83" y="66" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="75" y="74" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="91" y="74" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="67" y="82" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="50" y="58" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="50" y="74" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="58" y="66" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="58" y="82" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="50" y="90" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="58" y="98" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="8" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="16" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="24" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="32" y="50" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="8" y="58" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="24" y="58" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="32" y="66" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="8" y="74" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="16" y="74" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="32" y="82" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="8" y="98" width="6" height="6" rx="1" fill="#1e2618"/>
+              <rect x="24" y="90" width="6" height="6" rx="1" fill="#1e2618"/>
+            </svg>
+            <div class="qr-id">批次 #031</div>
+            <div class="qr-label">掃碼查看生產履歷</div>
+          </div>
+          <div style="flex:1;font-size:12.5px;line-height:1.8;color:var(--muted)">
+            <div style="font-weight:600;color:var(--text);font-size:13.5px;margin-bottom:8px">消費者掃描後可看到：</div>
+            <div>✅ 農場名稱與地址</div>
+            <div>✅ 有機驗證編號與效期</div>
+            <div>✅ 播種 → 採收完整記錄</div>
+            <div>✅ 施肥/防治用藥明細</div>
+            <div>✅ 田間照片紀錄</div>
+            <div>✅ 土壤/水質檢驗報告</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="ch"><div class="ct">LINE 推播通知 <span class="new-tag">NEW</span></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:flex-end"><div class="line-msg line-msg-r">農場主 A，您的情報 #029 已超過 8 天未更新，請盡快補填！</div></div>
+          <div style="display:flex;justify-content:flex-end"><div class="line-time">系統自動 09:00</div></div>
+          <div><div class="line-msg">好的，我現在去填！謝謝提醒 🙏</div></div>
+          <div><div class="line-time">農友 09:03</div></div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <div class="trow" style="border:none;padding:0;flex:1">
+            <div class="tinfo"><div class="tname" style="font-size:13px">逾期自動推播</div></div>
+            <div class="tog on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="trow" style="border:none;padding:0;flex:1;margin-left:16px">
+            <div class="tinfo"><div class="tname" style="font-size:13px">驗證到期前 30 天提醒</div></div>
+            <div class="tog on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MOBILE ═══════════ -->
+<div id="pg-mobile" class="page">
+  <div class="ph"><div class="pt">行動端介面設計</div><div class="ps">新版行動端以農友現場操作為核心，大按鈕、大字體、支援離線模式</div></div>
+  <div class="g2">
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div class="phone">
+        <div class="pscreen">
+          <div class="pbar">
+            <span style="font-weight:700;color:#1e2618">農友平台</span>
+            <div style="display:flex;gap:6px;align-items:center">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--c400)"></div>
+              <span style="font-size:9.5px;color:var(--muted)">3 則公告</span>
+            </div>
+          </div>
+          <div style="padding:10px 10px 4px">
+            <div style="font-size:10px;color:var(--muted)">您好，</div>
+            <div style="font-size:14px;font-weight:700;color:#1e2618">沛芳農場 👋</div>
+          </div>
+          <div class="prow">
+            <div class="pcell"><div class="pcell-val" style="color:var(--g600)">5</div><div class="pcell-lbl">進行中</div></div>
+            <div class="pcell"><div class="pcell-val" style="color:var(--a400)">1</div><div class="pcell-lbl">待更新</div></div>
+            <div class="pcell"><div class="pcell-val" style="color:var(--c400)">3</div><div class="pcell-lbl">公告</div></div>
+          </div>
+          <div style="padding:8px 8px 2px;font-size:10px;font-weight:700;color:var(--gr600)">我的生產情報</div>
+          <div style="margin:0 8px 6px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px">
+            <div style="font-size:11.5px;font-weight:500">有機番茄 #031</div>
+            <div style="display:flex;gap:2px;margin:4px 0">
+              <div style="height:4px;flex:1;background:var(--g400);border-radius:2px"></div>
+              <div style="height:4px;flex:1;background:var(--g400);border-radius:2px"></div>
+              <div style="height:4px;flex:1;background:var(--a200);border-radius:2px"></div>
+              <div style="height:4px;flex:1;background:#e4eada;border-radius:2px"></div>
+              <div style="height:4px;flex:1;background:#e4eada;border-radius:2px"></div>
+            </div>
+            <div style="font-size:9.5px;color:var(--a400)">施肥作業中</div>
+          </div>
+          <div class="pbtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            新增今日作業紀錄
+          </div>
+          <div style="display:flex;gap:6px;padding:0 8px 10px">
+            <div style="flex:1;background:var(--b50);border:1px solid var(--b100);border-radius:8px;padding:8px;text-align:center;font-size:10px;color:var(--b600);font-weight:600;cursor:pointer">📷 上傳照片</div>
+            <div style="flex:1;background:var(--t50);border:1px solid var(--t100);border-radius:8px;padding:8px;text-align:center;font-size:10px;color:var(--t600);font-weight:600;cursor:pointer">📲 QR 掃描</div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:14px;font-weight:600;color:#1e2618;margin-bottom:12px">新版行動端亮點</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="width:22px;height:22px;background:var(--g50);color:var(--g600);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">✓</span>
+            <span style="font-size:13px;color:var(--muted)">大字體按鈕，田間手套也能操作</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="width:22px;height:22px;background:var(--g50);color:var(--g600);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">✓</span>
+            <span style="font-size:13px;color:var(--muted)">拍照即傳，自動附加 GPS 與時間戳</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="width:22px;height:22px;background:var(--g50);color:var(--g600);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">✓</span>
+            <span style="font-size:13px;color:var(--muted)">QR Code 快速進入情報頁面</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="width:22px;height:22px;background:var(--a50);color:var(--a400);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">+</span>
+            <span style="font-size:13px;color:var(--muted)">離線模式，網路恢復後自動同步</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="width:22px;height:22px;background:var(--a50);color:var(--a400);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">+</span>
+            <span style="font-size:13px;color:var(--muted)">LINE 推播提醒，不怕忘記填報</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="width:22px;height:22px;background:var(--b50);color:var(--b600);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">★</span>
+            <span style="font-size:13px;color:var(--muted)">IoT 感測器數值直接顯示在首頁</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="ch"><div class="ct">系統設定 — 通知與功能</div></div>
+        <div class="trow"><div class="tinfo"><div class="tname">逾期自動提醒（Email）</div><div class="tdesc">超過 8 天未更新發送 Email 通知</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><div class="tname">LINE 推播通知 <span class="new-tag">NEW</span></div><div class="tdesc">整合 LINE Messaging API</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><div class="tname">照片 GPS 自動標注</div><div class="tdesc">上傳照片時自動附加位置資訊</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><div class="tname">離線模式 <span class="new-tag">NEW</span></div><div class="tdesc">在沒有網路時仍可填寫，恢復後同步</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><div class="tname">IoT 感測器整合 <span class="new-tag">NEW</span></div><div class="tdesc">接收溫濕度等環境感測數據</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><div class="tname">驗證到期提前通知</div><div class="tdesc">有效期結束前 30 天發出提醒</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECURITY ═══════════ -->
+<div id="pg-security" class="page">
+  <div class="ph"><div class="pt">安全性升級</div><div class="ps">現有系統安全性問題診斷與修補方案</div></div>
+  <div class="alert alert-r">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <div>發現 <strong>4 項高風險安全性問題</strong>，建議在上線前優先修補，以保護農友個資與系統安全。</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">安全性問題清單</div></div>
+      <div class="sec-item">
+        <div class="sec-lv lv-h">高</div>
+        <div class="sec-body">
+          <div class="sec-title">SQL 注入漏洞（SQL Injection）</div>
+          <div class="sec-desc">login.php 直接將 <code style="background:#f5f5f0;padding:1px 5px;border-radius:3px;font-size:12px">$_COOKIE['key']</code> 嵌入 SQL 查詢，攻擊者可竊取或篡改全部資料庫。</div>
+          <div class="sec-fix">修復方案：改用 PDO Prepared Statements</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-lv lv-h">高</div>
+        <div class="sec-body">
+          <div class="sec-title">不安全的密碼雜湊（SHA1）</div>
+          <div class="sec-desc">資料庫中密碼使用 SHA1，已可被彩虹表破解，應改用 bcrypt 或 Argon2。</div>
+          <div class="sec-fix">修復方案：改用 password_hash() + PASSWORD_BCRYPT</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-lv lv-h">高</div>
+        <div class="sec-body">
+          <div class="sec-title">資料庫帳密明文儲存</div>
+          <div class="sec-desc">config.php 中直接寫死帳密，任何有原始碼存取權的人都能取得。</div>
+          <div class="sec-fix">修復方案：改用 .env 環境變數，不納入版控</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-lv lv-m">中</div>
+        <div class="sec-body">
+          <div class="sec-title">Session 安全設定不足</div>
+          <div class="sec-desc">缺少 session_set_cookie_params() 中的 HttpOnly、Secure、SameSite 設定，易受 XSS 劫持。</div>
+          <div class="sec-fix">修復方案：加入完整 session cookie 設定</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-lv lv-m">中</div>
+        <div class="sec-body">
+          <div class="sec-title">使用廢棄的 mysql_* 函數</div>
+          <div class="sec-desc">function.php 使用 mysql_connect()、mysql_query() 等已在 PHP 7 移除的函數，需升級至 PDO 或 mysqli。</div>
+          <div class="sec-fix">修復方案：全面替換為 PDO 或 mysqli_*</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-lv lv-l">低</div>
+        <div class="sec-body">
+          <div class="sec-title">PHP 版本過舊（5.2）</div>
+          <div class="sec-desc">PHP 5.2 已於 2011 年停止維護，含有大量已知安全漏洞。</div>
+          <div class="sec-fix">修復方案：升級至 PHP 8.2+</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="ch"><div class="ct">技術債摘要</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--c50);border-radius:var(--r8)">
+            <span style="font-size:18px">🔴</span>
+            <div><div style="font-weight:500;color:var(--c600)">PHP 5.2 → 8.2</div><div style="font-size:12px;color:var(--c600)">效能提升 50%+，修補所有已知漏洞</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--a50);border-radius:var(--r8)">
+            <span style="font-size:18px">🟡</span>
+            <div><div style="font-weight:500;color:var(--a600)">MyISAM → InnoDB</div><div style="font-size:12px;color:var(--a600)">支援交易、外鍵，資料更安全</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--a50);border-radius:var(--r8)">
+            <span style="font-size:18px">🟡</span>
+            <div><div style="font-weight:500;color:var(--a600)">jQuery 1.x → 3.x</div><div style="font-size:12px;color:var(--a600)">已知安全漏洞修補，效能更好</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--g50);border-radius:var(--r8)">
+            <span style="font-size:18px">🟢</span>
+            <div><div style="font-weight:500;color:var(--g600)">導入 HTTPS</div><div style="font-size:12px;color:var(--g600)">傳輸加密，保護農友帳號安全</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="ch"><div class="ct">修補後預期效益</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px"><span>安全性評分</span><span style="font-weight:600;color:var(--g600)">35% → 95%</span></div><div class="pct-bar"><div class="pct-fill" style="width:95%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px"><span>頁面回應速度</span><span style="font-weight:600;color:var(--t600)">+50% 提升</span></div><div class="pct-bar"><div class="pct-fill" style="width:80%;background:var(--t400)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px"><span>維護成本</span><span style="font-weight:600;color:var(--a400)">降低 60%</span></div><div class="pct-bar"><div class="pct-fill" style="width:40%;background:var(--a200)"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ROADMAP ═══════════ -->
+<div id="pg-roadmap" class="page">
+  <div class="ph"><div class="pt">升級藍圖</div><div class="ps">分四階段從安全修補到功能擴充，可依預算彈性調整</div></div>
+  <div class="alert alert-b">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div>每個階段均可獨立執行，不需整體重寫。可選擇優先修補安全性，再逐步加入新功能。</div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ct">四階段升級計畫</div></div>
+    <div class="rm-item">
+      <div class="rm-phase">
+        <div class="rm-circle" style="background:var(--c50);color:var(--c600)">1</div>
+        <div class="rm-month" style="color:var(--c400)">第 1-2 月</div>
+      </div>
+      <div class="rm-body">
+        <div class="rm-title">🔐 安全性緊急修補</div>
+        <div class="rm-tasks">
+          <span class="rm-task" style="background:var(--c50);color:var(--c600)">SQL 注入修補</span>
+          <span class="rm-task" style="background:var(--c50);color:var(--c600)">密碼改 bcrypt</span>
+          <span class="rm-task" style="background:var(--c50);color:var(--c600)">移除明文帳密</span>
+          <span class="rm-task" style="background:var(--c50);color:var(--c600)">PHP 升級 8.2</span>
+          <span class="rm-task" style="background:var(--c50);color:var(--c600)">HTTPS 導入</span>
+          <span class="rm-task" style="background:var(--c50);color:var(--c600)">Session 加固</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-phase">
+        <div class="rm-circle" style="background:var(--a50);color:var(--a400)">2</div>
+        <div class="rm-month" style="color:var(--a400)">第 2-4 月</div>
+      </div>
+      <div class="rm-body">
+        <div class="rm-title">⚡ 效能優化與 UI 現代化</div>
+        <div class="rm-tasks">
+          <span class="rm-task" style="background:var(--a50);color:var(--a600)">MyISAM → InnoDB</span>
+          <span class="rm-task" style="background:var(--a50);color:var(--a600)">資料庫索引優化</span>
+          <span class="rm-task" style="background:var(--a50);color:var(--a600)">jQuery 升級 3.x</span>
+          <span class="rm-task" style="background:var(--a50);color:var(--a600)">行動端 RWD 重設計</span>
+          <span class="rm-task" style="background:var(--a50);color:var(--a600)">後台 UI 現代化</span>
+          <span class="rm-task" style="background:var(--a50);color:var(--a600)">mysql_* → PDO</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-phase">
+        <div class="rm-circle" style="background:var(--g50);color:var(--g600)">3</div>
+        <div class="rm-month" style="color:var(--g600)">第 4-8 月</div>
+      </div>
+      <div class="rm-body">
+        <div class="rm-title">🚀 新功能擴充</div>
+        <div class="rm-tasks">
+          <span class="rm-task" style="background:var(--g50);color:var(--g600)">LINE 推播通知</span>
+          <span class="rm-task" style="background:var(--g50);color:var(--g600)">IoT 感測器整合</span>
+          <span class="rm-task" style="background:var(--g50);color:var(--g600)">產銷履歷 QR Code</span>
+          <span class="rm-task" style="background:var(--g50);color:var(--g600)">驗證報告自動 PDF</span>
+          <span class="rm-task" style="background:var(--g50);color:var(--g600)">數據分析儀表板</span>
+          <span class="rm-task" style="background:var(--g50);color:var(--g600)">照片 GPS 標注</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item" style="border-bottom:none">
+      <div class="rm-phase">
+        <div class="rm-circle" style="background:var(--t50);color:var(--t600)">4</div>
+        <div class="rm-month" style="color:var(--t600)">第 8 月+</div>
+      </div>
+      <div class="rm-body">
+        <div class="rm-title">🌐 前後端分離架構（長期）</div>
+        <div class="rm-tasks">
+          <span class="rm-task" style="background:var(--t50);color:var(--t600)">REST API 層</span>
+          <span class="rm-task" style="background:var(--t50);color:var(--t600)">Vue 3 / React 前端</span>
+          <span class="rm-task" style="background:var(--t50);color:var(--t600)">AI 種植建議</span>
+          <span class="rm-task" style="background:var(--t50);color:var(--t600)">地圖整合</span>
+          <span class="rm-task" style="background:var(--t50);color:var(--t600)">多租戶架構</span>
+          <span class="rm-task" style="background:var(--t50);color:var(--t600)">電商平台串接</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="feat" style="text-align:left">
+      <div class="feat-ico ic-c" style="margin:0 0 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div class="feat-t">第一階段重點</div>
+      <div class="feat-d">安全性是基礎，必須先做。成本最低，但風險降低最大，建議 <strong>立即啟動</strong>。</div>
+    </div>
+    <div class="feat" style="text-align:left">
+      <div class="feat-ico ic-g" style="margin:0 0 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="feat-t">預估時程</div>
+      <div class="feat-d">第一二階段 4 個月可完成，農友即可感受到更快速、更穩定的系統。</div>
+    </div>
+    <div class="feat" style="text-align:left">
+      <div class="feat-ico ic-b" style="margin:0 0 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div class="feat-t">投資效益</div>
+      <div class="feat-d">每個新功能模組可獨立評估，LINE 推播與 QR 履歷效益最直接，建議第三階段優先。</div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const sbItems = document.querySelectorAll('.sb-item');
+const pages = document.querySelectorAll('.page');
+const navTabs = document.querySelectorAll('.nav-tab');
+
+function goPage(id, tabEl, sbId) {
+  pages.forEach(p => p.classList.remove('on'));
+  const pg = document.getElementById('pg-' + id);
+  if(pg) pg.classList.add('on');
+  navTabs.forEach(t => t.classList.remove('on'));
+  if(tabEl) tabEl.classList.add('on');
+  sbItems.forEach(s => s.classList.remove('on'));
+  const sb = document.querySelector('.sb-item[onclick*="' + (sbId||id) + '"]');
+  if(sb) sb.classList.add('on');
+  const chartInits = { dashboard: initDash, analysis: initAnalysis, iot: initIot };
+  if(chartInits[id]) chartInits[id]();
+}
+
+let dInited=false, aInited=false, iotInited=false;
+
+function initDash() {
+  if(dInited) return; dInited=true;
+  new Chart(document.getElementById('c-status'),{
+    type:'bar',
+    data:{labels:['播種','栽培','施肥','除草/防治','採收'],
+      datasets:[{data:[28,35,22,18,24],backgroundColor:['#C0DD97','#5DCAA5','#FAC775','#F0997B','#639922'],borderRadius:5,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{family:'Noto Sans TC',size:12}}},y:{grid:{color:'#f0f0ea'},ticks:{font:{family:'Noto Sans TC',size:11}}}}}
+  });
+  new Chart(document.getElementById('c-harvest'),{
+    type:'line',
+    data:{labels:['1月','2月','3月','4月','5月','6月'],
+      datasets:[{data:[280,310,290,350,410,380],borderColor:'#3B6D11',backgroundColor:'rgba(59,109,17,.09)',fill:true,tension:.4,pointBackgroundColor:'#3B6D11',pointRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{family:'Noto Sans TC',size:12}}},y:{grid:{color:'#f0f0ea'},ticks:{font:{family:'Noto Sans TC',size:11}}}}}
+  });
+  new Chart(document.getElementById('c-crop'),{
+    type:'doughnut',
+    data:{labels:['葉菜','根莖','果菜','其他'],
+      datasets:[{data:[40,25,20,15],backgroundColor:['#639922','#1D9E75','#BA7517','#888780'],borderWidth:2,borderColor:'#fff',hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}
+  });
+}
+
+function initAnalysis() {
+  if(aInited) return; aInited=true;
+  new Chart(document.getElementById('c-farm'),{
+    type:'bar',indexAxis:'y',
+    data:{labels:['沛芳農場','綠野農場','陽光農場','山谷農場','清泉農場'],
+      datasets:[{data:[320,280,210,190,240],backgroundColor:['#3B6D11','#1D9E75','#FAC775','#9FE1CB','#97C459'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#f0f0ea'},ticks:{font:{family:'Noto Sans TC',size:11}}},y:{grid:{display:false},ticks:{font:{family:'Noto Sans TC',size:12}}}}}
+  });
+  new Chart(document.getElementById('c-h2'),{
+    type:'line',
+    data:{labels:['1月','2月','3月','4月','5月','6月'],
+      datasets:[{data:[280,320,300,360,420,390],borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.08)',fill:true,tension:.4,pointBackgroundColor:'#1D9E75',pointRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{family:'Noto Sans TC',size:12}}},y:{grid:{color:'#f0f0ea'},ticks:{font:{family:'Noto Sans TC',size:11}}}}}
+  });
+}
+
+function initIot() {
+  if(iotInited) return; iotInited=true;
+  new Chart(document.getElementById('c-iot'),{
+    type:'line',
+    data:{labels:['06:00','09:00','12:00','15:00','18:00','21:00'],
+      datasets:[
+        {label:'溫度(°C)',data:[24,26,30,29,27,25],borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,.07)',fill:true,tension:.4,pointBackgroundColor:'#D85A30',pointRadius:3},
+        {label:'濕度(%)',data:[80,75,65,68,72,76],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,.07)',fill:true,tension:.4,pointBackgroundColor:'#378ADD',pointRadius:3}
+      ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{font:{family:'Noto Sans TC',size:11},boxWidth:10,padding:12}}},
+      scales:{x:{grid:{display:false},ticks:{font:{family:'Noto Sans TC',size:11}}},y:{grid:{color:'#f0f0ea'},ticks:{font:{family:'Noto Sans TC',size:10}}}}}
+  });
+}
+
+initDash();
+</script>
+</body>
+</html>
