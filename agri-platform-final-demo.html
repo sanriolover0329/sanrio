@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>農場生產管理平台｜互動展示 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --brand:#0F6E56;--brand-l:#E1F5EE;--brand-d:#085041;--brand-m:#1D9E75;
+  --bg1:#fff;--bg2:#F8F7F4;--bg3:#F1EFE8;
+  --t1:#1A1917;--t2:#5F5E5A;
+  --b1:#E8E6DE;--b2:#D4D0C8;
+  --r-sm:6px;--r-md:8px;--r-lg:12px;
+  --sb:200px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',system-ui,sans-serif;font-size:14px;color:var(--t1);background:var(--bg2)}
+button,select,input{font-family:inherit}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+
+/* Layout */
+#shell{display:flex;flex-direction:column;height:100vh;min-height:600px;overflow:hidden}
+#topbar{display:flex;align-items:center;justify-content:space-between;height:48px;background:var(--bg1);border-bottom:1px solid var(--b1);padding:0 20px;flex-shrink:0;z-index:10}
+#body-area{display:flex;flex:1;overflow:hidden}
+#sidebar{width:var(--sb);background:var(--brand-d);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;transition:width .2s}
+#sidebar.hidden{width:0;overflow:hidden}
+#content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#breadcrumb{padding:10px 20px;background:var(--bg1);border-bottom:1px solid var(--b1);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+#pages{flex:1;overflow-y:auto;padding:18px 20px}
+
+/* Topbar */
+.logo{display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;padding-right:20px;border-right:1px solid var(--b1);margin-right:4px}
+.logo i{color:var(--brand);font-size:18px}
+.top-tab{padding:0 16px;height:48px;border:none;background:transparent;color:var(--t2);font-size:13px;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.top-tab.active,.top-tab:hover{color:var(--brand)}
+.top-tab.active{border-bottom-color:var(--brand);font-weight:500}
+.top-right{display:flex;align-items:center;gap:10px}
+.crop-chip{font-size:11px;color:var(--t2);background:var(--bg3);padding:3px 10px;border-radius:20px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer}
+.live-dot{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--brand)}
+.live-dot span{width:7px;height:7px;border-radius:50%;background:var(--brand);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Sidebar */
+.sb-section{font-size:10px;color:rgba(255,255,255,.3);padding:12px 16px 4px;letter-spacing:.08em;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;color:rgba(255,255,255,.65);cursor:pointer;font-size:13px;border-left:2px solid transparent;user-select:none}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.sb-item.active{background:rgba(255,255,255,.13);color:#fff;border-left-color:#5DCAA5}
+.sb-item i{font-size:16px;flex-shrink:0}
+.sb-badge{font-size:9px;background:var(--brand-m);color:#fff;padding:1px 5px;border-radius:8px;margin-left:auto}
+.sb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px;margin-top:auto}
+.sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand-m);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sb-name{font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+.sb-role{font-size:10px;color:rgba(255,255,255,.4)}
+
+/* Pages */
+.page{display:none}
+.page.active{display:block}
+
+/* Cards */
+.card{background:var(--bg1);border:1px solid var(--b1);border-radius:var(--r-lg);padding:14px 16px}
+.card.accent{border-color:var(--brand);border-width:1.5px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.metric-label{font-size:12px;color:var(--t2);margin-bottom:6px}
+.metric-val{font-size:24px;font-weight:500}
+.metric-sub{font-size:11px;color:var(--t2);margin-top:3px}
+.metric-sub.green{color:var(--brand)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-green{background:#EAF3DE;color:#3B6D11}
+.badge-amber{background:#FAEEDA;color:#854F0B}
+.badge-teal{background:#E1F5EE;color:#0F6E56}
+.badge-gray{background:#F1EFE8;color:#5F5E5A}
+.badge-red{background:#FCEBEB;color:#A32D2D}
+.badge-blue{background:#E6F1FB;color:#185FA5}
+.badge-purple{background:#EEEDFE;color:#534AB7}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1px solid var(--b1);border-radius:var(--r-md);background:var(--bg1);color:var(--t1);font-size:12px;cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--b2);background:var(--bg2)}
+.btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-primary:hover{background:var(--brand-m);border-color:var(--brand-m)}
+
+/* Progress */
+.pbar-wrap{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{padding:9px 12px;text-align:left;color:var(--t2);font-weight:500;font-size:12px;border-bottom:1px solid var(--b1);background:var(--bg2)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--b1)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg2)}
+
+/* Forms */
+.form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.form-label{font-size:12px;color:var(--t2);font-weight:500}
+.form-input{padding:8px 10px;border:1px solid var(--b2);border-radius:var(--r-md);background:var(--bg1);color:var(--t1);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--brand)}
+
+/* Landing */
+#page-landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 48px);background:var(--bg1)}
+.landing-logo{width:60px;height:60px;background:var(--brand);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.landing-logo i{font-size:30px;color:#fff}
+.landing-title{font-size:24px;font-weight:700;margin-bottom:6px}
+.landing-sub{font-size:13px;color:var(--t2);margin-bottom:14px}
+.landing-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.login-area{width:100%;max-width:340px}
+.btn-login-main{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:var(--r-md);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-family:inherit}
+.btn-login-main:hover{background:var(--brand-m)}
+.login-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.btn-login-social{padding:9px;border:1px solid var(--b1);border-radius:var(--r-md);background:var(--bg1);color:var(--t1);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;font-family:inherit}
+.btn-login-social:hover{border-color:var(--brand);color:var(--brand)}
+.landing-features{display:flex;gap:24px;font-size:12px;color:var(--t2);margin-top:16px}
+.landing-features span{display:flex;align-items:center;gap:5px}
+.landing-features i{color:var(--brand);font-size:13px}
+
+/* Traceability */
+.trace-step{display:flex;gap:12px;margin-bottom:12px}
+.trace-icon{width:30px;height:30px;border-radius:8px;background:var(--brand-l);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.trace-icon i{font-size:15px;color:var(--brand)}
+.trace-line{width:1px;flex:1;background:var(--b1);min-height:10px;margin:3px auto}
+.trace-body{flex:1;padding-bottom:10px}
+.trace-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.trace-date{font-size:11px;color:var(--t2);margin-left:8px}
+.trace-desc{font-size:12px;color:var(--t2)}
+
+/* SOP Accordion */
+.sop-stage{margin-bottom:8px;border-radius:var(--r-lg);overflow:hidden}
+.sop-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none}
+.sop-body{background:var(--bg1);border:1px solid;border-top:none;padding:10px 16px}
+.sop-task{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--b1)}
+.sop-task:last-child{border-bottom:none}
+.sop-task i{color:var(--brand);font-size:15px;margin-top:1px;flex-shrink:0}
+
+/* Alert */
+.alert{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r-md);font-size:12px;margin-top:8px}
+.alert-amber{background:#FAEEDA;color:#854F0B}
+.alert-green{background:#EAF3DE;color:#3B6D11}
+.alert-blue{background:#E6F1FB;color:#185FA5}
+
+/* AI Cards */
+.ai-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--brand-l);border-radius:var(--r-lg);margin-bottom:14px}
+.ai-card{cursor:pointer;transition:border-color .2s}
+.weather-row{display:flex;gap:20px}
+.weather-item{text-align:center}
+.weather-item .wd{font-size:10px;color:var(--t2)}
+.weather-item i{font-size:18px;display:block;margin:3px 0;color:#185FA5}
+.weather-item .wt{font-size:12px;font-weight:500}
+
+/* IoT sensor cards */
+.sensor-val{font-size:26px;font-weight:500;margin:4px 0}
+.sensor-val.warn{color:#A32D2D}
+.sensor-range{font-size:10px;color:var(--t2)}
+.sensor-warn{font-size:10px;color:#A32D2D;display:flex;align-items:center;gap:3px;margin-top:4px}
+
+/* Crop module cards */
+.crop-card{border:1px solid var(--b1);border-radius:var(--r-lg);padding:14px;cursor:pointer;transition:all .2s;opacity:1}
+.crop-card:hover{border-color:var(--brand)}
+.crop-card.active{border-color:var(--brand);border-width:2px;background:var(--brand-l)}
+.crop-card.inactive{opacity:.6}
+.crop-emoji{font-size:22px;margin-bottom:6px}
+.crop-name{font-size:14px;font-weight:500;margin-bottom:3px}
+.crop-meta{font-size:11px;color:var(--t2);margin-bottom:8px}
+
+/* Chart containers */
+.chart-wrap{position:relative;height:140px}
+.chart-wrap-tall{position:relative;height:160px}
+
+/* Breadcrumb */
+.bc-title{font-size:14px;font-weight:500}
+.bc-actions{display:flex;gap:8px}
+
+/* Divider */
+.divider{height:1px;background:var(--b1);margin:12px 0}
+
+@media(max-width:768px){
+  :root{--sb:0px}
+  .grid-4{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+}
+
+/* Status legend */
+.sb-legend{padding:10px 14px 6px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:4px}
+.sb-legend-title{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.sb-legend-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:11px;color:rgba(255,255,255,.7)}
+.sbl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.sbl-existing{background:#5DCAA5}
+.sbl-new{background:#6B9FF5}
+.sbl-enhanced{background:#F5B942}
+/* Sidebar status badges */
+.sb-status{font-size:9px;padding:1px 6px;border-radius:6px;margin-left:auto;flex-shrink:0;font-weight:500}
+.sb-status-existing{background:rgba(93,202,165,.2);color:#5DCAA5}
+.sb-status-new{background:rgba(107,159,245,.25);color:#6B9FF5}
+.sb-status-enhanced{background:rgba(245,185,66,.25);color:#F5B942}
+/* Page banner */
+.page-banner{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:var(--r-md);margin-bottom:16px;font-size:12px;line-height:1.6}
+.page-banner i{font-size:16px;flex-shrink:0;margin-top:1px}
+.banner-existing{background:#EAF3DE;color:#3B6D11;border:1px solid #C6E0AE}
+.banner-new{background:#E6F1FB;color:#185FA5;border:1px solid #B5D4F5}
+.banner-enhanced{background:#FEF3E2;color:#854F0B;border:1px solid #F5D9A4}
+.banner-public{background:#EEEDFE;color:#534AB7;border:1px solid #C9C6FA}
+/* Floating legend */
+#float-legend{position:fixed;bottom:20px;right:20px;background:var(--bg1);border:1px solid var(--b1);border-radius:var(--r-lg);padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,.1);z-index:100;min-width:220px}
+#float-legend.hidden{display:none}
+.fl-title{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:8px;letter-spacing:.05em;text-transform:uppercase}
+.fl-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.fl-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.fl-existing{background:#5DCAA5}
+.fl-new{background:#6B9FF5}
+.fl-enhanced{background:#F5B942}
+#legend-toggle{position:fixed;bottom:20px;right:20px;background:var(--brand);color:#fff;border:none;border-radius:var(--r-lg);padding:8px 14px;font-size:12px;cursor:pointer;z-index:101;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(15,110,86,.3)}
+
+
+/* 田區管理 */
+.field-row{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--b1);border-radius:var(--r-md);margin-bottom:7px;cursor:pointer;background:var(--bg1);transition:all .15s}
+.field-row:hover,.field-row.selected{border-color:var(--brand);background:var(--brand-l)}
+.field-icon{width:32px;height:32px;border-radius:8px;background:var(--brand-l);display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:16px;flex-shrink:0}
+.field-icon.active-crop{background:var(--brand);color:#fff}
+.field-name{font-size:13px;font-weight:500}
+.field-meta{font-size:11px;color:var(--t2);margin-top:1px}
+.field-detail{background:var(--bg1);border:1.5px solid var(--brand);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:14px;display:none}
+/* 工作記錄 */
+.log-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--b1)}
+.log-row:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.log-time{font-size:11px;color:var(--t2);min-width:62px}
+.log-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.log-desc{font-size:12px;color:var(--t2)}
+.log-meta{font-size:10px;color:var(--t2);margin-top:3px;display:flex;align-items:center;gap:3px}
+/* 語音按鈕 */
+.voice-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--brand);border-radius:20px;color:var(--brand);cursor:pointer;font-size:12px;background:var(--brand-l);font-family:inherit;transition:all .2s}
+.voice-btn.recording{background:var(--brand);color:#fff;animation:vpulse 1s ease-in-out infinite}
+@keyframes vpulse{0%,100%{box-shadow:0 0 0 0 rgba(15,110,86,.3)}50%{box-shadow:0 0 0 6px rgba(15,110,86,0)}}
+
+</style>
+</head>
+<body>
+<div id="shell">
+
+<!-- ─ Topbar ─ -->
+<div id="topbar">
+  <div style="display:flex;align-items:center">
+    <div class="logo"><i class="ti ti-leaf"></i> 農場生產管理平台</div>
+    <button class="top-tab active" onclick="setSection('public')">公開前台</button>
+    <button class="top-tab" onclick="setSection('member')">會員端</button>
+    <button class="top-tab" onclick="setSection('admin')">後台管理</button>
+  </div>
+  <div class="top-right">
+    <div id="live-indicator" class="live-dot" style="display:none"><span></span>即時更新中</div>
+    <div class="crop-chip">🌿 甘藷模組</div>
+    <div class="avatar" onclick="setSection('public');setPage('landing')">陳</div>
+  </div>
+</div>
+
+<div id="body-area">
+
+<!-- ─ Sidebar ─ -->
+<div id="sidebar">
+  
+  <div class="sb-legend">
+    <div class="sb-legend-title">功能狀態說明</div>
+    <div class="sb-legend-row"><span class="sbl-dot sbl-existing"></span>既有功能（已有，重新建置）</div>
+    <div class="sb-legend-row"><span class="sbl-dot sbl-new"></span>全新功能（新平台新增）</div>
+    <div class="sb-legend-row"><span class="sbl-dot sbl-enhanced"></span>大幅升級（既有基礎擴充）</div>
+  </div>
+
+  <div id="sb-content"></div>
+  <div class="sb-foot">
+    <div class="sb-avatar">陳</div>
+    <div><div class="sb-name">陳志明</div><div class="sb-role" id="sb-role">農友會員</div></div>
+  </div>
+</div>
+
+<!-- ─ Content ─ -->
+<div id="content">
+  <div id="breadcrumb">
+    <span class="bc-title" id="bc-title">平台首頁</span>
+    <div class="bc-actions" id="bc-actions"></div>
+  </div>
+  <div id="pages">
+
+    <!-- 登入首頁 -->
+    <div id="page-landing" class="page active" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;align-items:stretch;padding-top:0">
+    <div style="padding:16px 20px;"><div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — 登入與首頁</strong><br>現有系統已提供網站帳號、LINE、Facebook、Google+ 登入。新版本新增 Google OAuth 現代化串接、統一 OAuth 流程，並保留採收人員專用登入入口。</div>
+    </div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;padding:0 20px 28px">
+      <div class="landing-logo"><i class="ti ti-plant-2"></i></div>
+      <div class="landing-title">農場生產管理平台</div>
+      <div class="landing-sub">智慧農業生產履歷數位化系統</div>
+      <div class="landing-tags">
+        <span class="badge badge-teal">甘藷模組</span>
+        <span class="badge badge-gray">可擴充多作物</span>
+        <span class="badge badge-blue">AI 建議</span>
+        <span class="badge badge-purple">IoT 感測</span>
+        <span class="badge badge-green">PWA 行動版</span>
+      </div>
+      <div class="login-area">
+        <button class="btn-login-main" onclick="setSection('member');setPage('dashboard')">
+          <i class="ti ti-user"></i> 網站帳號登入
+        </button>
+        <div class="login-grid">
+          <button class="btn-login-social" onclick="setSection('member');setPage('dashboard')"><i class="ti ti-brand-line"></i> LINE</button>
+          <button class="btn-login-social" onclick="setSection('member');setPage('dashboard')"><i class="ti ti-brand-facebook"></i> Facebook</button>
+          <button class="btn-login-social" onclick="setSection('member');setPage('dashboard')"><i class="ti ti-brand-google"></i> Google</button>
+          <button class="btn-login-social" onclick="setSection('member');setPage('dashboard')"><i class="ti ti-user-check"></i> 採收人員</button>
+        </div>
+        <div class="alert alert-blue" style="margin-top:4px"><i class="ti ti-info-circle"></i> 採收人員請點擊「採收人員」專用登入入口</div>
+      </div>
+      <div class="landing-features">
+        <span><i class="ti ti-check"></i>完整生產履歷</span>
+        <span><i class="ti ti-check"></i>IoT 感測整合</span>
+        <span><i class="ti ti-check"></i>AI 農業建議</span>
+        <span><i class="ti ti-check"></i>多作物擴充</span>
+      </div>
+    </div>
+
+    <!-- 生產履歷查詢 -->
+    <div id="page-traceability" class="page">
+    <div class="page-banner banner-new">
+      <i class="ti ti-sparkles"></i>
+      <div><strong>全新功能 — 消費者生產履歷查詢</strong><br>現有系統資料僅供農友與管理者內部查閱，不開放消費者存取。新平台新增公開查詢頁，消費者掃描產品 QR Code 即可看到從種植、IoT 感測、AI 預警到出貨的完整生產軌跡，提升產品透明度與品牌價值。</div>
+    </div>
+      <div style="max-width:560px;margin:0 auto">
+        <p style="font-size:12px;color:var(--t2);margin-bottom:12px">消費者掃描產品 QR Code 或輸入批號，即可查看從田間到餐桌的完整生產軌跡</p>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <input class="form-input" id="trace-input" style="flex:1" placeholder="輸入批號，例如 B240615-01" onkeydown="if(event.key==='Enter')doTrace()">
+          <button class="btn btn-primary" onclick="doTrace()"><i class="ti ti-search"></i> 查詢</button>
+          <button class="btn" onclick="demoTrace()"><i class="ti ti-qrcode"></i> 示範掃碼</button>
+        </div>
+        <div id="trace-loading" style="display:none;text-align:center;padding:32px;color:var(--t2)">查詢中…</div>
+        <div id="trace-empty" style="text-align:center;padding:32px;color:var(--t2)">
+          <i class="ti ti-qrcode" style="font-size:40px;display:block;margin-bottom:10px;color:var(--b2)"></i>
+          點擊「示範掃碼」查看完整履歷範例
+        </div>
+        <div id="trace-result" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- 生產看版 -->
+    <div id="page-dashboard" class="page">
+    <div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — 生產看版</strong><br>現有系統已具備種植單位狀態總覽。新版本進一步整合 IoT 即時感測警示、圖表化出貨趨勢、工作記錄快速瀏覽，讓儀表板資訊更豐富直觀。</div>
+    </div>
+      <div class="grid-4">
+        <div class="card"><div class="metric-label">種植田區數</div><div class="metric-val">12</div><div class="metric-sub">3 個已採收</div></div>
+        <div class="card"><div class="metric-label">本期種植面積</div><div class="metric-val">3.6<span style="font-size:14px;font-weight:400"> 分地</span></div><div class="metric-sub">台農57號為主</div></div>
+        <div class="card"><div class="metric-label">最近採收日</div><div class="metric-val">06/22</div><div class="metric-sub green">距今 3 天</div></div>
+        <div class="card"><div class="metric-label">本月出貨量</div><div class="metric-val">2,340<span style="font-size:14px;font-weight:400"> kg</span></div><div class="metric-sub green">↑ 12% 較上月</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:12px;color:var(--t2)">各田區生長狀態</span><span class="badge badge-teal">即時</span></div>
+          <div class="field-status-list">
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px">北一中區</span><span class="badge badge-green">旺盛生長</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:72%;background:var(--brand)"></div></div><div style="font-size:10px;color:var(--t2);margin-top:2px">72 天 · 採收 08/14</div></div>
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px">南三區</span><span class="badge badge-amber">初期生長</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:28%;background:#EF9F27"></div></div><div style="font-size:10px;color:var(--t2);margin-top:2px">28 天 · 採收 09/25</div></div>
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px">東二區</span><span class="badge badge-teal">準備採收</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:92%;background:var(--brand-m)"></div></div><div style="font-size:10px;color:var(--t2);margin-top:2px">108 天 · 採收 06/22</div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px">北二區</span><span class="badge badge-gray">已採收</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:100%;background:#B4B2A9"></div></div><div style="font-size:10px;color:var(--t2);margin-top:2px">採收 05/30 · 840 kg</div></div>
+          </div>
+          <div class="alert alert-amber" id="dash-iot-alert"><i class="ti ti-alert-triangle"></i> IoT 警示：東二區土壤含水量偏低（<span id="dash-soil">42</span>%）</div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--t2);margin-bottom:8px">近六月出貨量（kg）</div>
+          <div class="chart-wrap"><canvas id="chart-shipments"></canvas></div>
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--t2);margin-bottom:8px">最新工作記錄</div>
+          <div style="display:flex;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--b1);margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:var(--brand);margin-top:5px;flex-shrink:0"></div><div style="font-size:11px;color:var(--t2);min-width:58px">今天 09:20</div><div><div style="font-size:12px;font-weight:500">施肥作業</div><div style="font-size:11px;color:var(--t2)">北一中區 · 硫酸鉀 3 kg</div></div></div>
+          <div style="display:flex;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--b1);margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:#EF9F27;margin-top:5px;flex-shrink:0"></div><div style="font-size:11px;color:var(--t2);min-width:58px">昨天 14:05</div><div><div style="font-size:12px;font-weight:500">除草作業</div><div style="font-size:11px;color:var(--t2)">南三區 · 人工除草</div></div></div>
+          <div style="display:flex;gap:8px"><div style="width:7px;height:7px;border-radius:50%;background:#E24B4A;margin-top:5px;flex-shrink:0"></div><div style="font-size:11px;color:var(--t2);min-width:58px">06/17</div><div><div style="font-size:12px;font-weight:500">病害防治</div><div style="font-size:11px;color:var(--t2)">東二區 · 甘藷蔓割病</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IoT 感測監控 -->
+    <div id="page-iot" class="page">
+    <div class="page-banner banner-new">
+      <i class="ti ti-sparkles"></i>
+      <div><strong>全新功能 — IoT 感測監控（即時）</strong><br>現有系統雖有傳感器資料表（wqtt），但僅供手動記錄填寫，無即時監控或警示機制。新平台建置 MQTT 即時資料流，感測數值每隔數秒自動更新，超出建議範圍即觸發警示推播，並提供 24 小時趨勢圖。</div>
+    </div>
+      <div class="grid-4">
+        <div class="card" id="iot-temp-card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><i class="ti ti-thermometer" style="color:#E24B4A;font-size:16px"></i><span style="font-size:11px;color:var(--t2)">氣溫</span></div><div class="sensor-val" id="iot-temp">28.4°C</div><div class="sensor-range">建議範圍 20–33°C</div></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><i class="ti ti-droplet" style="color:#185FA5;font-size:16px"></i><span style="font-size:11px;color:var(--t2)">空氣濕度</span></div><div class="sensor-val" id="iot-hum">65%</div><div class="sensor-range">建議範圍 45–85%</div></div>
+        <div class="card" id="iot-soil-card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><i class="ti ti-plant" style="color:var(--brand);font-size:16px"></i><span style="font-size:11px;color:var(--t2)">土壤含水量</span></div><div class="sensor-val" id="iot-soil">42%</div><div class="sensor-range">建議範圍 35–65%</div><div class="sensor-warn" id="iot-soil-warn" style="display:none"><i class="ti ti-alert-triangle"></i>超出建議範圍</div></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><i class="ti ti-temperature" style="color:#854F0B;font-size:16px"></i><span style="font-size:11px;color:var(--t2)">土壤溫度</span></div><div class="sensor-val" id="iot-stemp">24.1°C</div><div class="sensor-range">建議範圍 15–30°C</div></div>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:12px;color:var(--t2)">24 小時趨勢（北一中區感測站）</span>
+          <div style="display:flex;gap:14px;font-size:11px;color:var(--t2)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:#E24B4A;border-radius:2px;display:inline-block"></span>氣溫(°C)</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:var(--brand);border-radius:2px;display:inline-block"></span>土壤含水量(%)</span>
+          </div>
+        </div>
+        <div class="chart-wrap-tall"><canvas id="chart-iot"></canvas></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div style="font-size:12px;font-weight:500;margin-bottom:10px">感測設備清單</div>
+          <div style="border-bottom:1px solid var(--b1);padding:8px 0;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:500">北一中區感測站</div><div style="font-size:11px;color:var(--t2)">溫度/濕度/土壤含水量</div></div><span class="badge badge-green">在線</span></div>
+          <div style="border-bottom:1px solid var(--b1);padding:8px 0;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:500">南三區感測站</div><div style="font-size:11px;color:var(--t2)">溫度/土壤含水量</div></div><span class="badge badge-green">在線</span></div>
+          <div style="border-bottom:1px solid var(--b1);padding:8px 0;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:500">東二區感測站</div><div style="font-size:11px;color:var(--t2)">溫度/濕度</div></div><span class="badge badge-red">離線</span></div>
+          <div style="padding:8px 0;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:500">氣象站主站</div><div style="font-size:11px;color:var(--t2)">氣溫/雨量/風速</div></div><span class="badge badge-green">在線</span></div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;font-weight:500;margin-bottom:10px">近期警示記錄</div>
+          <div style="padding:7px 0;border-bottom:1px solid var(--b1)"><div style="font-size:10px;color:var(--t2);margin-bottom:3px">06/19 08:30</div><div style="font-size:12px;display:flex;align-items:center;gap:6px"><span class="badge badge-amber">中</span>東二區土壤含水量偏低 32%</div></div>
+          <div style="padding:7px 0;border-bottom:1px solid var(--b1)"><div style="font-size:10px;color:var(--t2);margin-bottom:3px">06/17 14:20</div><div style="font-size:12px;display:flex;align-items:center;gap:6px"><span class="badge badge-red">高</span>北一中區氣溫偏高 33.8°C</div></div>
+          <div style="padding:7px 0;border-bottom:1px solid var(--b1)"><div style="font-size:10px;color:var(--t2);margin-bottom:3px">06/15 06:10</div><div style="font-size:12px;display:flex;align-items:center;gap:6px"><span class="badge badge-gray">低</span>東二區感測站訊號不穩</div></div>
+          <div style="padding:7px 0"><div style="font-size:10px;color:var(--t2);margin-bottom:3px">06/12 11:00</div><div style="font-size:12px;display:flex;align-items:center;gap:6px"><span class="badge badge-blue">低</span>全場大雨，土壤含水量過高</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 農業建議 -->
+    <div id="page-ai" class="page">
+    <div class="page-banner banner-new">
+      <i class="ti ti-sparkles"></i>
+      <div><strong>全新功能 — AI 農業建議引擎</strong><br>現有系統不具備任何自動化分析或建議功能。新平台整合 IoT 感測資料、作物生長週期與外部氣象預報，由 AI 引擎自動產生施肥、灌溉、病蟲害防治與採收時機建議，協助農友做出更好的田間決策。</div>
+    </div>
+      <div class="ai-banner"><i class="ti ti-brain" style="font-size:22px;color:var(--brand)"></i><div><div style="font-size:13px;font-weight:500;color:var(--brand)">AI 農業建議引擎</div><div style="font-size:11px;color:var(--brand-d)">根據 IoT 感測資料、作物生長週期與氣象預報自動分析 · 更新於今日 09:00</div></div></div>
+      <div class="grid-2" style="margin-bottom:14px">
+        <div class="card ai-card" onclick="this.classList.toggle('accent')"><div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:8px;background:#FAEEDA;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-bug" style="font-size:16px;color:#854F0B"></i></div><div><div style="font-size:13px;font-weight:500;margin-bottom:4px">蔓割病風險偏高</div><span class="badge badge-amber">病蟲害警示</span></div></div><div style="font-size:12px;color:var(--t2);line-height:1.8;margin-bottom:10px">近期降雨頻繁，土壤濕度偏高，東二區蔓割病感染風險上升。建議於 3 天內施波爾多液（1:1:100）預防性防治。</div><button class="btn btn-primary" style="font-size:11px"><i class="ti ti-plus"></i> 建立防治記錄</button></div>
+        <div class="card ai-card" onclick="this.classList.toggle('accent')"><div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-droplet" style="font-size:16px;color:#185FA5"></i></div><div><div style="font-size:13px;font-weight:500;margin-bottom:4px">北一中區需補充水分</div><span class="badge badge-blue">灌溉建議</span></div></div><div style="font-size:12px;color:var(--t2);line-height:1.8;margin-bottom:10px">IoT 感測顯示北一中區土壤含水量已降至 32%，低於建議值（35–65%）。建議明日清晨 6–8 時灌溉，每平方米補充 3–4 公升。</div><button class="btn btn-primary" style="font-size:11px"><i class="ti ti-plus"></i> 記錄灌溉作業</button></div>
+        <div class="card ai-card" onclick="this.classList.toggle('accent')"><div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:8px;background:#EAF3DE;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-plant" style="font-size:16px;color:#3B6D11"></i></div><div><div style="font-size:13px;font-weight:500;margin-bottom:4px">南三區施肥時機良好</div><span class="badge badge-green">施肥建議</span></div></div><div style="font-size:12px;color:var(--t2);line-height:1.8;margin-bottom:10px">依生長週期與目前種植天數（28 天），南三區正值地上部擴展期，建議本週施硫酸鉀（每分地 10 kg）促進塊根膨大。</div><button class="btn btn-primary" style="font-size:11px"><i class="ti ti-plus"></i> 記錄施肥作業</button></div>
+        <div class="card ai-card" onclick="this.classList.toggle('accent')"><div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-sun" style="font-size:16px;color:var(--brand)"></i></div><div><div style="font-size:13px;font-weight:500;margin-bottom:4px">本週天氣有利採收</div><span class="badge badge-teal">採收建議</span></div></div><div style="font-size:12px;color:var(--t2);line-height:1.8;margin-bottom:10px">氣象預報 06/22–06/25 連續晴天、溫度 26–30°C，是東二區採收的最佳窗口。建議提前安排採收人力。</div><button class="btn btn-primary" style="font-size:11px"><i class="ti ti-plus"></i> 安排採收派工</button></div>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:14px;padding:12px 16px">
+        <i class="ti ti-cloud" style="font-size:20px;color:#185FA5;flex-shrink:0"></i>
+        <div style="flex:1"><div style="font-size:12px;font-weight:500;margin-bottom:8px">本週天氣預報</div>
+          <div class="weather-row">
+            <div class="weather-item"><div class="wd">06/19</div><i class="ti ti-sun"></i><div class="wt">30°C</div></div>
+            <div class="weather-item"><div class="wd">06/20</div><i class="ti ti-cloud"></i><div class="wt">28°C</div></div>
+            <div class="weather-item"><div class="wd">06/21</div><i class="ti ti-cloud-rain"></i><div class="wt">25°C</div></div>
+            <div class="weather-item"><div class="wd">06/22</div><i class="ti ti-sun"></i><div class="wt">29°C</div></div>
+            <div class="weather-item"><div class="wd">06/23</div><i class="ti ti-sun"></i><div class="wt">31°C</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 採收派工 -->
+    <div id="page-dispatch" class="page">
+    <div class="page-banner banner-new">
+      <i class="ti ti-sparkles"></i>
+      <div><strong>全新功能 — 採收派工管理</strong><br>現有系統有採收人員專屬登入入口，但缺乏完整的派工指派與追蹤功能。新平台提供農友建立派工單、指派人員與田區、追蹤執行狀態（待確認／已接受／執行中）的完整派工管理流程。</div>
+    </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+        <button class="btn btn-primary" onclick="toggleDispatchForm()"><i class="ti ti-plus"></i> 新增派工</button>
+      </div>
+      <div class="card accent" id="dispatch-form" style="display:none;margin-bottom:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="form-row"><label class="form-label">派工人員</label><select class="form-input"><option>張小明</option><option>林大華</option><option>王阿珍</option><option>陳阿土</option></select></div>
+          <div class="form-row"><label class="form-label">作業田區</label><select class="form-input"><option>東二區</option><option>北一中區</option><option>南三區</option></select></div>
+          <div class="form-row"><label class="form-label">作業類型</label><select class="form-input"><option>採收</option><option>除草</option><option>施肥</option><option>噴藥</option><option>灌溉</option></select></div>
+          <div class="form-row"><label class="form-label">預計日期</label><input type="date" class="form-input" value="2024-06-22"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn" onclick="toggleDispatchForm()">取消</button>
+          <button class="btn btn-primary" onclick="toggleDispatchForm()"><i class="ti ti-send"></i> 發送派工通知</button>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tbl">
+          <thead><tr><th>人員</th><th>作業內容</th><th>日期</th><th>作物</th><th>狀態</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">張</div>張小明</div></td><td>東二區採收</td><td>06/22</td><td><span class="badge badge-teal">甘藷</span></td><td><span class="badge badge-green">已接受</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">林</div>林大華</div></td><td>東二區採收</td><td>06/22</td><td><span class="badge badge-teal">甘藷</span></td><td><span class="badge badge-green">已接受</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">王</div>王阿珍</div></td><td>南三區除草</td><td>06/24</td><td><span class="badge badge-teal">甘藷</span></td><td><span class="badge badge-amber">待確認</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand)">陳</div>陳阿土</div></td><td>北一中區施肥</td><td>06/25</td><td><span class="badge badge-teal">甘藷</span></td><td><span class="badge badge-teal">執行中</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 庫存管理 -->
+    <div id="page-warehouse" class="page">
+    <div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — 庫存管理</strong><br>現有系統已具備入庫、出庫、包裝管理功能，並設計了已採收記錄鎖定機制（不可修改或刪除），確保生產履歷資料一致性。新版本保留此設計並以現代化架構重新建置，加強批次批號追蹤能力。</div>
+    </div>
+      <div class="grid-3">
+        <div class="card"><div class="metric-label">當前庫存</div><div class="metric-val">4,820<span style="font-size:14px;font-weight:400"> kg</span></div><div class="metric-sub">3 批次未出貨</div></div>
+        <div class="card"><div class="metric-label">本月入庫</div><div class="metric-val">3,140<span style="font-size:14px;font-weight:400"> kg</span></div><div class="metric-sub">2 次採收入庫</div></div>
+        <div class="card"><div class="metric-label">本月出庫</div><div class="metric-val">2,340<span style="font-size:14px;font-weight:400"> kg</span></div><div class="metric-sub">5 批已包裝</div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:12px;font-weight:500;margin-bottom:12px">入庫批次記錄</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--b1)"><div><div style="font-size:13px;font-weight:500">東二區採收入庫</div><div style="font-size:11px;color:var(--t2);margin-top:2px">06/15 · 台農57號黃皮黃肉 · 批號 B240615-01</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:500;color:var(--brand);margin-bottom:3px">1,840 kg</div><span class="badge badge-teal">已入庫</span></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--b1)"><div><div style="font-size:13px;font-weight:500">北二區採收入庫</div><div style="font-size:11px;color:var(--t2);margin-top:2px">05/30 · 台農57號黃皮黃肉 · 批號 B240530-01</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:500;color:var(--brand);margin-bottom:3px">1,300 kg</div><span class="badge badge-amber">部分出庫</span></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0"><div><div style="font-size:13px;font-weight:500">東一區採收入庫</div><div style="font-size:11px;color:var(--t2);margin-top:2px">05/18 · 台農57號黃皮黃肉 · 批號 B240518-01</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:500;color:var(--t2);margin-bottom:3px">980 kg</div><span class="badge badge-gray">全數出庫</span></div></div>
+      </div>
+    </div>
+
+    <!-- 出貨管理 -->
+    <div id="page-shipment" class="page">
+    <div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — 出貨管理</strong><br>現有系統已具備出貨單的新增、修改、刪除與搜尋功能。新版本保留此功能並優化介面，未來可與公開生產履歷查詢連結，讓消費者能透過出貨批號追蹤到對應的生產記錄。</div>
+    </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary"><i class="ti ti-plus"></i> 新增出貨單</button></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tbl">
+          <thead><tr><th>日期</th><th>買受人</th><th>品種</th><th>數量</th><th>單價</th><th>總金額</th><th>狀態</th></tr></thead>
+          <tbody>
+            <tr><td>06/18</td><td style="font-weight:500">全聯實業</td><td style="color:var(--t2)">台農57號</td><td>600 kg</td><td style="color:var(--t2)">$28</td><td style="color:var(--brand);font-weight:500">$16,800</td><td><span class="badge badge-green">已出貨</span></td></tr>
+            <tr><td>06/15</td><td style="font-weight:500">大潤發</td><td style="color:var(--t2)">台農57號</td><td>800 kg</td><td style="color:var(--t2)">$26</td><td style="color:var(--brand);font-weight:500">$20,800</td><td><span class="badge badge-green">已出貨</span></td></tr>
+            <tr><td>06/10</td><td style="font-weight:500">家樂福</td><td style="color:var(--t2)">台農57號</td><td>940 kg</td><td style="color:var(--t2)">$27</td><td style="color:var(--brand);font-weight:500">$25,380</td><td><span class="badge badge-green">已出貨</span></td></tr>
+            <tr><td>06/08</td><td style="font-weight:500">里仁有機</td><td style="color:var(--t2)">台農57號</td><td>320 kg</td><td style="color:var(--t2)">$35</td><td style="color:var(--brand);font-weight:500">$11,200</td><td><span class="badge badge-amber">待確認</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 數據報表 -->
+    <div id="page-reports" class="page">
+    <div class="page-banner banner-new">
+      <i class="ti ti-sparkles"></i>
+      <div><strong>全新功能 — 數據報表與匯出</strong><br>現有系統不具備圖表化報表功能。新平台提供月出貨量趨勢、成本結構分析、毛利率計算等視覺化報表，並支援匯出為 Excel 或 PDF，方便農友進行財務規劃與向合作社或機關提報資料。</div>
+    </div>
+      <div class="grid-4">
+        <div class="card"><div class="metric-label">累計出貨量</div><div class="metric-val">12,600<span style="font-size:14px;font-weight:400"> kg</span></div><div class="metric-sub">今年至今</div></div>
+        <div class="card"><div class="metric-label">總收入</div><div class="metric-val">$346,800</div><div class="metric-sub green">平均 $27.5/kg</div></div>
+        <div class="card"><div class="metric-label">總生產成本</div><div class="metric-val">$212,400</div><div class="metric-sub">今年至今</div></div>
+        <div class="card"><div class="metric-label">毛利率</div><div class="metric-val">38.7%</div><div class="metric-sub green">↑ 3.2% 較去年</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div style="font-size:12px;color:var(--t2);margin-bottom:10px">月出貨量 vs 生產成本</div>
+          <div class="chart-wrap-tall"><canvas id="chart-reports"></canvas></div>
+          <div style="display:flex;gap:14px;font-size:11px;color:var(--t2);margin-top:8px"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:var(--brand);border-radius:2px;display:inline-block"></span>出貨量</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:#EF9F27;border-radius:2px;display:inline-block"></span>生產成本</span></div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--t2);margin-bottom:12px">成本結構分析</div>
+          <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>肥料資材</span><span style="color:var(--t2)">38%</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:38%;background:var(--brand)"></div></div></div>
+          <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>人工費用</span><span style="color:var(--t2)">29%</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:29%;background:var(--brand-m)"></div></div></div>
+          <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>農藥防治</span><span style="color:var(--t2)">16%</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:16%;background:#EF9F27"></div></div></div>
+          <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>機械折舊</span><span style="color:var(--t2)">11%</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:11%;background:#185FA5"></div></div></div>
+          <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>其他</span><span style="color:var(--t2)">6%</span></div><div class="pbar-wrap"><div class="pbar-fill" style="width:6%;background:#B4B2A9"></div></div></div>
+          <div style="display:flex;gap:8px"><button class="btn" style="flex:1;justify-content:center;font-size:11px"><i class="ti ti-download"></i> 匯出 Excel</button><button class="btn" style="flex:1;justify-content:center;font-size:11px"><i class="ti ti-file-text"></i> 匯出 PDF</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 帳號管理 -->
+    <div id="page-admin-accounts" class="page">
+    <div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — 帳號與角色管理</strong><br>現有系統已具備帳號新增、查詢、刪除與角色（管理者／農友）權限設定。新版本採用 RBAC（角色權限控制）套件重新實作，角色定義更彈性，並新增停用帳號、邀請連結等現代化帳號管理功能。</div>
+    </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <input class="form-input" style="width:220px" placeholder="搜尋帳號…">
+        <button class="btn btn-primary"><i class="ti ti-user-plus"></i> 邀請帳號</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tbl">
+          <thead><tr><th>姓名</th><th>電子郵件</th><th>角色</th><th>農場/作物</th><th>上次登入</th><th>狀態</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--brand)">王</div>王小明</div></td><td style="color:var(--t2);font-size:12px">wang@farm.tw</td><td><span class="badge badge-purple">網站總管理者</span></td><td style="color:var(--t2);font-size:12px">全部</td><td style="color:var(--t2);font-size:12px">06/19</td><td><span class="badge badge-green">啟用</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i></button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--brand)">陳</div>陳志明</div></td><td style="color:var(--t2);font-size:12px">chen.zm@farm.tw</td><td><span class="badge badge-teal">農友（會員）</span></td><td style="color:var(--t2);font-size:12px">甘藷·3田區</td><td style="color:var(--t2);font-size:12px">06/19</td><td><span class="badge badge-green">啟用</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i></button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--brand)">林</div>林美玲</div></td><td style="color:var(--t2);font-size:12px">lin.ml@farm.tw</td><td><span class="badge badge-teal">農友（會員）</span></td><td style="color:var(--t2);font-size:12px">甘藷·5田區</td><td style="color:var(--t2);font-size:12px">06/18</td><td><span class="badge badge-green">啟用</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i></button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--brand)">張</div>張大偉</div></td><td style="color:var(--t2);font-size:12px">chang@farm.tw</td><td><span class="badge badge-amber">採收派工人員</span></td><td style="color:var(--t2);font-size:12px">—</td><td style="color:var(--t2);font-size:12px">06/17</td><td><span class="badge badge-green">啟用</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i></button></td></tr>
+            <tr style="opacity:.5"><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--t2)">劉</div>劉阿海</div></td><td style="color:var(--t2);font-size:12px">liu@farm.tw</td><td><span class="badge badge-blue">一般管理者</span></td><td style="color:var(--t2);font-size:12px">—</td><td style="color:var(--t2);font-size:12px">05/30</td><td><span class="badge badge-red">停用</span></td><td><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 作物模組 -->
+    <div id="page-admin-crops" class="page">
+    <div class="page-banner banner-enhanced">
+      <i class="ti ti-arrow-up-circle"></i>
+      <div><strong>大幅升級 — 作物模組管理（多作物擴充）</strong><br>現有系統作物種類（甘藷）寫死於程式碼與資料庫命名中，每新增一種作物須複製整套系統。新平台將作物種類抽象化為可設定的模組，甘藷為首個啟用模組，未來僅需在後台新增作物模組（如鳳梨、高麗菜）並設定對應品種與 SOP，即可服務新作物，無需重寫任何程式碼。</div>
+    </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+        <div class="crop-card active" onclick="selectCrop(this,'甘藷')"><div class="crop-emoji">🌿</div><div class="crop-name">甘藷</div><div class="crop-meta">19 品種 · SOP 3 套</div><span class="badge badge-green">啟用中</span></div>
+        <div class="crop-card inactive" onclick="selectCrop(this,'鳳梨')"><div class="crop-emoji">🍍</div><div class="crop-name">鳳梨</div><div class="crop-meta">8 品種 · SOP 2 套</div><span class="badge badge-gray">未啟用</span></div>
+        <div class="crop-card inactive" onclick="selectCrop(this,'高麗菜')"><div class="crop-emoji">🥬</div><div class="crop-name">高麗菜</div><div class="crop-meta">6 品種 · SOP 1 套</div><span class="badge badge-gray">未啟用</span></div>
+        <div class="crop-card inactive" onclick="selectCrop(this,'番薯葉')"><div class="crop-emoji">🌱</div><div class="crop-name">番薯葉</div><div class="crop-meta">4 品種 · SOP 1 套</div><span class="badge badge-gray">未啟用</span></div>
+      </div>
+      <div class="card" id="crop-varieties">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:13px;font-weight:500">甘藷品種主檔（6 筆）</div><button class="btn btn-primary" style="font-size:11px"><i class="ti ti-plus"></i> 新增品種</button></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="padding:9px 12px;border:1px solid var(--b1);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:500">台農57號（黃皮黃肉）</span><button class="btn" style="font-size:11px;padding:2px 8px"><i class="ti ti-edit" style="font-size:11px"></i></button></div>
+          <div style="padding:9px 12px;border:1px solid var(--b1);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:500">台農66號（紫皮紫肉）</span><button class="btn" style="font-size:11px;padding:2px 8px"><i class="ti ti-edit" style="font-size:11px"></i></button></div>
+          <div style="padding:9px 12px;border:1px solid var(--b1);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:500">台農73號</span><button class="btn" style="font-size:11px;padding:2px 8px"><i class="ti ti-edit" style="font-size:11px"></i></button></div>
+          <div style="padding:9px 12px;border:1px solid var(--b1);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:500">新農1號</span><button class="btn" style="font-size:11px;padding:2px 8px"><i class="ti ti-edit" style="font-size:11px"></i></button></div>
+          <div style="padding:9px 12px;border:1px solid var(--b1);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:500">心香（橘皮橘肉）</span><button class="btn" style="font-size:11px;padding:2px 8px"><i class="ti ti-edit" style="font-size:11px"></i></button></div>
+          <div style="padding:9px 12px;border:1px solid var(--b1);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:500">台南14號（蜜心藷）</span><button class="btn" style="font-size:11px;padding:2px 8px"><i class="ti ti-edit" style="font-size:11px"></i></button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOP 範本 -->
+    <div id="page-admin-sop" class="page">
+    <div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — SOP 範本管理</strong><br>現有系統已具備依生育階段設定標準栽培流程（施肥建議、栽培作業）的功能。新版本保留此設計並強化與品種參數的連動，讓 AI 農業建議能自動參照 SOP 範本內容產生更精準的建議。</div>
+    </div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:14px">台農57號 · 春夏作一期 SOP 範本（點擊展開各階段作業）</div>
+      <div class="sop-stage"><div class="sop-header" style="background:#EAF3DE" onclick="toggleSop(0)"><div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:50%;background:#3B6D11;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</span><span style="font-size:13px;font-weight:500;color:#3B6D11">幼苗期（0–30 天）</span></div><i class="ti ti-chevron-down" id="sop-icon-0" style="color:#3B6D11;font-size:15px"></i></div><div class="sop-body" id="sop-body-0" style="display:none;border-color:#EAF3DE"><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">整地起壟（壟高 30 cm，壟距 90 cm）</span></div><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">扦插種苗（每壟種 2 行）</span></div><div class="sop-task" style="border-bottom:none"><i class="ti ti-check"></i><span style="font-size:12px">施用基肥（有機質 + 複合肥料）</span></div><button class="btn" style="margin-top:10px;font-size:11px"><i class="ti ti-edit"></i> 編輯此階段</button></div></div>
+      <div class="sop-stage"><div class="sop-header" style="background:#E1F5EE" onclick="toggleSop(1)"><div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</span><span style="font-size:13px;font-weight:500;color:var(--brand)">生長期（31–60 天）</span></div><i class="ti ti-chevron-down" id="sop-icon-1" style="color:var(--brand);font-size:15px"></i></div><div class="sop-body" id="sop-body-1" style="display:none;border-color:#E1F5EE"><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">除草（每 2 週一次）</span></div><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">追肥（氮肥為主）</span></div><div class="sop-task" style="border-bottom:none"><i class="ti ti-check"></i><span style="font-size:12px">視需要灌溉（維持含水量 40–60%）</span></div><button class="btn" style="margin-top:10px;font-size:11px"><i class="ti ti-edit"></i> 編輯此階段</button></div></div>
+      <div class="sop-stage"><div class="sop-header" style="background:#FAEEDA" onclick="toggleSop(2)"><div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:50%;background:#854F0B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</span><span style="font-size:13px;font-weight:500;color:#854F0B">塊根膨大期（61–100 天）</span></div><i class="ti ti-chevron-down" id="sop-icon-2" style="color:#854F0B;font-size:15px"></i></div><div class="sop-body" id="sop-body-2" style="display:none;border-color:#FAEEDA"><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">施用鉀肥促進膨大（硫酸鉀每分地 10 kg）</span></div><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">土壤水分管理（避免過濕）</span></div><div class="sop-task" style="border-bottom:none"><i class="ti ti-check"></i><span style="font-size:12px">病蟲害巡田與防治</span></div><button class="btn" style="margin-top:10px;font-size:11px"><i class="ti ti-edit"></i> 編輯此階段</button></div></div>
+      <div class="sop-stage"><div class="sop-header" style="background:#E6F1FB" onclick="toggleSop(3)"><div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:50%;background:#185FA5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">4</span><span style="font-size:13px;font-weight:500;color:#185FA5">採收期（101–120 天）</span></div><i class="ti ti-chevron-down" id="sop-icon-3" style="color:#185FA5;font-size:15px"></i></div><div class="sop-body" id="sop-body-3" style="display:none;border-color:#E6F1FB"><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">確認塊根達採收標準</span></div><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">機械或人工採收</span></div><div class="sop-task"><i class="ti ti-check"></i><span style="font-size:12px">採後分級、入庫</span></div><div class="sop-task" style="border-bottom:none"><i class="ti ti-check"></i><span style="font-size:12px">建立採收記錄並自動鎖定不可修改</span></div><button class="btn" style="margin-top:10px;font-size:11px"><i class="ti ti-edit"></i> 編輯此階段</button></div></div>
+    </div>
+
+    <!-- 病蟲害資料庫 -->
+    <div id="page-admin-pests" class="page">
+    <div class="page-banner banner-existing">
+      <i class="ti ti-device-floppy"></i>
+      <div><strong>既有功能 — 病蟲害防治資料庫</strong><br>現有系統已具備病蟲（草）害防治對象與防治內容的資料庫管理。新版本保留此設計並與 AI 農業建議引擎整合，當 IoT 感測環境接近病蟲害好發條件時，系統可自動比對資料庫並推送對應的防治建議。</div>
+    </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary"><i class="ti ti-plus"></i> 新增防治項目</button></div>
+      <div class="card" style="margin-bottom:10px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:500">甘藷蔓割病</span><span class="badge badge-red">病害</span><span class="badge badge-gray">春夏</span></div><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px"><div><div style="color:var(--t2);margin-bottom:4px">症狀描述</div>蔓莖基部變褐腐爛，葉片萎黃，嚴重時全株死亡</div><div><div style="color:var(--t2);margin-bottom:4px">防治方式</div>波爾多液 1:1:100，每 7 天一次，共 3 次；注意排水</div></div></div>
+      <div class="card" style="margin-bottom:10px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:500">甘藷蚜蟲</span><span class="badge badge-amber">蟲害</span><span class="badge badge-gray">全年</span></div><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px"><div><div style="color:var(--t2);margin-bottom:4px">症狀描述</div>葉片捲曲，嚴重時植株萎縮，伴隨煤污病</div><div><div style="color:var(--t2);margin-bottom:4px">防治方式</div>馬拉松乳劑 1000 倍稀釋噴施，密度高時加強防治</div></div></div>
+      <div class="card" style="margin-bottom:10px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:500">甘藷瘡痂病</span><span class="badge badge-red">病害</span><span class="badge badge-gray">梅雨季</span></div><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px"><div><div style="color:var(--t2);margin-bottom:4px">症狀描述</div>葉片出現褪綠斑點，後呈褐色不規則病斑</div><div><div style="color:var(--t2);margin-bottom:4px">防治方式</div>預防為主，改善排水，避免田間積水；可施保護性殺菌劑</div></div></div>
+      <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:500">斜紋夜蛾</span><span class="badge badge-amber">蟲害</span><span class="badge badge-gray">夏秋</span></div><button class="btn" style="font-size:11px;padding:3px 9px"><i class="ti ti-edit" style="font-size:11px"></i> 編輯</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px"><div><div style="color:var(--t2);margin-bottom:4px">症狀描述</div>幼蟲夜間大量取食葉片，嚴重時葉片僅剩葉脈</div><div><div style="color:var(--t2);margin-bottom:4px">防治方式</div>蘇力菌 500 倍稀釋，傍晚施用效果最佳</div></div></div>
+    </div>
+
+
+    <!-- 田區管理 -->
+    <div id="page-fields" class="page">
+      <div class="page-banner banner-existing">
+        <i class="ti ti-device-floppy"></i>
+        <div><strong>既有功能 — 田區管理</strong><br>現有系統已具備多層級田區設定管理（如北區→北一區→北一中區），並可瀏覽各田區種植狀態。新版本保留此多層級設計並優化操作介面，同時強化與工作記錄、IoT 感測的連結。</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="display:flex;gap:8px"><input class="form-input" style="width:200px" placeholder="搜尋田區名稱…"><select class="form-input" style="width:130px"><option>所有狀態</option><option>種植中</option><option>準備採收</option><option>已採收</option><option>休耕</option></select></div>
+        <button class="btn btn-primary"><i class="ti ti-plus"></i> 新增田區</button>
+      </div>
+
+      <!-- 田區詳細展開卡片 -->
+      <div class="field-detail" id="field-detail-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:500;display:flex;align-items:center;gap:7px"><i class="ti ti-plant" style="color:var(--brand)"></i>北一中區 — 詳細資料</div>
+          <button class="btn" onclick="closeFieldDetail()" style="font-size:11px;padding:4px 10px"><i class="ti ti-x"></i> 關閉</button>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:8px">基本資訊</div>
+            <table class="tbl" style="font-size:12px">
+              <tr><td style="color:var(--t2);width:80px">面積</td><td>111 坪（0.37 分地）</td></tr>
+              <tr><td style="color:var(--t2)">隸屬</td><td>北區 → 北一區</td></tr>
+              <tr><td style="color:var(--t2)">作物</td><td>甘藷 / 台農57號（黃皮黃肉）</td></tr>
+              <tr><td style="color:var(--t2)">種植日</td><td>2024/04/08（春夏作一期）</td></tr>
+              <tr><td style="color:var(--t2)">採收人</td><td>我是示工</td></tr>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:8px">生長進度</div>
+            <div style="background:var(--bg2);border-radius:var(--r-md);padding:14px;text-align:center;margin-bottom:10px">
+              <div style="font-size:32px;font-weight:500;color:var(--brand)">72</div>
+              <div style="font-size:11px;color:var(--t2)">種植天數 / 預計 120 天</div>
+              <div class="pbar-wrap" style="margin:8px 0"><div class="pbar-fill" style="width:60%;background:var(--brand)"></div></div>
+              <div style="font-size:11px;color:var(--t2)">預計採收 08/14（48 天後）</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" style="flex:1;justify-content:center;font-size:12px" onclick="setPage('logs')"><i class="ti ti-clipboard-list"></i> 查看記錄</button>
+              <button class="btn btn-primary" style="flex:1;justify-content:center;font-size:12px"><i class="ti ti-package"></i> 採收入庫</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 田區階層列表 -->
+      <div style="font-size:11px;color:var(--t2);margin-bottom:8px">點擊田區列可展開詳細資料</div>
+
+      <div style="font-size:11px;color:var(--t2);font-weight:500;padding:4px 0;margin-bottom:4px"><i class="ti ti-folder" style="margin-right:4px"></i>北區</div>
+      <div style="margin-left:16px;margin-bottom:4px;font-size:11px;color:var(--t2);font-weight:500"><i class="ti ti-folder" style="margin-right:4px"></i>北一區</div>
+      <div class="field-row" style="margin-left:32px" onclick="openFieldDetail(this)">
+        <div class="field-icon active-crop"><i class="ti ti-plant"></i></div>
+        <div style="flex:1"><div class="field-name">北一中區</div><div class="field-meta">屬於 北一區 · 111 坪 · 台農57號 · 採收 08/14</div></div>
+        <span class="badge badge-green">旺盛生長</span>
+      </div>
+      <div class="field-row" style="margin-left:32px">
+        <div class="field-icon"><i class="ti ti-map-pin"></i></div>
+        <div style="flex:1"><div class="field-name">北一東區</div><div class="field-meta">屬於 北一區 · 88 坪 · 休耕中</div></div>
+        <span class="badge badge-gray">休耕</span>
+      </div>
+      <div class="field-row" style="margin-left:16px">
+        <div class="field-icon"><i class="ti ti-map-pin"></i></div>
+        <div style="flex:1"><div class="field-name">北二區</div><div class="field-meta">屬於 北區 · 158 坪 · 台農57號 · 採收 05/30</div></div>
+        <span class="badge badge-gray">已採收</span>
+      </div>
+
+      <div style="font-size:11px;color:var(--t2);font-weight:500;padding:4px 0;margin:10px 0 4px"><i class="ti ti-folder" style="margin-right:4px"></i>南區</div>
+      <div class="field-row" style="margin-left:16px">
+        <div class="field-icon" style="background:#FAEEDA;color:#854F0B"><i class="ti ti-plant"></i></div>
+        <div style="flex:1"><div class="field-name">南三區</div><div class="field-meta">屬於 南區 · 85 坪 · 台農57號 · 採收 09/25</div></div>
+        <span class="badge badge-amber">初期生長</span>
+      </div>
+      <div class="field-row" style="margin-left:16px">
+        <div class="field-icon" style="background:#E1F5EE;color:var(--brand-m)"><i class="ti ti-plant"></i></div>
+        <div style="flex:1"><div class="field-name">東二區</div><div class="field-meta">屬於 南區 · 220 坪 · 台農57號 · 採收 06/22</div></div>
+        <span class="badge badge-teal">準備採收</span>
+      </div>
+    </div>
+
+    <!-- 工作記錄 -->
+    <div id="page-logs" class="page">
+      <div class="page-banner banner-existing">
+        <i class="ti ti-device-floppy"></i>
+        <div><strong>既有功能 — 現場工作記錄</strong><br>現有系統已具備田間工作日誌功能，並特別設計了語音輸入備註，方便農友在田間操作時免手打。已採收田區的工作記錄自動鎖定不可修改，確保履歷資料一致性。新版本保留語音輸入，並新增拍照存證與 GPS 定位功能。</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <select class="form-input" style="width:150px"><option>所有田區</option><option selected>北一中區</option><option>南三區</option><option>東二區</option></select>
+        <select class="form-input" style="width:140px"><option>所有作業類型</option><option>施肥</option><option>除草</option><option>病蟲害防治</option><option>採收</option></select>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary" onclick="toggleLogForm()"><i class="ti ti-plus"></i> 新增記錄</button>
+      </div>
+
+      <!-- 新增記錄表單 -->
+      <div class="card accent" id="log-form" style="display:none;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px"><i class="ti ti-clipboard-plus" style="color:var(--brand)"></i> 新增工作記錄</div>
+          <button class="btn" onclick="toggleLogForm()" style="font-size:11px"><i class="ti ti-x"></i></button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="form-row"><label class="form-label">田區</label><select class="form-input"><option>北一中區</option><option>南三區</option><option>東二區</option></select></div>
+          <div class="form-row"><label class="form-label">作業類型</label><select class="form-input"><option>施肥</option><option>除草</option><option>病蟲害防治</option><option>採收入庫</option><option>灌溉</option></select></div>
+        </div>
+        <div class="form-row" style="margin-bottom:10px">
+          <label class="form-label">備註說明（可使用語音輸入）</label>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <textarea class="form-input" id="log-note" style="flex:1;height:70px;resize:none" placeholder="輸入作業說明，或點擊右側語音按鈕…">硫酸鉀施用量 3 公斤，均勻撒佈於壟面</textarea>
+            <button class="voice-btn" id="voice-btn" onclick="toggleVoice()"><i class="ti ti-microphone"></i> 語音輸入</button>
+          </div>
+          <div id="voice-hint" style="font-size:11px;color:var(--t2);margin-top:4px;display:none"><i class="ti ti-microphone" style="color:var(--brand)"></i> 錄音中，請說出作業說明…（2 秒後自動辨識）</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <button class="btn" style="font-size:11px"><i class="ti ti-camera"></i> 拍照存證</button>
+          <button class="btn" style="font-size:11px"><i class="ti ti-map-pin"></i> 記錄 GPS 位置</button>
+          <span style="font-size:11px;color:var(--t2);background:var(--bg2);padding:3px 9px;border-radius:4px"><i class="ti ti-map-pin" style="font-size:10px"></i> 24.9876°N, 121.3342°E</span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn" onclick="toggleLogForm()">取消</button>
+          <button class="btn btn-primary" onclick="saveLog()"><i class="ti ti-check"></i> 儲存記錄</button>
+        </div>
+      </div>
+
+      <!-- 記錄列表 -->
+      <div class="card">
+        <div id="log-list">
+          <div class="log-row"><div class="log-dot" style="background:var(--brand)"></div><div class="log-time">今天 09:20</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center"><div class="log-title">施肥作業</div><span class="badge badge-teal">施肥</span></div><div class="log-desc">北一中區 · 硫酸鉀 3 kg，均勻撒佈於壟面</div><div class="log-meta"><i class="ti ti-microphone"></i>語音輸入<span style="margin:0 6px">·</span><i class="ti ti-camera"></i>拍照 2 張<span style="margin:0 6px">·</span><i class="ti ti-lock"></i>已鎖定</div></div></div>
+          <div class="log-row"><div class="log-dot" style="background:#EF9F27"></div><div class="log-time">昨天 14:05</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center"><div class="log-title">除草作業</div><span class="badge badge-amber">除草</span></div><div class="log-desc">南三區 · 人工除草，壟間雜草清除完畢</div><div class="log-meta"><i class="ti ti-camera"></i>拍照 3 張<span style="margin:0 6px">·</span><i class="ti ti-map-pin"></i>GPS 已記錄<span style="margin:0 6px">·</span><i class="ti ti-lock"></i>已鎖定</div></div></div>
+          <div class="log-row"><div class="log-dot" style="background:#E24B4A"></div><div class="log-time">06/17 10:30</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center"><div class="log-title">病害防治</div><span class="badge badge-red">病蟲害</span></div><div class="log-desc">東二區 · 甘藷蔓割病 · 波爾多液噴施</div><div class="log-meta"><i class="ti ti-microphone"></i>語音輸入<span style="margin:0 6px">·</span><i class="ti ti-map-pin"></i>GPS 已記錄<span style="margin:0 6px">·</span><i class="ti ti-lock"></i>已鎖定</div></div></div>
+          <div class="log-row"><div class="log-dot" style="background:var(--brand)"></div><div class="log-time">06/15 08:00</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center"><div class="log-title">施肥作業</div><span class="badge badge-teal">施肥</span></div><div class="log-desc">北一中區 · 有機質肥料 20 kg 施用</div><div class="log-meta"><i class="ti ti-camera"></i>拍照 1 張<span style="margin:0 6px">·</span><i class="ti ti-lock"></i>已鎖定</div></div></div>
+          <div class="log-row"><div class="log-dot" style="background:#B4B2A9"></div><div class="log-time">06/10 15:30</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center"><div class="log-title">採收入庫</div><span class="badge badge-gray">採收</span></div><div class="log-desc">北二區 · 台農57號 · 共採收 840 kg 入庫</div><div class="log-meta"><i class="ti ti-lock" style="color:#E24B4A"></i><span style="color:#E24B4A">已採收鎖定，此記錄不可修改或刪除</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+</div><!-- /content -->
+</div><!-- /body-area -->
+</div><!-- /shell -->
+
+<script>
+// ── Navigation config ──────────────────────────────────────────────
+const NAV = {
+  public: {
+    label:'公開前台', roleLabel:'訪客',
+    pages:[
+      {id:'landing',icon:'home',label:'平台首頁',status:'existing'},
+      {id:'traceability',icon:'qrcode',label:'生產履歷查詢',status:'new'},
+    ]
+  },
+  member: {
+    label:'會員端', roleLabel:'農友會員',
+    pages:[
+      {id:'dashboard',icon:'layout-dashboard',label:'生產看版',status:'existing'},
+      {id:'iot',icon:'wifi',label:'IoT 感測監控',status:'new'},
+      {id:'ai',icon:'brain',label:'AI 農業建議',status:'new'},
+      {id:'fields',icon:'map-pin',label:'田區管理',status:'existing'},
+      {id:'logs',icon:'clipboard-list',label:'工作記錄',status:'existing'},
+      {id:'dispatch',icon:'users',label:'採收派工',status:'new'},
+      {id:'warehouse',icon:'package',label:'庫存管理',status:'existing'},
+      {id:'shipment',icon:'truck',label:'出貨管理',status:'existing'},
+      {id:'reports',icon:'chart-bar',label:'數據報表',status:'new'},
+    ]
+  },
+  admin: {
+    label:'後台管理', roleLabel:'系統管理員',
+    pages:[
+      {id:'admin-accounts',icon:'users',label:'帳號管理',status:'existing'},
+      {id:'admin-crops',icon:'plant',label:'作物模組',status:'enhanced'},
+      {id:'admin-sop',icon:'clipboard-list',label:'SOP 範本',status:'existing'},
+      {id:'admin-pests',icon:'bug',label:'病蟲害資料庫',status:'existing'},
+    ]
+  }
+};
+const PAGE_TITLES = {
+  landing:'平台首頁', traceability:'消費者生產履歷查詢',
+  dashboard:'生產看版', iot:'IoT 感測監控（即時）', ai:'AI 農業建議',
+  fields:'田區管理', logs:'工作記錄（田間日誌）',
+  dispatch:'採收派工管理', warehouse:'庫存管理', shipment:'出貨管理', reports:'數據報表',
+  'admin-accounts':'帳號管理', 'admin-crops':'作物模組管理',
+  'admin-sop':'SOP 範本管理', 'admin-pests':'病蟲害防治資料庫'
+};
+
+let currentSection = 'public';
+let currentPage = 'landing';
+let iotInterval = null;
+let iotChartObj = null;
+let shipChartObj = null;
+let repChartObj = null;
+let iotState = {temp:28.4, hum:65, soil:42, stemp:24.1};
+let iotHistTemp = [], iotHistSoil = [], iotHistLabels = [];
+
+// ── Sidebar render ─────────────────────────────────────────────────
+function renderSidebar() {
+  const sec = NAV[currentSection];
+  const sidebar = document.getElementById('sidebar');
+  const sbContent = document.getElementById('sb-content');
+  document.getElementById('sb-role').textContent = sec.roleLabel;
+
+  if (currentPage === 'landing') {
+    sidebar.style.display = 'none';
+    return;
+  }
+  sidebar.style.display = 'flex';
+
+  let html = `<div class="sb-section">${currentSection==='admin'?'系統管理':currentSection==='public'?'公開頁面':'農友功能'}</div>`;
+  sec.pages.forEach(p => {
+    const active = p.id === currentPage ? 'active' : '';
+    const statusLabel = {existing:'既有',new:'全新',enhanced:'升級'}[p.status]||'';
+    const statusCls = {existing:'sb-status-existing',new:'sb-status-new',enhanced:'sb-status-enhanced'}[p.status]||'';
+    const statusBadge = statusLabel ? `<span class="sb-status ${statusCls}">${statusLabel}</span>` : '';
+    html += `<div class="sb-item ${active}" onclick="setPage('${p.id}')"><i class="ti ti-${p.icon}"></i>${p.label}${statusBadge}</div>`;
+  });
+  sbContent.innerHTML = html;
+}
+
+// ── Top tabs ───────────────────────────────────────────────────────
+function setSection(s) {
+  currentSection = s;
+  document.querySelectorAll('.top-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['public','member','admin'][i] === s);
+  });
+  const firstPage = NAV[s].pages[0].id;
+  setPage(firstPage);
+}
+
+function setPage(p) {
+  currentPage = p;
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(el => el.style.display='none');
+  const target = document.getElementById('page-'+p);
+  if (target) target.style.display = 'block';
+
+  document.getElementById('bc-title').textContent = PAGE_TITLES[p] || p;
+  document.getElementById('live-indicator').style.display = p==='iot' ? 'flex' : 'none';
+
+  renderSidebar();
+  stopIot();
+
+  if (p === 'iot') { initIotChart(); startIot(); }
+  else if (p === 'dashboard') { initShipChart(); }
+  else if (p === 'reports') { initRepChart(); }
+}
+
+// ── Charts ─────────────────────────────────────────────────────────
+function initShipChart() {
+  const canvas = document.getElementById('chart-shipments');
+  if (!canvas) return;
+  if (shipChartObj) { shipChartObj.destroy(); shipChartObj = null; }
+  shipChartObj = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: ['1月','2月','3月','4月','5月','6月'],
+      datasets: [{
+        data: [1840,2100,1670,2560,2090,2340],
+        backgroundColor: 'rgba(15,110,86,0.75)',
+        borderRadius: 4, borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>`${ctx.parsed.y} kg` } } },
+      scales: { x:{ grid:{display:false}, ticks:{font:{size:10}} }, y:{display:false,grid:{display:false}} }
+    }
+  });
+}
+
+function initRepChart() {
+  const canvas = document.getElementById('chart-reports');
+  if (!canvas) return;
+  if (repChartObj) { repChartObj.destroy(); repChartObj = null; }
+  repChartObj = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: ['1月','2月','3月','4月','5月','6月'],
+      datasets: [
+        { label:'出貨量(kg)', data:[1840,2100,1670,2560,2090,2340], backgroundColor:'rgba(15,110,86,0.75)', borderRadius:3, borderSkipped:false },
+        { label:'成本($)', data:[52000,48000,61000,72000,55000,58000], backgroundColor:'rgba(239,159,39,0.65)', borderRadius:3, borderSkipped:false },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{display:false} },
+      scales: { x:{grid:{display:false},ticks:{font:{size:10}}}, y:{display:false} }
+    }
+  });
+}
+
+// ── IoT Chart & Live ───────────────────────────────────────────────
+function initIotChart() {
+  const canvas = document.getElementById('chart-iot');
+  if (!canvas) return;
+  if (iotChartObj) { iotChartObj.destroy(); iotChartObj = null; }
+
+  // Init history
+  iotHistLabels = []; iotHistTemp = []; iotHistSoil = [];
+  for (let i=11;i>=0;i--) {
+    iotHistLabels.push(i===0?'現在':`${i*2}h`);
+    iotHistTemp.push(+(26+Math.sin(i/3)*2).toFixed(1));
+    iotHistSoil.push(Math.round(42+Math.sin(i/4)*5));
+  }
+
+  iotChartObj = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: iotHistLabels,
+      datasets: [
+        { label:'氣溫(°C)', data:[...iotHistTemp], borderColor:'#E24B4A', backgroundColor:'rgba(226,75,74,0.08)', borderWidth:1.5, fill:true, tension:0.3, pointRadius:0 },
+        { label:'土壤含水量(%)', data:[...iotHistSoil], borderColor:'#0F6E56', backgroundColor:'rgba(15,110,86,0.08)', borderWidth:1.5, fill:true, tension:0.3, pointRadius:0 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:{duration:400},
+      plugins:{ legend:{display:false} },
+      scales:{ x:{grid:{display:false},ticks:{font:{size:9},maxTicksLimit:8}}, y:{display:false} }
+    }
+  });
+}
+
+function startIot() {
+  iotInterval = setInterval(() => {
+    // Update state
+    iotState.temp = +Math.max(20,Math.min(38, iotState.temp+(Math.random()-.5)*.5)).toFixed(1);
+    iotState.hum  = Math.round(Math.max(30,Math.min(95, iotState.hum+(Math.random()-.5)*2)));
+    iotState.soil = Math.round(Math.max(15,Math.min(80, iotState.soil+(Math.random()-.5)*1.5)));
+    iotState.stemp= +Math.max(15,Math.min(35, iotState.stemp+(Math.random()-.5)*.3)).toFixed(1);
+
+    // Update DOM
+    document.getElementById('iot-temp').textContent = iotState.temp+'°C';
+    document.getElementById('iot-hum').textContent  = iotState.hum+'%';
+    document.getElementById('iot-soil').textContent = iotState.soil+'%';
+    document.getElementById('iot-stemp').textContent= iotState.stemp+'°C';
+
+    const soilLow = iotState.soil < 35;
+    document.getElementById('iot-soil-card').style.borderColor = soilLow?'#E24B4A':'var(--b1)';
+    document.getElementById('iot-soil').className = 'sensor-val'+(soilLow?' warn':'');
+    document.getElementById('iot-soil-warn').style.display = soilLow?'flex':'none';
+
+    // Dashboard soil alert
+    const dashSoil = document.getElementById('dash-soil');
+    if (dashSoil) dashSoil.textContent = iotState.soil;
+
+    // Update chart
+    if (iotChartObj) {
+      iotHistTemp.push(iotState.temp); iotHistTemp.shift();
+      iotHistSoil.push(iotState.soil); iotHistSoil.shift();
+      iotHistLabels.push('現在'); iotHistLabels.shift();
+      iotChartObj.data.labels = [...iotHistLabels];
+      iotChartObj.data.datasets[0].data = [...iotHistTemp];
+      iotChartObj.data.datasets[1].data = [...iotHistSoil];
+      iotChartObj.update('none');
+    }
+  }, 2000);
+}
+
+function stopIot() {
+  if (iotInterval) { clearInterval(iotInterval); iotInterval = null; }
+}
+
+// ── Interactive ────────────────────────────────────────────────────
+function toggleDispatchForm() {
+  const f = document.getElementById('dispatch-form');
+  f.style.display = f.style.display==='none'?'block':'none';
+}
+
+function toggleSop(i) {
+  const body = document.getElementById('sop-body-'+i);
+  const icon = document.getElementById('sop-icon-'+i);
+  const open = body.style.display!=='none' && body.style.display!=='';
+  // Close all
+  [0,1,2,3].forEach(j=>{
+    document.getElementById('sop-body-'+j).style.display='none';
+    document.getElementById('sop-icon-'+j).className='ti ti-chevron-down';
+  });
+  if (!open) {
+    body.style.display='block';
+    icon.className='ti ti-chevron-up';
+  }
+}
+
+function selectCrop(el, name) {
+  document.querySelectorAll('.crop-card').forEach(c=>{c.classList.remove('active');});
+  el.classList.add('active');
+  const title = document.querySelector('#crop-varieties > div > div:first-child');
+  if (title) title.textContent = `${name}品種主檔`;
+}
+
+// ── Traceability ───────────────────────────────────────────────────
+function demoTrace() {
+  document.getElementById('trace-input').value = 'B240615-01';
+  doTrace();
+}
+
+function doTrace() {
+  const q = document.getElementById('trace-input').value.trim();
+  if (!q) return;
+  document.getElementById('trace-empty').style.display='none';
+  document.getElementById('trace-result').style.display='none';
+  document.getElementById('trace-loading').style.display='block';
+
+  setTimeout(() => {
+    document.getElementById('trace-loading').style.display='none';
+    document.getElementById('trace-result').style.display='block';
+    document.getElementById('trace-result').innerHTML = buildTraceHTML();
+  }, 800);
+}
+
+function buildTraceHTML() {
+  const steps = [
+    {icon:'plant',label:'種植入檔',date:'02/26',desc:'東二區，台農57號，春夏作一期'},
+    {icon:'clipboard-list',label:'定期田間管理',date:'03–05月',desc:'施肥 3 次、除草 2 次、病害防治 1 次，共 12 筆工作記錄'},
+    {icon:'wifi',label:'IoT 全程感測',date:'全程',desc:'溫濕度、土壤含水量連續監測，異常即時警示'},
+    {icon:'brain',label:'AI 病害預警',date:'05/15',desc:'系統提前預警蔓割病風險，已完成預防性防治'},
+    {icon:'package',label:'採收入庫',date:'06/15',desc:'重量 1,840 kg，批號 B240615-01，品質分級 A 級'},
+    {icon:'truck',label:'出貨配送',date:'06/18',desc:'出貨至全聯實業 600 kg，已完成配送'},
+  ];
+  let html = `<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div><div style="font-size:16px;font-weight:500">台農57號甘藷（黃皮黃肉）</div><div style="font-size:12px;color:var(--t2);margin-top:3px">陳志明農場 · 批號 B240615-01</div></div>
+      <span class="badge badge-green"><i class="ti ti-shield-check" style="font-size:11px;margin-right:3px"></i>認證通過</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+      <div style="background:var(--bg2);border-radius:var(--r-md);padding:10px"><div style="font-size:11px;color:var(--t2)">種植田區</div><div style="font-size:12px;font-weight:500;margin-top:3px">東二區（220 坪）</div></div>
+      <div style="background:var(--bg2);border-radius:var(--r-md);padding:10px"><div style="font-size:11px;color:var(--t2)">種植日期</div><div style="font-size:12px;font-weight:500;margin-top:3px">2024/02/26</div></div>
+      <div style="background:var(--bg2);border-radius:var(--r-md);padding:10px"><div style="font-size:11px;color:var(--t2)">採收日期</div><div style="font-size:12px;font-weight:500;margin-top:3px">2024/06/15</div></div>
+    </div>
+    <div style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:12px">完整生產軌跡</div>`;
+  steps.forEach((s,i) => {
+    html += `<div class="trace-step"><div style="display:flex;flex-direction:column;align-items:center"><div class="trace-icon"><i class="ti ti-${s.icon}"></i></div>${i<steps.length-1?'<div class="trace-line"></div>':''}</div><div class="trace-body"><div class="trace-title">${s.label}<span class="trace-date">${s.date}</span></div><div class="trace-desc">${s.desc}</div></div></div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+
+
+function openFieldDetail(el) {
+  document.querySelectorAll('.field-row').forEach(r=>r.classList.remove('selected'));
+  el.classList.add('selected');
+  const detail = document.getElementById('field-detail-card');
+  detail.style.display = 'block';
+  detail.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function closeFieldDetail() {
+  document.getElementById('field-detail-card').style.display='none';
+  document.querySelectorAll('.field-row').forEach(r=>r.classList.remove('selected'));
+}
+function toggleLogForm() {
+  const f = document.getElementById('log-form');
+  f.style.display = f.style.display==='none'||f.style.display==='' ? 'block':'none';
+}
+let voiceTimer = null, voiceActive = false;
+function toggleVoice() {
+  const btn = document.getElementById('voice-btn');
+  const hint = document.getElementById('voice-hint');
+  const note = document.getElementById('log-note');
+  if (voiceActive) {
+    clearTimeout(voiceTimer);
+    voiceActive = false;
+    btn.classList.remove('recording');
+    btn.innerHTML = '<i class="ti ti-microphone"></i> 語音輸入';
+    hint.style.display = 'none';
+    return;
+  }
+  voiceActive = true;
+  btn.classList.add('recording');
+  btn.innerHTML = '<i class="ti ti-microphone"></i> 停止錄音';
+  hint.style.display = 'block';
+  voiceTimer = setTimeout(() => {
+    note.value = '北一中區施肥作業，硫酸鉀三公斤，均勻撒佈壟面，施肥時間約三十分鐘，天氣晴朗無風';
+    voiceActive = false;
+    btn.classList.remove('recording');
+    btn.innerHTML = '<i class="ti ti-microphone"></i> 語音輸入';
+    hint.style.display = 'none';
+  }, 2200);
+}
+function saveLog() {
+  const note = document.getElementById('log-note').value || '（未填說明）';
+  const now = new Date();
+  const time = now.getHours()+':'+(String(now.getMinutes()).padStart(2,'0'));
+  const list = document.getElementById('log-list');
+  const el = document.createElement('div');
+  el.className = 'log-row';
+  el.style.background = '#F0FBF6';
+  el.innerHTML = `<div class="log-dot" style="background:var(--brand)"></div><div class="log-time">今天 ${time}</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center"><div class="log-title">施肥作業</div><span class="badge badge-teal">施肥</span></div><div class="log-desc">北一中區 · ${note}</div><div class="log-meta"><i class="ti ti-pencil"></i>手動輸入 · 可修改</div></div>`;
+  list.insertBefore(el, list.firstChild);
+  toggleLogForm();
+  setTimeout(()=>{ el.style.background=''; }, 2000);
+}
+
+function toggleFloatLegend() {
+  const panel = document.getElementById('float-legend');
+  const btn   = document.getElementById('legend-toggle');
+  if (panel.classList.contains('hidden')) {
+    panel.classList.remove('hidden');
+    btn.style.display = 'none';
+  } else {
+    panel.classList.add('hidden');
+    btn.style.display = 'flex';
+  }
+}
+document.addEventListener('click', e => {
+  const panel = document.getElementById('float-legend');
+  const btn   = document.getElementById('legend-toggle');
+  if (!panel.contains(e.target) && !btn.contains(e.target)) {
+    panel.classList.add('hidden');
+    btn.style.display = 'flex';
+  }
+});
+
+// ── Init ───────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setSection('public');
+});
+</script>
+
+<button id="legend-toggle" onclick="toggleFloatLegend()"><i class="ti ti-info-circle"></i> 功能說明</button>
+<div id="float-legend" class="hidden">
+  <div class="fl-title">功能狀態圖例</div>
+  <div class="fl-row"><span class="fl-dot fl-existing"></span><div><b>既有功能</b> — 現有系統已具備，<br>新版本以現代化架構重新建置</div></div>
+  <div class="fl-row" style="margin-top:4px"><span class="fl-dot fl-enhanced"></span><div><b>大幅升級</b> — 既有功能基礎上<br>大幅擴充與強化</div></div>
+  <div class="fl-row" style="margin-top:4px"><span class="fl-dot fl-new"></span><div><b>全新功能</b> — 現有系統尚不具備，<br>建置新平台後新增</div></div>
+  <div style="height:1px;background:var(--b1);margin:10px 0"></div>
+  <div style="font-size:11px;color:var(--t2)">點擊任何側邊欄項目<br>可查看各功能的詳細說明</div>
+</div>
+
+</body>
+</html>
