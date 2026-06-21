@@ -10,7 +10,7 @@
     "不管你是誰，心中都住著一個小孩。快來尋找那份能讓你找回夢想希望的專屬精品。"
   ],
   "sloganFontSize": 19,
-  "sloganStyle": "C",
+  "sloganStyle": "B",
   "sloganColor": "#1abc9c",
   "categories": [
     {
@@ -1306,7 +1306,7 @@
   },
   "faceNote": "下單後將由內部人員與您聯絡，約定面交時間與地點。",
   "settings": {
-    "allowWsUpgrade": true,
+    "allowWsUpgrade": false,
     "globalMinQty": 0,
     "globalMaxQty": 0,
     "stockAlertThreshold": 5,
@@ -1333,6 +1333,6 @@
     "style": "static"
   },
   "coupons": [],
-  "exportedAt": "2026-06-21T10:59:19.216Z",
-  "_enc": "xtFtei70OLyuHOFouDtpUZ9RjbQoN6EF3fH3lirPfEZDAF6+EE0RDo7FgtFKbK8+Li2CzCPV/0WkdnrH7THBLgctoWY+wPiHrYWRkF5MIbOgj10Ksyxc2XTuJzdN2Y6zL3MSrM5oj4OoQNmj8xqY/FNe77i6FSDH6XoxjQaKf8WsL/a3dz4cLhMa1fL0sps="
+  "exportedAt": "2026-06-21T11:01:43.871Z",
+  "_enc": "Z5hh8+7aOOHhe9fWcoCPsGggYzb17VscoMgqo7ZFBnhKy4CI/tlJYAeB9jsxjgRhTzMRKR+Sv5L/jo7fNeES0RaKDMS0iIeBEMtyoOJbqvADze2kkRNI3slFgKB1k+HkDMevj9ENq/apMgAJjFejZjTAzF6gZkTjuUrTDYa+bBGTabzoyOA8vyRj2AMKuxU="
 }
