@@ -57,7 +57,7 @@
       "desc": "點擊可私訊我"
     },
     "ig": {
-      "enabled": false,
+      "enabled": true,
       "username": "",
       "desc": ""
     },
@@ -1150,7 +1150,16 @@
   ],
   "productNames": {},
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
-  "productPrices": {},
+  "productPrices": {
+    "A1": {
+      "retail": 450,
+      "cost": 170,
+      "stock": 0,
+      "preorder": true,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
+    }
+  },
   "tierSettings": [
     {
       "tier": "bronze",
@@ -1324,6 +1333,6 @@
     "style": "static"
   },
   "coupons": [],
-  "exportedAt": "2026-06-21T10:57:15.054Z",
-  "_enc": "wqm5g2tJOvRlFx90DNZyj3kKPRVCKURsNGSTaSzWOu+frIexAmXc0ZCVU36i4BIFvEPWOAfCPKIAv9q+dUEkEVVahTTJFc5wU6f8X+mAdqFTzq0F/F9Sy9p+I0o7bnDKCaKerpld2UWRZdJDQmE0ST1LiSI8kU4NHlNw6ysUNdJ38nmXuYmdvph5ahUk/eY="
+  "exportedAt": "2026-06-21T10:59:19.216Z",
+  "_enc": "xtFtei70OLyuHOFouDtpUZ9RjbQoN6EF3fH3lirPfEZDAF6+EE0RDo7FgtFKbK8+Li2CzCPV/0WkdnrH7THBLgctoWY+wPiHrYWRkF5MIbOgj10Ksyxc2XTuJzdN2Y6zL3MSrM5oj4OoQNmj8xqY/FNe77i6FSDH6XoxjQaKf8WsL/a3dz4cLhMa1fL0sps="
 }
