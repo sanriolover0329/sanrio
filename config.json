@@ -1146,5 +1146,180 @@
   ],
   "productNames": {},
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
-  "exportedAt": "2026-06-10T17:37:59.329Z"
+  "productPrices": {},
+  "tierSettings": [
+    {
+      "tier": "bronze",
+      "label": "銅級",
+      "minSpend": 0,
+      "discount": 0
+    },
+    {
+      "tier": "silver",
+      "label": "銀級",
+      "minSpend": 3000,
+      "discount": 5
+    },
+    {
+      "tier": "gold",
+      "label": "金級",
+      "minSpend": 10000,
+      "discount": 10
+    }
+  ],
+  "gifts": [
+    {
+      "name": "三麗鷗貼紙",
+      "minSpend": 3000,
+      "active": true
+    },
+    {
+      "name": "限定購物袋",
+      "minSpend": 8000,
+      "active": true
+    },
+    {
+      "name": "VIP禮盒",
+      "minSpend": 15000,
+      "active": true
+    }
+  ],
+  "logistics": [
+    {
+      "id": "blackcat",
+      "name": "黑貓宅急便",
+      "type": "delivery",
+      "active": true,
+      "fee": 100
+    },
+    {
+      "id": "hsinchu",
+      "name": "新竹物流",
+      "type": "delivery",
+      "active": true,
+      "fee": 100
+    },
+    {
+      "id": "711",
+      "name": "7-11 超商取貨",
+      "type": "cvs",
+      "active": true,
+      "fee": 60
+    },
+    {
+      "id": "family",
+      "name": "全家超商取貨",
+      "type": "cvs",
+      "active": true,
+      "fee": 60
+    },
+    {
+      "id": "hilife",
+      "name": "萊爾富超商取貨",
+      "type": "cvs",
+      "active": false,
+      "fee": 60
+    },
+    {
+      "id": "ok",
+      "name": "OK超商取貨",
+      "type": "cvs",
+      "active": false,
+      "fee": 60
+    },
+    {
+      "id": "face",
+      "name": "面交",
+      "type": "face",
+      "active": true,
+      "fee": 0
+    }
+  ],
+  "payments": [
+    {
+      "id": "cod",
+      "name": "貨到付款",
+      "active": true
+    },
+    {
+      "id": "prepay",
+      "name": "先付款後出貨",
+      "active": true
+    },
+    {
+      "id": "transfer_face",
+      "name": "先轉帳後面交",
+      "active": true
+    },
+    {
+      "id": "face_pay",
+      "name": "面交取貨付款",
+      "active": true
+    }
+  ],
+  "cvs_stores": {
+    "711": [],
+    "family": [],
+    "hilife": [],
+    "ok": []
+  },
+  "contactInfo": {
+    "showAfterOrder": true,
+    "line": {
+      "enabled": false,
+      "id": "",
+      "url": ""
+    },
+    "lineat": {
+      "enabled": false,
+      "url": ""
+    },
+    "fb": {
+      "enabled": false,
+      "url": ""
+    },
+    "phone": {
+      "enabled": false,
+      "number": ""
+    },
+    "note": ""
+  },
+  "bankInfo": {
+    "bankName": "",
+    "bankCode": "",
+    "accountName": "",
+    "accountNumber": "",
+    "note": ""
+  },
+  "faceNote": "下單後將由內部人員與您聯絡，約定面交時間與地點。",
+  "settings": {
+    "allowWsUpgrade": true,
+    "globalMinQty": 0,
+    "globalMaxQty": 0,
+    "stockAlertThreshold": 5,
+    "globalWsTiers": [
+      {
+        "qty": 3,
+        "discount": 10
+      },
+      {
+        "qty": 6,
+        "discount": 15
+      },
+      {
+        "qty": 12,
+        "discount": 20
+      }
+    ]
+  },
+  "announcement": {
+    "enabled": false,
+    "text": "",
+    "bgColor": "#f9b8cb",
+    "textColor": "#3d2040",
+    "style": "static"
+  },
+  "coupons": [],
+  "exportedAt": "2026-06-21T00:34:57.231Z",
+  "_enc": "IHRdlMnlgYvdvQOwxlejbUljH7KCDK19VivKtzaJDfgUzH0rnZiLEC4c/RNvy9/a4bgpDixW2Zgz0wSr/catOvXgUq+0bpNmnKvuj8q4uKOLE6N4FepiYDvX2h6fmI5ZzngURXqIVItVGfdqBr6RX/bzyScz9xIGURWyl/iTaS5l5XsyzzVBNqRfYkvgr7M="
 }
