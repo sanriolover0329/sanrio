@@ -16,17 +16,10 @@
   "categories": [
     {
       "id": "cat_1780730126274",
-      "name": "Hello Kitty娃娃",
+      "name": "娃娃",
       "folder": "",
       "desc": "KT變裝秀",
       "color": "#9b6ea8"
-    },
-    {
-      "id": "pochacco_9659",
-      "name": "Pochacco",
-      "folder": "",
-      "desc": "",
-      "color": "#a87070"
     },
     {
       "id": "cat_1780730144124",
@@ -65,7 +58,7 @@
       "desc": "點擊可私訊我"
     },
     "ig": {
-      "enabled": false,
+      "enabled": true,
       "username": "",
       "desc": ""
     },
@@ -692,6 +685,10 @@
       "category": "cat_1780730126274"
     },
     {
+      "id": "A154",
+      "category": "cat_1780730126274"
+    },
+    {
       "id": "A155",
       "category": "cat_1780730126274"
     },
@@ -721,6 +718,10 @@
     },
     {
       "id": "B1",
+      "category": "cat_1780730126274"
+    },
+    {
+      "id": "B2",
       "category": "cat_1780730126274"
     },
     {
@@ -1306,7 +1307,7 @@
   },
   "faceNote": "下單後將由內部人員與您聯絡，約定面交時間與地點。",
   "settings": {
-    "allowWsUpgrade": true,
+    "allowWsUpgrade": false,
     "globalMinQty": 0,
     "globalMaxQty": 0,
     "stockAlertThreshold": 5,
@@ -1333,6 +1334,6 @@
     "style": "static"
   },
   "coupons": [],
-  "exportedAt": "2026-06-22T23:43:29.588Z",
-  "_enc": "EeGeT35GMP6csHDrRWpUwf1fXAUCy+ebV3HcZpqoo3eAbtlF17g4OGcVOqf12RLIlXS+EUR1O+SGRU3lVUU7ibxL5kbBdiK/gIqnpVXFUnebSH9rtHoyHhjZZ0+V6lMvEig0SrxGCpf1Fu6yFLAbOlQHImxkXJRPw7/u8EzWWeVErNqkxJFSVCzlqPtMWJY="
+  "exportedAt": "2026-06-25T11:47:34.471Z",
+  "_enc": "fGr32RXhmPOiGeC6dbtCNotCXIQjotTjzOumYbcwAytoJZmVA6zxGp06OhUqGQ7Ad4QFx9HbZWjBEb0K94k8cdHilNJgS/2ILjDuAvCJ91fWeSnWDhTymsqhLEDJPfgPX3lbqcUtAODrTdXZWyv8rd6AaJ+zjMkUao95RNis5om/o8TQSsD3lQgjP9aFiIk="
 }
