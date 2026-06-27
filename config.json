@@ -58,7 +58,7 @@
       "desc": "點擊可私訊我"
     },
     "ig": {
-      "enabled": true,
+      "enabled": false,
       "username": "",
       "desc": ""
     },
@@ -1334,6 +1334,6 @@
     "style": "static"
   },
   "coupons": [],
-  "exportedAt": "2026-06-27T00:45:43.781Z",
-  "_enc": "eNBRHNNmatab+VUtZt8OOn76cmeEHmjUiclqBJNDODA+y9HEq+GTD8evAB+Qy2MZfmhfjp1XCCJqU5oqV0DkFjNAzOSjXucAwnUjC2ICiJPyT7Zv8OdzfD9N6hj2sCfttoPeAOj/KDdDwHC2m+lVkSc8vseiEZxlEkK+R05Bxcl9zB2b94woyf/SwH1w27M="
+  "exportedAt": "2026-06-27T00:47:50.563Z",
+  "_enc": "8TqddGsKCllZHVoa8yQxE0M85FZjejGUrkVeBhYDshmvMz/XNK6A3ktHNW2Eq88aQ0jrqeHNjW4Gi7rzI6c84oPprO6vuR+4gUxGcBTGTYcicAS6hT1qwqdfXALpQgkby9BUUTiJR1M3FTWi7g+jwqPHFi0ugHb0wfzeLIXRDmvyyYLvhNbI6de5bCZbm34="
 }
