@@ -1159,6 +1159,1038 @@
       "preorder": true,
       "useGlobalWsTiers": true,
       "wsTiers": []
+    },
+    "A2": {
+      "retail": 450,
+      "cost": 170,
+      "stock": 0,
+      "preorder": true,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
+    },
+    "A3": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A4": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A5": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A6": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A7": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A8": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A9": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A10": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A11": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A12": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A13": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A14": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A16": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A17": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A18": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A19": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A20": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A22": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A23": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A24": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A25": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A26": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A27": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A28": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A29": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A30": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A31": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A32": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A33": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A34": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A35": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A36": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A37": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A38": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A39": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A40": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A41": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A43": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A45": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A46": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A47": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A48": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A49": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A50": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A51": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A52": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A53": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A54": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A55": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A56": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A57": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A58": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A59": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A60": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A61": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A62": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A63": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A64": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A65": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A66": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A67": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A68": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A69": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A70": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A71": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A72": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A73": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A74": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A76": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A77": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A78": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A79": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A80": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A81": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A82": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A85": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A87": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A88": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A89": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A90": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A91": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A92": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A93": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A94": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A95": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A96": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A97": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A98": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A99": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A100": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A101": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A102": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A103": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A104": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A105": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A106": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A107": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A108": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A109": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A110": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A111": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A112": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A113": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A114": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A115": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A118": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A119": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A120": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A121": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A122": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A123": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A124": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A125": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A126": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A127": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A128": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A129": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A130": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A131": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A132": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A133": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A134": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A135": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A136": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A137": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A138": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A139": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A140": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A141": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A142": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A143": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A144": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A145": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A147": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A148": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A149": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A150": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A151": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A152": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A153": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A154": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A155": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A156": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A157": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A158": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A159": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A160": {
+      "retail": 450,
+      "cost": 170
+    },
+    "A161": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B1": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B2": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B3": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B4": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B5": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B6": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B7": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B9": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B10": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B11": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B12": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B13": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B14": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B15": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B16": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B17": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B18": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B19": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B20": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B21": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B23": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B25": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B26": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B27": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B28": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B29": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B30": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B31": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B32": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B33": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B34": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B35": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B36": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B37": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B38": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B39": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B40": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B41": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B42": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B43": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B47": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B48": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B49": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B50": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B51": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B52": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B53": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B54": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B55": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B56": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B57": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B58": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B60": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B62": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B63": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B64": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B65": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B67": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B69": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B72": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B73": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B76": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B77": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B78": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B79": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B80": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B81": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B83": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B84": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B85": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B86": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B87": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B88": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B89": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B90": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B91": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B92": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B93": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B94": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B96": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B97": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B98": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B99": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B100": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B102": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B103": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B104": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B105": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B106": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B107": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B108": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B109": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B110": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B111": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B112": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B113": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B114": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B115": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B116": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B117": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B118": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B119": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B120": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B121": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B122": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B123": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B124": {
+      "retail": 450,
+      "cost": 170
+    },
+    "B125": {
+      "retail": 450,
+      "cost": 170
     }
   },
   "tierSettings": [
@@ -1285,7 +2317,7 @@
       "url": ""
     },
     "lineat": {
-      "enabled": false,
+      "enabled": true,
       "url": ""
     },
     "fb": {
@@ -1293,8 +2325,8 @@
       "url": ""
     },
     "phone": {
-      "enabled": false,
-      "number": ""
+      "enabled": true,
+      "number": "0982197705"
     },
     "note": ""
   },
@@ -1334,6 +2366,14 @@
     "style": "static"
   },
   "coupons": [],
-  "exportedAt": "2026-06-27T00:47:50.563Z",
-  "_enc": "8TqddGsKCllZHVoa8yQxE0M85FZjejGUrkVeBhYDshmvMz/XNK6A3ktHNW2Eq88aQ0jrqeHNjW4Gi7rzI6c84oPprO6vuR+4gUxGcBTGTYcicAS6hT1qwqdfXALpQgkby9BUUTiJR1M3FTWi7g+jwqPHFi0ugHb0wfzeLIXRDmvyyYLvhNbI6de5bCZbm34="
+  "legalPages": {
+    "productDesc": "",
+    "pricingModel": "",
+    "shippingPolicy": "確認付款後 3-5 個工作天出貨。宅配運費 $100，消費滿 $2,000 免運費。",
+    "refundPolicy": "商品到貨 7 天內如有瑕疵，請聯繫客服申請退換貨，需保持商品完整包裝。",
+    "consumerRights": "依消費者保護法，網路購物享有 7 天鑑賞期。如有消費爭議，可向消費者保護委員會申訴。",
+    "termsOfService": "",
+    "privacyPolicy": "本店蒐集之個人資料（姓名、電話、地址）僅用於訂單處理，不提供予第三方。"
+  },
+  "exportedAt": "2026-06-30T11:22:07.157Z"
 }
