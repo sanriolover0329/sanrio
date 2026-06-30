@@ -1170,7 +1170,11 @@
     },
     "A3": {
       "retail": 450,
-      "cost": 170
+      "cost": 170,
+      "stock": 0,
+      "preorder": true,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A4": {
       "retail": 450,
@@ -2375,5 +2379,5 @@
     "termsOfService": "",
     "privacyPolicy": "本店蒐集之個人資料（姓名、電話、地址）僅用於訂單處理，不提供予第三方。"
   },
-  "exportedAt": "2026-06-30T11:22:07.157Z"
+  "exportedAt": "2026-06-30T13:36:43.458Z"
 }
