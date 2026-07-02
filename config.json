@@ -1153,7 +1153,7 @@
   "adminPwdHash": "ce571c6e118a90bd4e2b0312640a58b087417932e53305a8879ef784bfe429a2",
   "productPrices": {
     "A1": {
-      "retail": 450,
+      "retail": 499,
       "cost": 170,
       "stock": 0,
       "preorder": true,
@@ -1161,7 +1161,7 @@
       "wsTiers": []
     },
     "A2": {
-      "retail": 450,
+      "retail": 499,
       "cost": 170,
       "stock": 0,
       "preorder": true,
@@ -1169,7 +1169,7 @@
       "wsTiers": []
     },
     "A3": {
-      "retail": 450,
+      "retail": 499,
       "cost": 170,
       "stock": 0,
       "preorder": true,
@@ -1177,1024 +1177,1534 @@
       "wsTiers": []
     },
     "A4": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A5": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A6": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A7": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A8": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A9": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A10": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A11": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A12": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A13": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A14": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A16": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A17": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A18": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A19": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A20": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A22": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A23": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A24": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A25": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A26": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A27": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A28": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A29": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A30": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A31": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A32": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A33": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A34": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A35": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A36": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A37": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A38": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A39": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A40": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A41": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A43": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A45": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A46": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A47": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A48": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A49": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A50": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A51": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A52": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A53": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A54": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A55": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A56": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A57": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A58": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A59": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A60": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A61": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A62": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A63": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A64": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A65": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A66": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A67": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A68": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A69": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A70": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A71": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A72": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A73": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A74": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A76": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A77": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A78": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A79": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A80": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A81": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A82": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A85": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A87": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A88": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A89": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A90": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A91": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A92": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A93": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A94": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A95": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A96": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A97": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A98": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A99": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A100": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A101": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A102": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A103": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A104": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A105": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A106": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A107": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A108": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A109": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A110": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A111": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A112": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A113": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A114": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A115": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A118": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A119": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A120": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A121": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A122": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A123": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A124": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A125": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A126": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A127": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A128": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A129": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A130": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A131": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A132": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A133": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A134": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A135": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A136": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A137": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A138": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A139": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A140": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A141": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A142": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A143": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A144": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A145": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A147": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A148": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A149": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A150": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A151": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A152": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A153": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A154": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A155": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A156": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A157": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A158": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A159": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A160": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "A161": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B1": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B2": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B3": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B4": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B5": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B6": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B7": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B9": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B10": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B11": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B12": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B13": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B14": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B15": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B16": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B17": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B18": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B19": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B20": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B21": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B23": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B25": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B26": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B27": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B28": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B29": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B30": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B31": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B32": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B33": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B34": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B35": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B36": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B37": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B38": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B39": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B40": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B41": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B42": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B43": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B47": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B48": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B49": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B50": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B51": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B52": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B53": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B54": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B55": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B56": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B57": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B58": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B60": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B62": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B63": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B64": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B65": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B67": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B69": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B72": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B73": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B76": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B77": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B78": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B79": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B80": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B81": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B83": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B84": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B85": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B86": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B87": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B88": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B89": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B90": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B91": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B92": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B93": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B94": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B96": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B97": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B98": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B99": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B100": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B102": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B103": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B104": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B105": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B106": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B107": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B108": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B109": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B110": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B111": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B112": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B113": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B114": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B115": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B116": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B117": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B118": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B119": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B120": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B121": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B122": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B123": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B124": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     },
     "B125": {
-      "retail": 450,
-      "cost": 170
+      "retail": 499,
+      "cost": 170,
+      "useGlobalWsTiers": true,
+      "wsTiers": []
     }
   },
   "tierSettings": [
@@ -2350,15 +2860,15 @@
     "globalWsTiers": [
       {
         "qty": 3,
-        "discount": 10
+        "discount": 30
       },
       {
         "qty": 6,
-        "discount": 15
+        "discount": 40
       },
       {
         "qty": 12,
-        "discount": 20
+        "discount": 60
       }
     ]
   },
@@ -2379,5 +2889,5 @@
     "termsOfService": "",
     "privacyPolicy": "本店蒐集之個人資料（姓名、電話、地址）僅用於訂單處理，不提供予第三方。"
   },
-  "exportedAt": "2026-06-30T13:39:40.789Z"
+  "exportedAt": "2026-07-02T14:06:15.722Z"
 }
